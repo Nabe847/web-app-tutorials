@@ -11,7 +11,7 @@ export default defineConfig({
         {
           icon: 'github',
           label: 'GitHub',
-          href: 'https://github.com/withastro/starlight',
+          href: 'https://github.com/Nabe847/web-app-tutorials',
         },
       ],
       sidebar: [

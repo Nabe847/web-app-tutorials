@@ -24,6 +24,7 @@
 ## 🚀 使用技術
 
 - [Astro](https://astro.build/)
+- [Starlight](https://starlight.astro.build/)
 
 ---
 
