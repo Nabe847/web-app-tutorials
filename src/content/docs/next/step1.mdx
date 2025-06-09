@@ -20,6 +20,28 @@ tags: ['Next.js', 'tutorial']
 - HTML、CSS、JavaScript の基礎
 - コマンドライン（ターミナル）の基本的な使い方
 
+### 事前準備
+
+以下がインストールされていることを確認してください：
+
+**Node.js のインストール確認**
+
+```bash
+node --version
+npm --version
+```
+
+以下のようにバージョンが表示されれば OK です：
+
+```
+v20.11.0
+10.2.4
+```
+
+（バージョン番号は異なっていても問題ありません）
+
+Node.js がインストールされていない場合は、[公式サイト](https://nodejs.org/)からダウンロードしてください（LTS 版を推奨）。
+
 ### Next.js プロジェクトを作成
 
 ターミナルで以下のコマンドを実行してください：
@@ -28,26 +50,47 @@ tags: ['Next.js', 'tutorial']
 npx create-next-app@latest task-manager
 ```
 
+以下のような出力が表示されます：
+
+```
+Creating a new Next.js app in /path/to/task-manager.
+
+✔ Would you like to use TypeScript? … No / Yes
+✔ Would you like to use ESLint? … No / Yes
+✔ Would you like to use Tailwind CSS? … No / Yes
+✔ Would you like to use `src/` directory? … No / Yes
+✔ Would you like to use App Router? (recommended) … No / Yes
+✔ Would you like to customize the default import alias (@/*)? … No / Yes
+
+Installing dependencies...
+```
+
 いくつか質問が表示されるので、以下のように回答してください：
 
 ```
 ✔ Would you like to use TypeScript? … No / Yes
-→ **No** を選択（JavaScriptで進めます）
+→ **No** を選択
+  理由：まずはJavaScriptで基本を理解してから
 
 ✔ Would you like to use ESLint? … No / Yes
-→ **Yes** を選択（コード品質チェックのため）
+→ **No** を選択
+  理由：フレームワークの使い方の理解に集中するため
 
 ✔ Would you like to use Tailwind CSS? … No / Yes
-→ **No** を選択（今回は通常のCSSを使います）
+→ **No** を選択
+  理由：CSSの基本から学習するため
 
 ✔ Would you like to use `src/` directory? … No / Yes
-→ **No** を選択（シンプルな構成にします）
+→ **No** を選択
+  理由：シンプルな構成にするため
 
 ✔ Would you like to use App Router? (recommended) … No / Yes
-→ **Yes** を選択（最新の推奨方式）
+→ **Yes** を選択
+  理由：最新の推奨方式のため
 
 ✔ Would you like to customize the default import alias (@/*)? … No / Yes
-→ **No** を選択（デフォルトのままで）
+→ **No** を選択
+  理由：デフォルトのままで十分
 ```
 
 セットアップが完了したら、プロジェクトフォルダに移動して開発サーバーを起動します：
@@ -57,16 +100,72 @@ cd task-manager
 npm run dev
 ```
 
+以下のような出力が表示されれば成功です：
+
+```
+> task-manager@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.3.2
+   - Local:        http://localhost:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.1s
+```
+
 ブラウザで `http://localhost:3000` を開くと、Next.js の初期画面が表示されます。
 
 ### プロジェクト構造の理解
 
-重要なフォルダとファイル：
+作成されたプロジェクトの構造：
 
-- `app/` - ページやレイアウトを格納
-- `app/page.js` - トップページ（`/`）
-- `app/layout.js` - 全ページ共通のレイアウト
-- `public/` - 画像などの静的ファイル
+```
+task-manager/
+├── app/
+│   ├── page.js          # トップページ（/ にアクセスした時）
+│   ├── layout.js        # 全ページ共通のレイアウト
+│   └── globals.css      # 全体のスタイル
+├── public/              # 画像などの静的ファイル
+├── package.json         # プロジェクト設定
+└── next.config.js       # Next.js の設定
+```
+
+**重要なポイント：**
+
+- `app/` フォルダ内のファイル名が URL になります
+- `page.js` は各ページのメインコンテンツです
+- `layout.js` は全ページで共通するレイアウト（ヘッダーやフッターなど）を定義します
+
+### よくある問題と解決方法
+
+**ポートが使用中の場合**
+
+- 別のアプリケーションが 3000 番ポートを使用している場合、自動的に 3001 番などに変更されます
+- ターミナルに表示される URL を確認してください
+
+**コマンドが見つからない場合**
+
+- `npx` コマンドが使えない場合は、Node.js が正しくインストールされているか確認してください
+- 古いバージョンの Node.js を使用している可能性があります
+
+**権限エラーが発生する場合**
+
+- Mac: `sudo` は使わず、Node.js を再インストールすることを推奨します
+- Windows: 管理者として実行する必要がある場合があります
+
+### 💡 ヒント
+
+**開発サーバーの停止方法:**
+
+- **Windows**: `Ctrl + C`
+- **Mac**: `Cmd + C` または `Ctrl + C`
+
+**その他のポイント:**
+
+- コマンドを間違えても大丈夫！何度でもやり直せます
+- わからない用語があっても、今後のチュートリアルで詳しく説明します
+- ファイルを保存すると、ブラウザに表示しているページが自動的に更新されます（ホットリロード機能）
 
 ### 確認事項
 
@@ -74,13 +173,17 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 <div>
   <ChecklistItem client:load id="point1">
-    プロジェクトが正常に作成された
+    Node.js がインストールされている
   </ChecklistItem>
   <ChecklistItem client:load id="point2">
-    開発サーバーが起動している
+    プロジェクトが正常に作成された
   </ChecklistItem>
   <ChecklistItem client:load id="point3">
+    開発サーバーが起動している
+  </ChecklistItem>
+  <ChecklistItem client:load id="point4">
     ブラウザで Next.js の初期画面が表示される
   </ChecklistItem>
 </div>
+
 ---
