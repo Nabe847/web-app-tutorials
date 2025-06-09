@@ -16,10 +16,10 @@ export default defineConfig({
       ],
       sidebar: [
         {
-          label: 'Guides',
+          label: '導入',
           items: [
             // Each item here is one entry in the navigation menu.
-            { label: 'Example Guide', slug: 'guides/example' },
+            { label: 'はじめに', slug: 'guides/intro' },
           ],
         },
         {
