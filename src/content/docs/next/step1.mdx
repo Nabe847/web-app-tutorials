@@ -70,10 +70,17 @@ npm run dev
 
 ### 確認事項
 
-- [ ] プロジェクトが正常に作成された
-- [ ] 開発サーバーが起動している
-- [ ] ブラウザで Next.js の初期画面が表示される
+import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
-✅ **ステップ 1 完了！** 次は[ステップ 2: 基本ページの作成](#step2)に進みましょう。
-
+<div>
+  <ChecklistItem client:load id="point1">
+    プロジェクトが正常に作成された
+  </ChecklistItem>
+  <ChecklistItem client:load id="point2">
+    開発サーバーが起動している
+  </ChecklistItem>
+  <ChecklistItem client:load id="point3">
+    ブラウザで Next.js の初期画面が表示される
+  </ChecklistItem>
+</div>
 ---
