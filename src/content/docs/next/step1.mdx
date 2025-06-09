@@ -18,89 +18,88 @@ tags: ['Next.js', 'tutorial']
 ### 前提知識
 
 - HTML、CSS、JavaScript の基礎
-- コマンドライン（ターミナル）の基本的な使い方
+- コマンドライン(ターミナル)の基本的な使い方
 
 ### 事前準備
 
-以下がインストールされていることを確認してください：
-
-**Node.js のインストール確認**
+Node.js がインストールされていることを確認してください。  
+以下のコマンドを実行してください:
 
 ```bash
 node --version
 npm --version
 ```
 
-以下のようにバージョンが表示されれば OK です：
+以下のようにバージョンが表示されれば OK です:
 
 ```
-v20.11.0
-10.2.4
+v22.16.0
+10.9.2
 ```
 
-（バージョン番号は異なっていても問題ありません）
+(環境によってバージョン番号が異なる可能性がありますが問題ありません)
 
 Node.js がインストールされていない場合は、[公式サイト](https://nodejs.org/)からダウンロードしてください（LTS 版を推奨）。
 
-### Next.js プロジェクトを作成
+### Next.js プロジェクトの作成
 
-ターミナルで以下のコマンドを実行してください：
+ターミナルで以下のコマンドを実行してください:
 
 ```bash
 npx create-next-app@latest task-manager
 ```
 
-以下のような出力が表示されます：
+いくつか質問が表示されます:
 
 ```
-Creating a new Next.js app in /path/to/task-manager.
-
-✔ Would you like to use TypeScript? … No / Yes
-✔ Would you like to use ESLint? … No / Yes
-✔ Would you like to use Tailwind CSS? … No / Yes
-✔ Would you like to use `src/` directory? … No / Yes
-✔ Would you like to use App Router? (recommended) … No / Yes
-✔ Would you like to customize the default import alias (@/*)? … No / Yes
-
-Installing dependencies...
+Would you like to use TypeScript? No / Yes
+Would you like to use ESLint? No / Yes
+Would you like to use Tailwind CSS? No / Yes
+Would you like your code inside a `src/` directory? No / Yes
+Would you like to use App Router? (recommended) No / Yes
+Would you like to use Turbopack for `next dev`?  No / Yes
+Would you like to customize the import alias (`@/*` by default)? No / Yes
 ```
 
-いくつか質問が表示されるので、以下のように回答してください：
+以下のように回答してください:
 
 ```
-✔ Would you like to use TypeScript? … No / Yes
+Would you like to use TypeScript? No / Yes
 → **No** を選択
-  理由：まずはJavaScriptで基本を理解してから
+  理由: まずはJavaScriptで基本を理解してから
 
-✔ Would you like to use ESLint? … No / Yes
+Would you like to use ESLint? No / Yes
 → **No** を選択
-  理由：フレームワークの使い方の理解に集中するため
+  理由: フレームワークの使い方の理解に集中するため
 
-✔ Would you like to use Tailwind CSS? … No / Yes
+Would you like to use Tailwind CSS? No / Yes
 → **No** を選択
-  理由：CSSの基本から学習するため
+  理由: CSSの基本から学習するため
 
-✔ Would you like to use `src/` directory? … No / Yes
-→ **No** を選択
-  理由：シンプルな構成にするため
-
-✔ Would you like to use App Router? (recommended) … No / Yes
+Would you like to use `src/` directory? No / Yes
 → **Yes** を選択
-  理由：最新の推奨方式のため
 
-✔ Would you like to customize the default import alias (@/*)? … No / Yes
+Would you like to use App Router? (recommended) No / Yes
+→ **Yes** を選択
+  理由: 最新の推奨方式のため
+
+Would you like to use Turbopack for `next dev`?  No / Yes
 → **No** を選択
-  理由：デフォルトのままで十分
+  理由: Next.js の学習に集中するため
+
+Would you like to customize the default import alias (@/*)? No / Yes
+→ **No** を選択
+  理由: デフォルトのままで十分
 ```
 
-セットアップが完了したら、プロジェクトフォルダに移動して開発サーバーを起動します：
+セットアップが完了したら、プロジェクトフォルダに移動して開発サーバーを起動します:
 
 ```bash
 cd task-manager
 npm run dev
 ```
 
-以下のような出力が表示されれば成功です：
+以下のような出力が表示されれば成功です:
 
 ```
 > task-manager@0.1.0 dev
@@ -118,7 +117,7 @@ npm run dev
 
 ### プロジェクト構造の理解
 
-作成されたプロジェクトの構造：
+作成されたプロジェクトの構造:
 
 ```
 task-manager/
@@ -131,7 +130,7 @@ task-manager/
 └── next.config.js       # Next.js の設定
 ```
 
-**重要なポイント：**
+**重要なポイント:**
 
 - `app/` フォルダ内のファイル名が URL になります
 - `page.js` は各ページのメインコンテンツです
@@ -165,7 +164,7 @@ task-manager/
 
 - コマンドを間違えても大丈夫！何度でもやり直せます
 - わからない用語があっても、今後のチュートリアルで詳しく説明します
-- ファイルを保存すると、ブラウザに表示しているページが自動的に更新されます（ホットリロード機能）
+- ファイルを保存すると、ブラウザに表示しているページが自動的に更新されます(ホットリロード機能)
 
 ### 確認事項
 
