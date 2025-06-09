@@ -14,7 +14,7 @@
 
 現在は以下の内容を提供しています：
 
-- ✅ **Next.js 入門チュートリアル**
+- ✅ **Next.js 入門チュートリアル** （作成中）
 - 🛠️ FastAPI 入門（作成中）
 - 🔗 フルスタック開発（Next.js + FastAPI）（予定）
 - 💻 CLI や Git の使い方（予定）
@@ -23,10 +23,7 @@
 
 ## 🚀 使用技術
 
-- [Next.js](https://nextjs.org/)
-- [React](https://react.dev/)
-- Markdown ベースのチュートリアル構成
-- スタイリングに Tailwind CSS などを使用している場合は追記
+- [Astro](https://astro.build/)
 
 ---
 
