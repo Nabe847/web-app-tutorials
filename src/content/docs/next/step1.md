@@ -1,0 +1,79 @@
+---
+title: '1: セットアップと環境構築'
+pubDate: 2025-06-09
+description: 'Next.js の初心者向けチュートリアルです'
+author: 'Nabe847'
+image:
+  url: 'https://docs.astro.build/assets/full-logo-light.png'
+  alt: 'Astroのロゴ。'
+tags: ['Next.js', 'tutorial']
+---
+
+## このステップで学ぶこと
+
+- Next.js プロジェクトの作成
+- 開発環境の起動
+- プロジェクト構造の理解
+
+### 前提知識
+
+- HTML、CSS、JavaScript の基礎
+- コマンドライン（ターミナル）の基本的な使い方
+
+### Next.js プロジェクトを作成
+
+ターミナルで以下のコマンドを実行してください：
+
+```bash
+npx create-next-app@latest task-manager
+```
+
+いくつか質問が表示されるので、以下のように回答してください：
+
+```
+✔ Would you like to use TypeScript? … No / Yes
+→ **No** を選択（JavaScriptで進めます）
+
+✔ Would you like to use ESLint? … No / Yes
+→ **Yes** を選択（コード品質チェックのため）
+
+✔ Would you like to use Tailwind CSS? … No / Yes
+→ **No** を選択（今回は通常のCSSを使います）
+
+✔ Would you like to use `src/` directory? … No / Yes
+→ **No** を選択（シンプルな構成にします）
+
+✔ Would you like to use App Router? (recommended) … No / Yes
+→ **Yes** を選択（最新の推奨方式）
+
+✔ Would you like to customize the default import alias (@/*)? … No / Yes
+→ **No** を選択（デフォルトのままで）
+```
+
+セットアップが完了したら、プロジェクトフォルダに移動して開発サーバーを起動します：
+
+```bash
+cd task-manager
+npm run dev
+```
+
+ブラウザで `http://localhost:3000` を開くと、Next.js の初期画面が表示されます。
+
+### プロジェクト構造の理解
+
+重要なフォルダとファイル：
+
+- `app/` - ページやレイアウトを格納
+- `app/page.js` - トップページ（`/`）
+- `app/layout.js` - 全ページ共通のレイアウト
+- `public/` - 画像などの静的ファイル
+
+### 確認事項
+
+- [ ] プロジェクトが正常に作成された
+- [ ] 開発サーバーが起動している
+- [ ] ブラウザで Next.js の初期画面が表示される
+
+✅ **ステップ 1 完了！** 次は[ステップ 2: 基本ページの作成](#step2)に進みましょう。
+
+---
