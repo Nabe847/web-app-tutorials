@@ -46,7 +46,8 @@ export default function Home() {
 +              padding: '10px',
 +              margin: '10px 0',
 +              backgroundColor: task.completed ? '#f0f8f0' : '#fff',
-+            }}>
++            }}
++          >
 +            {/* 3. 条件付きスタイリング */}
 +            <span
 +              style={{
@@ -61,8 +62,8 @@ export default function Home() {
 +              {task.completed ? '完了' : '未完了'}
 +            </span>
 +          </div>
-+         ))}
-+       </div>
++        ))}
++      </div>
     </div>
   );
 }
