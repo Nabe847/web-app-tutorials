@@ -139,7 +139,7 @@ export default function Home() {
 - `const [state, setState] = useState(初期値)` - 状態とそれを更新する関数を取得
 - `onChange` - 入力値が変更されたときの処理
 
-### 確認事項
+### 🎯 達成目標
 
 - [ ] 入力フィールドが表示される
 - [ ] 入力フィールドに文字を入力できる

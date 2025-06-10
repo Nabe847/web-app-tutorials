@@ -200,7 +200,9 @@ export default function Home() {
 - `filter` - 条件に合う要素だけを抽出（削除用）
 - `window.confirm` - 削除確認ダイアログを表示
 
-### 確認事項
+### 🎯 達成目標
+
+import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 - [ ] 「完了にする」ボタンでタスクの状態が切り替わる
 - [ ] 完了したタスクは取り消し線と背景色が変わる

@@ -85,3 +85,7 @@ const addTask = async (taskData) => {
 - [React 公式ドキュメント](https://react.dev/)
 
 お疲れさまでした！このチュートリアルで Next.js の基本的な CRUD 操作を学ぶことができました。
+
+### 🎯 達成目標
+
+import ChecklistItem from '../../../components/ChecklistItem.jsx';
