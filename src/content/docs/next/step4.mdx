@@ -9,6 +9,8 @@ image:
 tags: ['Next.js', 'tutorial']
 ---
 
+import { Steps } from '@astrojs/starlight/components';
+
 ## このステップで学ぶこと
 
 前回のタスク表示機能に続いて、今回はタスクの追加機能を実装していきます。
@@ -17,6 +19,8 @@ tags: ['Next.js', 'tutorial']
 - フォームの値は状態で管理する
 - 入力値の変更を検知して状態を更新する
 - フォーム送信時に新しいタスクを追加する
+- Enterキーでのタスク追加
+- 入力値のバリデーション
 
 ### app/page.js を更新
 
@@ -38,10 +42,13 @@ export default function Home() {
   // 2. タスク追加の処理
   const handleAddTask = (e) => {
     e.preventDefault();
-    if (!newTaskTitle.trim()) return;
+    if (!newTaskTitle.trim()) {
+      alert('タスクタイトルを入力してください');
+      return;
+    }
 
     const newTask = {
-      id: tasks.length + 1,
+      id: Date.now(), // 簡単なID生成（現在時刻を使用）
       title: newTaskTitle,
       completed: false,
     };
@@ -65,6 +72,13 @@ export default function Home() {
             padding: '8px',
             width: '70%',
             marginRight: '10px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+          }}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              handleAddTask(e);
+            }
           }}
         />
         <button
@@ -84,20 +98,22 @@ export default function Home() {
 
       {/* 4. タスク一覧の表示 */}
       <div>
-        <h2>タスク一覧</h2>
+        <h2>タスク一覧 ({tasks.length}件)</h2>
         {tasks.map((task) => (
           <div
             key={task.id}
             style={{
               border: '1px solid #ccc',
-              padding: '10px',
+              padding: '15px',
               margin: '10px 0',
               backgroundColor: task.completed ? '#f0f8f0' : '#fff',
+              borderRadius: '4px',
             }}
           >
             <span
               style={{
                 textDecoration: task.completed ? 'line-through' : 'none',
+                fontSize: '16px',
               }}
             >
               {task.title}
@@ -107,6 +123,36 @@ export default function Home() {
             >
               {task.completed ? '完了' : '未完了'}
             </span>
+
+            <div style={{ marginTop: '10px' }}>
+              <button
+                style={{
+                  marginRight: '5px',
+                  padding: '4px 8px',
+                  fontSize: '12px',
+                  backgroundColor: task.completed ? '#ffc107' : '#28a745',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                }}
+              >
+                {task.completed ? '未完了にする' : '完了にする'}
+              </button>
+              <button
+                style={{
+                  padding: '4px 8px',
+                  fontSize: '12px',
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                }}
+              >
+                削除
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -117,37 +163,146 @@ export default function Home() {
 
 ### コードの解説
 
-1. 状態の定義
-```javascript
-const [newTaskTitle, setNewTaskTitle] = useState('');
-```
+<Steps>
 
-> 💡 **状態管理について**
-> - 状態とは、コンポーネントが保持するデータのことです
-> - `useState`は状態の値と、それを更新する関数のペアを返します
-> - 状態が更新されると、Reactは自動的に画面を更新します
->
-> より詳しく知りたい方は、[https://ja.react.dev/learn/state-a-components-memory](https://ja.react.dev/learn/state-a-components-memory) を参考にしてください。
+1. **状態の定義**
 
-2. 入力フィールドに`value={newTaskTitle}`を設定して、状態の値を表示させます
-3. ユーザーがテキストボックスに入力すると`change`イベントが発生します。このイベントが発生したときに実行したい処理を`onChange`イベントハンドラに設定します：
-```javascript
-onChange={(e) => setNewTaskTitle(e.target.value)}
-```
+   ```javascript
+   const [tasks, setTasks] = useState([
+     { id: 1, title: '買い物に行く', completed: false },
+     { id: 2, title: '宿題をする', completed: true },
+     { id: 3, title: '友達に連絡する', completed: false },
+   ]);
+   const [newTaskTitle, setNewTaskTitle] = useState('');
+   ```
 
-> 💡 **イベントハンドリングについて**
-> - イベントとは、ユーザーの操作（クリック、入力など）やブラウザの動作（ページ読み込みなど）によって発生する信号です
-> - イベントハンドラは、イベントが発生したときに実行される関数です
-> - Reactでは、`on`で始まるプロパティ（例：`onChange`、`onClick`）にイベントハンドラを設定します
-> - イベントハンドラは、イベントオブジェクト（`e`）を引数として受け取ります。このオブジェクトには、イベントに関する情報（例：入力値、クリック位置など）が含まれています
->
-> より詳しく知りたい方は、[MDNのイベントハンドリングの解説](https://developer.mozilla.org/ja/docs/Learn/JavaScript/Building_blocks/Events)を参考にしてください。
+   > 💡 **状態管理について**
+   > - 状態とは、コンポーネントが保持するデータのことです
+   > - `useState`は状態の値と、それを更新する関数のペアを返します
+   > - 状態が更新されると、Reactは自動的に画面を更新します
+   > - この例では2つの状態を管理しています：
+   >   1. `tasks`: タスクの配列（初期値として3つのタスクを設定）
+   >   2. `newTaskTitle`: 新規タスクの入力値（初期値は空文字列）
+   >
+   > より詳しく知りたい方は、[https://ja.react.dev/learn/state-a-components-memory](https://ja.react.dev/learn/state-a-components-memory) を参考にしてください。
 
-4. イベントハンドラ内で`e.target.value`から入力値を取得し、`setNewTaskTitle`で状態を更新します
-5. 状態が更新されると、Reactが自動的に入力フィールドの表示を更新します
+2. **タスク追加の処理**
 
-このように実装することで、フォームの値と状態を常に同期させ、ユーザーの入力に応じて画面を更新できます。
-より詳しく知りたい方は、[https://ja.react.dev/learn/reacting-to-input-with-state](https://ja.react.dev/learn/reacting-to-input-with-state) を参考にしてください。
+   ```javascript
+   const handleAddTask = (e) => {
+     e.preventDefault();
+     if (!newTaskTitle.trim()) {
+       alert('タスクタイトルを入力してください');
+       return;
+     }
+
+     const newTask = {
+       id: Date.now(), // 簡単なID生成（現在時刻を使用）
+       title: newTaskTitle,
+       completed: false,
+     };
+
+     setTasks([...tasks, newTask]);
+     setNewTaskTitle('');
+   };
+   ```
+
+   > 💡 **タスク追加の処理について**
+   > - `e.preventDefault()`: フォームのデフォルトの送信動作を防止
+   > - `newTaskTitle.trim()`: 入力値の前後の空白を削除してチェック
+   > - `Date.now()`: 現在のタイムスタンプをIDとして使用（一意の値）
+   > - `[...tasks, newTask]`: スプレッド演算子を使用して既存のタスク配列に新しいタスクを追加
+   > - `setNewTaskTitle('')`: 入力フィールドをクリア
+
+3. **フォームの実装**
+
+   ```javascript
+   <form onSubmit={handleAddTask} style={{ marginBottom: '20px' }}>
+     <input
+       type="text"
+       value={newTaskTitle}
+       onChange={(e) => setNewTaskTitle(e.target.value)}
+       placeholder="新しいタスクを入力"
+       style={{
+         padding: '8px',
+         width: '70%',
+         marginRight: '10px',
+         border: '1px solid #ccc',
+         borderRadius: '4px',
+       }}
+       onKeyPress={(e) => {
+         if (e.key === 'Enter') {
+           handleAddTask(e);
+         }
+       }}
+     />
+     <button type="submit">追加</button>
+   </form>
+   ```
+
+   > 💡 **フォームの実装について**
+   > - `onSubmit`: フォーム送信時のイベントハンドラ
+   > - `value={newTaskTitle}`: 入力フィールドの値を状態と同期
+   > - `onChange`: 入力値が変更された時のイベントハンドラ
+   > - `onKeyPress`: Enterキーが押された時のイベントハンドラ
+   > - スタイリングはインラインで実装（後ほどCSSモジュールやTailwind CSSなどで改善可能）
+
+4. **タスク一覧の表示**
+
+   ```javascript
+   <div>
+     <h2>タスク一覧 ({tasks.length}件)</h2>
+     {tasks.map((task) => (
+       <div key={task.id}>
+         <span>{task.title}</span>
+         <span>{task.completed ? '完了' : '未完了'}</span>
+         <div>
+           <button>{task.completed ? '未完了にする' : '完了にする'}</button>
+           <button>削除</button>
+         </div>
+       </div>
+     ))}
+   </div>
+   ```
+
+   > 💡 **タスク一覧の表示について**
+   > - `tasks.map()`: 配列の各要素に対して処理を実行
+   > - `key={task.id}`: Reactのリスト表示で必要な一意のキー
+   > - 条件付きレンダリング: `task.completed ? '完了' : '未完了'`
+   > - スタイリング: 完了状態に応じて背景色やテキストの装飾を変更
+
+5. **フォームのイベントハンドリング**
+
+   ```javascript
+   <form onSubmit={handleAddTask}>
+     <input
+       onChange={(e) => setNewTaskTitle(e.target.value)}
+       onKeyPress={(e) => {
+         if (e.key === 'Enter') {
+           handleAddTask(e);
+         }
+       }}
+     />
+   </form>
+   ```
+
+   > 💡 **フォームのイベントハンドリングについて**
+   > - `onSubmit`: フォーム送信時のイベントハンドラ
+   >   - `e.preventDefault()`でデフォルトの送信動作を防止
+   >   - 入力値のバリデーションを実行
+   >   - 新しいタスクを追加
+   > 
+   > - `onChange`: 入力値変更時のイベントハンドラ
+   >   - `e.target.value`で入力フィールドの現在の値を取得
+   >   - `setNewTaskTitle`で状態を更新
+   > 
+   > - `onKeyPress`: Enterキー押下時のイベントハンドラ
+   >   - `e.key === 'Enter'`でEnterキーの押下を検知
+   >   - Enterキー押下時も`handleAddTask`を実行
+   >
+   > より詳しく知りたい方は、[MDNのイベントハンドリングの解説](https://developer.mozilla.org/ja/docs/Learn/JavaScript/Building_blocks/Events)を参考にしてください。
+
+</Steps>
 
 ### よくある問題と解決方法
 
@@ -178,6 +333,12 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
   </ChecklistItem>
   <ChecklistItem client:load id="step4-point4">
     空のタスクは追加されない
+  </ChecklistItem>
+  <ChecklistItem client:load id="step4-point5">
+    Enterキーでもタスクが追加される
+  </ChecklistItem>
+  <ChecklistItem client:load id="step4-point6">
+    タスク件数が正しく表示される
   </ChecklistItem>
 </div>
 
