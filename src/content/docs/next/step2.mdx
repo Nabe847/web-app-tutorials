@@ -21,7 +21,6 @@ tags: ['Next.js', 'tutorial']
 ### 用語の説明
 
 - **JSX**: JavaScript の中で HTML のような記法を使って UI を記述する方法です。例えば `<div>` や `<h1>` などの HTML タグを JavaScript の中で直接使うことができます。
-- **コンポーネント**: 再利用可能な UI の部品のことです
 - **インラインスタイル**: HTML 要素に直接スタイルを適用する方法です。このステップでは `style={{ }}` という書き方で、要素の見た目（余白や幅など）を設定します。
 
 ### app/page.js を編集
@@ -42,8 +41,7 @@ export default function Home() {
 ### コードの解説
 
 1. `export default function Home()`
-
-   - `function Home()` は、このページの内容を定義する関数です
+   - この関数はページの内容を定義します
    - `export default` は、この関数を他のファイルから使えるようにするための記述です
 
 2. `return (...)` の中身
@@ -138,17 +136,17 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 3. **JSX で HTML タグを書く際の注意点は？**
 
-   - A: タグは必ず小文字で書く
-   - B: タグは必ず大文字で書く
-   - C: タグは HTML と同じように書く
+   - A: タグは必ず小文字から始まる（例：`<div>`）
+   - B: タグは必ず大文字から始まる（例：`<Div>`）
+   - C: タグは HTML と同じように書く（例：`<div>`）
    - D: タグは JavaScript の構文で書く
 
    <details>
    <summary>答えを見る</summary>
 
-   **答え: C: タグは HTML と同じように書く**
+   **答え: C: タグは HTML と同じように書く（例：`<div>`）**
    - JSX では、通常の HTML タグ（`<div>`、`<h1>` など）は HTML と同じように書きます
-   - コンポーネント名（このステップでは使用しません）の場合のみ大文字で始めます
+   - コンポーネント名（このステップでは使用しません）の場合のみ大文字から始まります
    </details>
 
 ---
