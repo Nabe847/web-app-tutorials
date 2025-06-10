@@ -1,0 +1,307 @@
+---
+title: '4: タスクの追加(Create)'
+pubDate: 2025-06-10
+description: 'Next.js の初心者向けチュートリアルです'
+author: 'Nabe847'
+image:
+  url: 'https://docs.astro.build/assets/full-logo-light.png'
+  alt: 'Astroのロゴ。'
+tags: ['Next.js', 'tutorial']
+---
+
+## このステップで学ぶこと
+
+前回のタスク表示機能に続いて、今回はタスクの追加機能を実装していきます。フォームの作成方法や、状態管理の基礎を学びましょう。
+
+- フォームの作成と制御
+- `useState` フックの使用方法
+- イベントハンドリング
+- 配列への要素追加
+
+### 事前学習：状態（State）について
+
+状態（State）の概念を知らない方は、まず [https://ja.react.dev/learn/state-a-components-memory](https://ja.react.dev/learn/state-a-components-memory) の内容を学習してください。
+
+このチュートリアルでは：
+- 状態とは何か
+- なぜ状態が必要なのか
+- 状態の基本的な使い方
+
+を、実際にコードを書きながら学ぶことができます。
+
+**重要**: このステップを進める前に、必ず [https://ja.react.dev/learn/state-a-components-memory](https://ja.react.dev/learn/state-a-components-memory) の内容を学習してください。
+
+### Reactの基本概念
+
+#### 状態（State）とは
+状態とは、コンポーネントの「メモリ」のようなものです。例えば：
+- フォームの入力値
+- 画像カルーセルの現在の画像
+- ショッピングカートの中身
+
+これらは、ユーザーの操作に応じて変化する必要がある情報です。通常の変数では、コンポーネントが再レンダリングされるたびに値がリセットされてしまいますが、状態を使うことで：
+
+1. レンダリング間でデータを保持できます
+2. 状態が変更されると、Reactが自動的に画面を更新します
+
+#### フック（Hook）とは
+フックは、Reactの機能を簡単に使えるようにするための仕組みです。特に `useState` フックは：
+
+1. 状態変数（データを保持する変数）
+2. 状態更新関数（データを更新する関数）
+
+の2つを提供します。例えば：
+```javascript
+const [count, setCount] = useState(0);
+```
+この場合：
+- `count` が状態変数（現在の値）
+- `setCount` が状態更新関数（値を更新する関数）
+- `0` が初期値
+
+フックは必ず `use` で始まる名前を持ち、コンポーネントのトップレベルでのみ使用できます。
+
+### 用語の説明
+
+- **フォーム**: ユーザーからの入力を受け付けるためのUI要素です。
+- **useState**: Reactのフックの一つで、コンポーネント内で状態を管理するために使用します。
+- **イベント**: ユーザーのアクション（クリックや入力など）や、ブラウザで発生する様々な出来事のことです。
+- **ハンドリング**: イベントが発生した時に実行する処理を定義することです。
+- **制御されたコンポーネント**: Reactでフォームの値を制御する方法の一つです。
+
+### app/page.js を更新
+
+タスク追加機能を実装します：
+
+```javascript
+'use client';
+import { useState } from 'react';
+
+export default function Home() {
+  // 1. 状態の定義
+  const [tasks, setTasks] = useState([
+    { id: 1, title: '買い物に行く', completed: false },
+    { id: 2, title: '宿題をする', completed: true },
+    { id: 3, title: '友達に連絡する', completed: false },
+  ]);
+  const [newTaskTitle, setNewTaskTitle] = useState('');
+
+  // 2. タスク追加の処理
+  const handleAddTask = (e) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+
+    const newTask = {
+      id: tasks.length + 1,
+      title: newTaskTitle,
+      completed: false,
+    };
+
+    setTasks([...tasks, newTask]);
+    setNewTaskTitle('');
+  };
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+      <h1>タスク管理アプリ</h1>
+
+      {/* 3. タスク追加フォーム */}
+      <form onSubmit={handleAddTask} style={{ marginBottom: '20px' }}>
+        <input
+          type="text"
+          value={newTaskTitle}
+          onChange={(e) => setNewTaskTitle(e.target.value)}
+          placeholder="新しいタスクを入力"
+          style={{
+            padding: '8px',
+            width: '70%',
+            marginRight: '10px',
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          追加
+        </button>
+      </form>
+
+      {/* 4. タスク一覧の表示 */}
+      <div>
+        <h2>タスク一覧</h2>
+        {tasks.map((task) => (
+          <div
+            key={task.id}
+            style={{
+              border: '1px solid #ccc',
+              padding: '10px',
+              margin: '10px 0',
+              backgroundColor: task.completed ? '#f0f8f0' : '#fff',
+            }}
+          >
+            <span
+              style={{
+                textDecoration: task.completed ? 'line-through' : 'none',
+              }}
+            >
+              {task.title}
+            </span>
+            <span
+              style={{ marginLeft: '10px', fontSize: '12px', color: '#666' }}
+            >
+              {task.completed ? '完了' : '未完了'}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### コードの解説
+
+1. 状態の定義
+   ```javascript
+   const [tasks, setTasks] = useState([...]);
+   const [newTaskTitle, setNewTaskTitle] = useState('');
+   ```
+   - `tasks`: タスク一覧を管理する状態
+   - `newTaskTitle`: 新規タスクのタイトルを管理する状態
+
+2. イベントハンドリング
+   ```javascript
+   // フォーム送信イベントのハンドリング
+   const handleAddTask = (e) => {
+     e.preventDefault();
+     if (!newTaskTitle.trim()) return;
+
+     const newTask = {
+       id: tasks.length + 1,
+       title: newTaskTitle,
+       completed: false,
+     };
+
+     setTasks([...tasks, newTask]);
+     setNewTaskTitle('');
+   };
+
+   // 入力変更イベントのハンドリング
+   const handleInputChange = (e) => {
+     setNewTaskTitle(e.target.value);
+   };
+   ```
+   - `onSubmit` イベント: フォームが送信された時に発生
+   - `onChange` イベント: 入力フィールドの値が変更された時に発生
+   - 各イベントに対応するハンドラー関数を定義
+
+3. タスク追加フォーム
+   ```javascript
+   <form onSubmit={handleAddTask}>
+     <input
+       type="text"
+       value={newTaskTitle}
+       onChange={handleInputChange}
+       placeholder="新しいタスクを入力"
+     />
+     <button type="submit">追加</button>
+   </form>
+   ```
+   - イベントハンドラーを各要素に紐付け
+   - フォーム送信時は `handleAddTask` を実行
+   - 入力変更時は `handleInputChange` を実行
+
+### よくある問題と解決方法
+
+**タスクが追加されない場合**
+- `useState` が正しくインポートされているか確認
+- フォームの送信イベントが正しく処理されているか確認
+- コンソールにエラーが表示されていないか確認
+
+**入力フィールドが更新されない場合**
+- `onChange` イベントハンドラが正しく設定されているか確認
+- 状態の更新関数が正しく呼び出されているか確認
+
+### 💡 ヒント
+
+- `useState` は必ずコンポーネントのトップレベルで呼び出しましょう
+- フォームの値は必ず状態で管理しましょう
+- 配列の更新時は、元の配列を変更せずに新しい配列を作成しましょう
+- イベントハンドラーは、処理の内容が分かりやすい名前をつけましょう
+
+### 🎯 達成目標
+
+import ChecklistItem from '../../../components/ChecklistItem.jsx';
+
+<div>
+  <ChecklistItem client:load id="step4-point1">
+    新しいタスクを入力できる
+  </ChecklistItem>
+  <ChecklistItem client:load id="step4-point2">
+    追加ボタンをクリックするとタスクが追加される
+  </ChecklistItem>
+  <ChecklistItem client:load id="step4-point3">
+    タスク追加後に入力フィールドがクリアされる
+  </ChecklistItem>
+  <ChecklistItem client:load id="step4-point4">
+    空のタスクは追加されない
+  </ChecklistItem>
+</div>
+
+### 🎯 理解度チェッククイズ
+
+以下の質問に答えて、学習内容を確認しましょう！
+
+1. **Reactで状態を管理するために使用するフックは？**
+
+   - A: `useEffect`
+   - B: `useState`
+   - C: `useContext`
+   - D: `useReducer`
+
+   <details>
+   <summary>答えを見る</summary>
+
+   **答え: B: `useState`**
+   - `useState` はコンポーネント内で状態を管理するための基本的なフックです
+   - 状態の値と、それを更新する関数のペアを返します
+   </details>
+
+2. **フォームの送信を防止するために使用するメソッドは？**
+
+   - A: `stopPropagation()`
+   - B: `preventDefault()`
+   - C: `stopImmediatePropagation()`
+   - D: `cancelBubble()`
+
+   <details>
+   <summary>答えを見る</summary>
+
+   **答え: B: `preventDefault()`**
+   - `preventDefault()` はイベントのデフォルトの動作を防止します
+   - フォームの送信時には、ページのリロードを防ぐために使用します
+   </details>
+
+3. **入力フィールドの値が変更された時に発生するイベントは？**
+
+   - A: `onClick`
+   - B: `onChange`
+   - C: `onSubmit`
+   - D: `onInput`
+
+   <details>
+   <summary>答えを見る</summary>
+
+   **答え: B: `onChange`**
+   - `onChange` イベントは、入力フィールドの値が変更されるたびに発生します
+   - フォームの制御には、このイベントを使用して状態を更新します
+   </details>
+
+--- 
