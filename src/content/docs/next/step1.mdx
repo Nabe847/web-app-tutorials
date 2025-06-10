@@ -151,15 +151,18 @@ task-manager/
 ### よくある問題と解決方法
 
 **コマンドを打ち間違えた場合**
+
 - 間違えたコマンドを入力した場合は、`Ctrl + C`（Mac の場合は `Cmd + C`）でキャンセルできます
 - もう一度最初から入力し直してください
 
 **ポートが使用中の場合**
+
 - 別のアプリケーションが 3000 番ポートを使用している場合、自動的に 3001 番などに変更されます
 - ターミナルに表示される URL を確認してください
 - 例：`http://localhost:3001` のように表示された場合は、その URL を開いてください
 
 **コマンドが見つからない場合**
+
 - エラーメッセージ例：`'npx' は内部コマンドまたは外部コマンドとして認識されていません`
 - 解決方法：
   1. Node.js が正しくインストールされているか確認
@@ -167,12 +170,14 @@ task-manager/
   3. Node.js を再インストールする
 
 **権限エラーが発生する場合**
+
 - エラーメッセージ例：`Permission denied` や `アクセスが拒否されました`
 - 解決方法：
   - Mac: Node.js を再インストールする（`sudo` は使わない）
   - Windows: 管理者として実行する必要がある場合があります
 
 **フォルダ名やパスに日本語が含まれている場合**
+
 - エラーが発生する可能性があります
 - フォルダ名は英語（アルファベット）のみを使用することをお勧めします
 - 例：`タスク管理` → `task-manager`
@@ -180,11 +185,13 @@ task-manager/
 ### 💡 ヒント
 
 **開発サーバーの停止方法:**
+
 - **Windows**: `Ctrl + C` を押す
 - **Mac**: `Cmd + C` または `Ctrl + C` を押す
 - 押した後、「終了しますか？」と聞かれたら `Y` を押して Enter キーを押してください
 
 **その他のポイント:**
+
 - コマンドを間違えても大丈夫！何度でもやり直せます
 - わからない用語があっても、今後のチュートリアルで詳しく説明します
 - ファイルを保存すると、ブラウザに表示しているページが自動的に更新されます（ホットリロード機能）
@@ -214,73 +221,83 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 以下の質問に答えて、学習内容を確認しましょう！
 
 1. **Next.js プロジェクトを作成するコマンドは？**
+
    - A: `npm create-next-app`
    - B: `npx create-next-app`
    - C: `next create-app`
    - D: `create-next-app`
 
-   <details>
-   <summary>答えを見る</summary>
-   
+      <details>
+<summary>答えを見る</summary>
+
    **答え: B: `npx create-next-app`**
+
    - `npx` は Node.js のパッケージを実行するためのコマンドです
    - `create-next-app` は Next.js プロジェクトを作成するためのツールです
-   </details>
+     </details>
 
 2. **開発サーバーを起動するコマンドは？**
+
    - A: `npm start`
    - B: `npm run dev`
    - C: `next dev`
    - D: `npm dev`
 
-   <details>
-   <summary>答えを見る</summary>
-   
+      <details>
+<summary>答えを見る</summary>
+
    **答え: B: `npm run dev`**
+
    - `npm run` は package.json に定義されたスクリプトを実行するコマンドです
    - `dev` は開発用のサーバーを起動するスクリプト名です
-   </details>
+     </details>
 
-3. **開発サーバーが起動したら、ブラウザで開くURLは？**
+3. **開発サーバーが起動したら、ブラウザで開く URL は？**
+
    - A: `http://localhost:3000`
    - B: `http://localhost:8080`
    - C: `http://localhost:4321`
    - D: `http://localhost:5000`
 
-   <details>
-   <summary>答えを見る</summary>
-   
+      <details>
+<summary>答えを見る</summary>
+
    **答え: A: `http://localhost:3000`**
+
    - `localhost` は自分のパソコンを指します
    - `3000` は Next.js のデフォルトのポート番号です
-   </details>
+     </details>
 
 4. **プロジェクトのメインページのファイル名は？**
+
    - A: `index.js`
    - B: `main.js`
    - C: `page.js`
    - D: `app.js`
 
-   <details>
-   <summary>答えを見る</summary>
-   
+      <details>
+<summary>答えを見る</summary>
+
    **答え: C: `page.js`**
+
    - Next.js の App Router では、`page.js` が各ページのメインコンテンツを定義します
    - `app` フォルダ内の `page.js` がトップページになります
-   </details>
+     </details>
 
 5. **開発サーバーを停止するキーは？**
+
    - A: `Ctrl + X`
    - B: `Ctrl + C`
    - C: `Ctrl + Z`
    - D: `Ctrl + D`
 
-   <details>
-   <summary>答えを見る</summary>
-   
+      <details>
+<summary>答えを見る</summary>
+
    **答え: B: `Ctrl + C`**
+
    - Mac の場合は `Cmd + C` も使えます
    - このコマンドで実行中のプログラムを停止できます
-   </details>
+     </details>
 
 ---
