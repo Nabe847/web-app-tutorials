@@ -11,7 +11,7 @@ tags: ['Next.js', 'tutorial']
 
 ## このチュートリアルについて
 
-このチュートリアルでは、Next.js を使ってタスク管理アプリを作成しながら、Webアプリケーション開発の基本を学んでいきます。
+このチュートリアルでは、Next.js を使ってタスク管理アプリを作成しながら、Web アプリケーション開発の基本を学んでいきます。
 
 1. **環境構築**
 2. **基本機能の実装**
@@ -125,24 +125,91 @@ npm run dev
 
 ### プロジェクト構造の理解
 
-作成されたプロジェクトの構造:
+作成されたプロジェクトの構造を詳しく見ていきましょう：
 
 ```
 task-manager/
-├── app/
-│   ├── page.js          # トップページ（/ にアクセスした時）
-│   ├── layout.js        # 全ページ共通のレイアウト
-│   └── globals.css      # 全体のスタイル
-├── public/              # 画像などの静的ファイル
-├── package.json         # プロジェクト設定
-└── next.config.js       # Next.js の設定
+├── .next/             # Next.js が自動生成するビルドファイル（編集不要）
+├── node_modules/      # インストールしたパッケージが保存されるフォルダ（編集不要）
+├── README.md          # プロジェクトの説明書
+├── jsconfig.json      # JavaScript の設定ファイル
+├── next.config.mjs    # Next.js の設定ファイル
+├── package-lock.json  # パッケージのバージョン管理ファイル（編集不要）
+├── package.json       # プロジェクトの設定や使用するパッケージの情報
+├── public/            # 画像などの静的ファイルを置くフォルダ
+└── src/               # ソースコードを格納するフォルダ
+    └── app/           # アプリケーションのメインフォルダ
+        ├── favicon.ico    # ブラウザのタブに表示される小さなアイコン
+        ├── globals.css    # 全ページ共通のスタイルを定義するCSSファイル
+        ├── layout.js      # 全ページ共通のレイアウト (ヘッダーやフッターなど)
+        ├── page.js        # トップページ(`/`)に表示する内容を書くファイル
+        └── page.module.css # トップページ専用の CSS ファイル
 ```
 
-**重要なポイント:**
+**各ファイルとフォルダの役割を詳しく説明します：**
 
-- `app/` フォルダ内のファイル名が URL になります
-- `page.js` は各ページのメインコンテンツです
-- `layout.js` は全ページで共通するレイアウト（ヘッダーやフッターなど）を定義します
+1. **.next フォルダ**
+
+   - Next.js が自動的に生成するフォルダです
+   - ビルド（プログラムの変換）結果が保存されます
+   - このフォルダは編集する必要はありません
+
+2. **node_modules フォルダ**
+
+   - インストールしたパッケージ（追加の機能）が保存されるフォルダです
+   - 非常に多くのファイルが含まれるため、通常は編集しません
+
+3. **README.md**
+
+   - プロジェクトの説明書です
+   - プロジェクトの概要や使い方などを記述します
+   - Markdown 形式で書かれています
+
+4. **jsconfig.json**
+
+   - JavaScript の設定ファイルです
+   - エディタの補完機能などを改善するために使います
+   - 最初はデフォルトの設定のままで問題ありません
+
+5. **next.config.mjs**
+
+   - Next.js の設定を変更するためのファイルです
+   - 画像の最適化や、その他の機能を設定できます
+   - 最初はデフォルトの設定のままで問題ありません
+
+6. **package-lock.json**
+
+   - パッケージのバージョンを正確に管理するファイルです
+   - 自動的に更新されるので、手動で編集する必要はありません
+
+7. **package.json**
+
+   - プロジェクトの設定情報が書かれているファイルです
+   - 使用するパッケージの一覧や、実行できるコマンドが定義されています
+   - プロジェクトの名前やバージョンなども設定できます
+
+8. **public フォルダ**
+
+   - 画像やアイコンなど、静的なファイルを置く場所です
+   - このフォルダ内のファイルは、そのまま URL でアクセスできます
+   - サンプルとして、いくつかの SVG 画像が含まれています
+
+9. **src フォルダ**
+
+   - アプリケーションのソースコード（プログラム）を格納する場所です
+   - コードを整理して管理しやすくするために使います
+
+10. **app フォルダ**
+    - Next.js のアプリケーションの中心となるフォルダです
+    - このフォルダ内のファイル名が、ブラウザでアクセスする URL になります
+    - 例：`page.js` → `http://localhost:3000/` で表示されます
+
+> 💡 **ヒント**:
+>
+> - 最初は `src/app/page.js` と `src/app/globals.css` を編集するだけで、簡単な変更ができます
+> - `.next` と `node_modules` フォルダは編集しないでください
+> - `public` フォルダには、画像などの静的なファイルを置きます
+> - 他のファイルは、必要に応じて徐々に理解していきましょう
 
 ### よくある問題と解決方法
 
@@ -193,28 +260,22 @@ task-manager/
 - ファイルを保存すると、ブラウザに表示しているページが自動的に更新されます（ホットリロード機能）
 - 分からないことがあったら、焦らずに一つずつ確認していきましょう
 
-### 🔍 動作確認
+### 🔍 確認
 
-実装した機能が正しく動作するか確認してみましょう：
+正しく動作するか確認してみましょう：
 
 import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 <div>
-  <ChecklistItem client:load id="point1">
-    Node.js がインストールされている
-  </ChecklistItem>
-  <ChecklistItem client:load id="point2">
-    プロジェクトが正常に作成された
-  </ChecklistItem>
   <ChecklistItem client:load id="point3">
-    開発サーバーが起動している
+    `npm run dev` で開発サーバーを起動できる
   </ChecklistItem>
   <ChecklistItem client:load id="point4">
-    ブラウザで Next.js の初期画面が表示される
+    初期画面を表示できる
   </ChecklistItem>
 </div>
 
-### 🎯 理解度チェッククイズ
+### 🎯 理解度チェック
 
 以下の質問に答えて、学習内容を確認しましょう！
 
@@ -223,79 +284,3 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
    - A: `npm create-next-app`
    - B: `npx create-next-app`
    - C: `next create-app`
-   - D: `create-next-app`
-
-   <details>
-   <summary>答えを見る</summary>
-
-   **答え: B: `npx create-next-app`**
-
-   - `npx` は Node.js のパッケージを実行するためのコマンドです
-   - `create-next-app` は Next.js プロジェクトを作成するためのツールです
-   </details>
-
-2. **開発サーバーを起動するコマンドは？**
-
-   - A: `npm start`
-   - B: `npm run dev`
-   - C: `next dev`
-   - D: `npm dev`
-
-   <details>
-   <summary>答えを見る</summary>
-
-   **答え: B: `npm run dev`**
-
-   - `npm run` は package.json に定義されたスクリプトを実行するコマンドです
-   - `dev` は開発用のサーバーを起動するスクリプト名です
-   </details>
-
-3. **開発サーバーが起動したら、ブラウザで開く URL は？**
-
-   - A: `http://localhost:3000`
-   - B: `http://localhost:8080`
-   - C: `http://localhost:4321`
-   - D: `http://localhost:5000`
-
-   <details>
-   <summary>答えを見る</summary>
-
-   **答え: A: `http://localhost:3000`**
-
-   - `localhost` は自分のパソコンを指します
-   - `3000` は Next.js のデフォルトのポート番号です
-   </details>
-
-4. **プロジェクトのメインページのファイル名は？**
-
-   - A: `index.js`
-   - B: `main.js`
-   - C: `page.js`
-   - D: `app.js`
-
-   <details>
-   <summary>答えを見る</summary>
-
-   **答え: C: `page.js`**
-
-   - Next.js の App Router では、`page.js` が各ページのメインコンテンツを定義します
-   - `app` フォルダ内の `page.js` がトップページになります
-   </details>
-
-5. **開発サーバーを停止するキーは？**
-
-   - A: `Ctrl + X`
-   - B: `Ctrl + C`
-   - C: `Ctrl + Z`
-   - D: `Ctrl + D`
-
-   <details>
-   <summary>答えを見る</summary>
-
-   **答え: B: `Ctrl + C`**
-
-   - Mac の場合は `Cmd + C` も使えます
-   - このコマンドで実行中のプログラムを停止できます
-   </details>
-
----
