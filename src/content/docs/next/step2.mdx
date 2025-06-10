@@ -25,12 +25,17 @@ tags: ['Next.js', 'tutorial']
 
 ### app/page.js を編集
 
-前回のステップで作成したプロジェクトの `app/page.js` を開いて、以下の内容に書き換えてください：
+シンプルなトップページを作成します：
 
 ```javascript
+// 1. コンポーネントの定義
 export default function Home() {
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+    // 2. 画面の見た目を定義（HTMLのような記法で記述）
+    <div 
+      // 3. インラインスタイルの適用
+      style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}
+    >
       <h1>タスク管理アプリ</h1>
       <p>ここにタスクを表示します</p>
     </div>
@@ -40,18 +45,38 @@ export default function Home() {
 
 ### コードの解説
 
-1. `export default function Home()`
-   - この関数はページの内容を定義します
+1. コンポーネントの定義
+   ```javascript
+   export default function Home() {
+     return (
+       <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+         <h1>タスク管理アプリ</h1>
+         <p>ここにタスクを表示します</p>
+       </div>
+     );
+   }
+   ```
    - `export default` は、この関数を他のファイルから使えるようにするための記述です
+   - `Home` はコンポーネント名で、必ず大文字で始める必要があります
 
-2. `return (...)` の中身
-
+2. 画面の見た目を定義
+   ```javascript
+   <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+     <h1>タスク管理アプリ</h1>
+     <p>ここにタスクを表示します</p>
+   </div>
+   ```
    - JSX を使って UI を記述しています
    - `<div>` や `<h1>` などの HTML タグを使って、ページの構造を作ります
-   - タグの中に `style={{ }}` でスタイルを設定できます
 
-3. `style={{ ... }}`
-   - インラインスタイルを適用しています
+3. インラインスタイルの適用
+   ```javascript
+   style={{
+     padding: '20px',
+     maxWidth: '600px',
+     margin: '0 auto'
+   }}
+   ```
    - `padding: '20px'`: 内側の余白を 20px に設定
    - `maxWidth: '600px'`: 最大幅を 600px に制限
    - `margin: '0 auto'`: 左右の余白を自動で調整して中央寄せ
@@ -150,3 +175,5 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
    </details>
 
 ---
+
+✅ **ステップ 2 完了！** 次は[ステップ 3: タスクの表示](#step3)に進みましょう。

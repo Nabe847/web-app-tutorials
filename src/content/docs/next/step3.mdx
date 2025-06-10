@@ -1,0 +1,223 @@
+---
+title: '3: タスクの表示(Read)'
+pubDate: 2025-06-09
+description: 'Next.js の初心者向けチュートリアルです'
+author: 'Nabe847'
+image:
+  url: 'https://docs.astro.build/assets/full-logo-light.png'
+  alt: 'Astroのロゴ。'
+tags: ['Next.js', 'tutorial']
+---
+
+## このステップで学ぶこと
+
+前回の基本ページ作成に続いて、今回はタスクの表示機能を実装していきます。配列データの扱い方や、条件に応じた表示の切り替えを学びましょう。
+
+- 配列データの表示方法
+- `map()`を使った繰り返し処理
+- 条件分岐による表示切り替え
+- インラインスタイルの応用
+
+### 用語の説明
+
+- **配列**: 複数のデータを順序付けて格納するデータ構造です。このステップでは、タスクの情報を配列として管理します。
+- **map()**: 配列の各要素に対して処理を行い、新しい配列を作成するメソッドです。
+- **三項演算子**: `条件 ? 真の場合の値 : 偽の場合の値` という形式で、条件に応じて異なる値を返す演算子です。
+- **key**: React でリストを表示する際に必要な、各要素を一意に識別するための属性です。
+
+### app/page.js を更新
+
+タスクデータの定義と表示を行うコンポーネントを作成します：
+
+```javascript
+export default function Home() {
+  // 1. タスクデータの定義
+  const tasks = [
+    { id: 1, title: '買い物に行く', completed: false },
+    { id: 2, title: '宿題をする', completed: true },
+    { id: 3, title: '友達に連絡する', completed: false },
+  ];
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+      <h1>タスク管理アプリ</h1>
+
+      <div>
+        <h2>タスク一覧</h2>
+        {/* 2. map() によるタスクの表示 */}
+        {tasks.map((task) => (
+          <div
+            key={task.id}
+            style={{
+              border: '1px solid #ccc',
+              padding: '10px',
+              margin: '10px 0',
+              backgroundColor: task.completed ? '#f0f8f0' : '#fff',
+            }}
+          >
+            {/* 3. 条件付きスタイリング */}
+            <span
+              style={{
+                textDecoration: task.completed ? 'line-through' : 'none',
+              }}
+            >
+              {task.title}
+            </span>
+            <span
+              style={{ marginLeft: '10px', fontSize: '12px', color: '#666' }}
+            >
+              {task.completed ? '完了' : '未完了'}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### コードの解説
+
+1. タスクデータの定義
+   ```javascript
+   const tasks = [
+     { id: 1, title: '買い物に行く', completed: false },
+     { id: 2, title: '宿題をする', completed: true },
+     { id: 3, title: '友達に連絡する', completed: false },
+   ];
+   ```
+   - `tasks` 配列に、各タスクの情報（id、title、completed）を格納
+   - 各タスクはオブジェクトとして管理
+
+2. `map()` によるタスクの表示
+   ```javascript
+   {tasks.map((task) => (
+     <div
+       key={task.id}
+       style={{
+         border: '1px solid #ccc',
+         padding: '10px',
+         margin: '10px 0',
+         backgroundColor: task.completed ? '#f0f8f0' : '#fff',
+       }}
+     >
+       <span
+         style={{
+           textDecoration: task.completed ? 'line-through' : 'none',
+         }}
+       >
+         {task.title}
+       </span>
+       <span
+         style={{ marginLeft: '10px', fontSize: '12px', color: '#666' }}
+       >
+         {task.completed ? '完了' : '未完了'}
+       </span>
+     </div>
+   ))}
+   ```
+   - `tasks.map()` で各タスクを処理
+   - `key={task.id}` で各要素に一意の識別子を付与
+   - 各タスクを `div` 要素として表示
+
+3. 条件付きスタイリング
+   ```javascript
+   style={{
+     backgroundColor: task.completed ? '#f0f8f0' : '#fff',
+   }}
+   ```
+   ```javascript
+   style={{
+     textDecoration: task.completed ? 'line-through' : 'none',
+   }}
+   ```
+   - 三項演算子を使って、完了状態に応じてスタイルを変更
+   - 完了したタスクは取り消し線と背景色を変更
+
+### よくある問題と解決方法
+
+**タスクが表示されない場合**
+- `tasks` 配列が正しく定義されているか確認
+- `map()` の構文が正しいか確認
+- コンソールにエラーが表示されていないか確認
+
+**スタイルが適用されない場合**
+- 三項演算子の条件式が正しいか確認
+- スタイルのプロパティ名が正しいか確認
+- 値の型（文字列、数値）が適切か確認
+
+### 💡 ヒント
+
+- `map()` を使う際は、必ず `key` プロパティを指定しましょう
+- スタイルは条件に応じて動的に変更できます
+- コメント（`{/* */}`）を使って、コードの意図を説明すると良いでしょう
+
+### 確認事項
+
+import ChecklistItem from '../../../components/ChecklistItem.jsx';
+
+<div>
+  <ChecklistItem client:load id="step3-point1">
+    3つのタスクが表示される
+  </ChecklistItem>
+  <ChecklistItem client:load id="step3-point2">
+    完了したタスクに取り消し線が表示される
+  </ChecklistItem>
+  <ChecklistItem client:load id="step3-point3">
+    完了したタスクの背景色が緑っぽくなる
+  </ChecklistItem>
+  <ChecklistItem client:load id="step3-point4">
+    各タスクの状態（完了/未完了）が表示される
+  </ChecklistItem>
+</div>
+
+### 🎯 理解度チェッククイズ
+
+以下の質問に答えて、学習内容を確認しましょう！
+
+1. **配列の各要素を処理して新しい配列を作成するメソッドは？**
+
+   - A: `forEach()`
+   - B: `map()`
+   - C: `filter()`
+   - D: `reduce()`
+
+   <details>
+   <summary>答えを見る</summary>
+
+   **答え: B: `map()`**
+   - `map()` は配列の各要素に対して処理を行い、新しい配列を作成します
+   - このステップでは、タスクデータを HTML 要素の配列に変換するために使用しています
+   </details>
+
+2. **React でリストを表示する際に必要な属性は？**
+
+   - A: `id`
+   - B: `key`
+   - C: `name`
+   - D: `index`
+
+   <details>
+   <summary>答えを見る</summary>
+
+   **答え: B: `key`**
+   - `key` は各要素を一意に識別するために必要な属性です
+   - React が効率的に DOM を更新するために使用されます
+   </details>
+
+3. **条件に応じて異なるスタイルを適用する方法は？**
+
+   - A: `if` 文
+   - B: `switch` 文
+   - C: 三項演算子
+   - D: `for` 文
+
+   <details>
+   <summary>答えを見る</summary>
+
+   **答え: C: 三項演算子**
+   - 三項演算子（`条件 ? 真の場合の値 : 偽の場合の値`）を使って、条件に応じて異なるスタイルを適用できます
+   - このステップでは、タスクの完了状態に応じてスタイルを変更するために使用しています
+   </details>
+
+---
