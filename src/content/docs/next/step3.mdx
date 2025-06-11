@@ -11,7 +11,20 @@ tags: ['Next.js', 'tutorial']
 
 ## このステップで学ぶこと
 
-```javascript
+前のステップではシンプルなトップページを作成しました。今回は、CSSを使ってページのデザインを整えていきましょう。
+
+1. **CSSモジュールの使い方**
+2. **スタイリングの基本**
+3. **レスポンシブデザインの基礎**
+
+> 💡 **CSSモジュール**: CSSをコンポーネント単位で管理できるようにする仕組みです。  
+> CSSクラス名が衝突しなくなり、自由にスタイルをつけられるようになります。
+
+## スタイリングの実装
+
+まず、`src/app/page.module.css` ファイル開いて、以下の内容に置き換えます。  
+
+```css
 // src/app/page.module.css
 
 /* 
@@ -81,16 +94,19 @@ tags: ['Next.js', 'tutorial']
   border-right: 2px solid #2589d0;
   content: '';
 }
-
 ```
+
+次に、`src/app/page.js`を以下のように更新します：
 
 ```javascript
 // src/app/page.js
 
+// 1.CSSモジュールのインポート
 import style from './page.module.css';
 
 export default function Home() {
   return (
+    // 2.スタイルの適用
     <div className={style.container}>
       <h1 className={style.heading}>はじめてのTodoアプリ</h1>
       <p className={style.box}>やることリストを簡単に管理できます</p>
@@ -100,9 +116,92 @@ export default function Home() {
 }
 ```
 
+## コードの解説
+
+1. **CSSモジュールのインポート**
+
+   ```javascript
+   import style from './page.module.css';
+   ```
+
+   - CSSモジュールをインポートして、`style`オブジェクトとして使用します
+   - クラス名は`style.クラス名`の形式で参照します
+
+2. **スタイルの適用**
+
+   ```javascript
+   <div className={style.container}>
+   ```
+
+   - `className`プロパティを使ってスタイルを適用します
+   - 波括弧`{}`で囲むことで、JavaScriptの式として評価されます
+
 ## 🚀 動作確認
 
 1. ファイルを保存すると、ブラウザが自動的に更新されます（ホットリロード機能）
 2. `http://localhost:3000` にアクセスして、変更が反映されているか確認してください
 
 ![Next.jsの初期画面](../../../assets/step3-styled-top-page.png)
+
+## よくある問題と解決方法
+
+**スタイルが適用されない**
+
+- CSSモジュールのインポートが正しいか確認
+- クラス名の指定が正しいか確認
+- ファイル名が`.module.css`で終わっているか確認
+
+**レイアウトが崩れる**
+
+- ブラウザの開発者ツールでスタイルが正しく適用されているか確認
+- 要素のサイズや余白が適切か確認
+
+## 🔍 確認
+
+実装した機能が正しく動作しているか確認しましょう：
+
+import ChecklistItem from '../../../components/ChecklistItem.jsx';
+
+<div>
+  <ChecklistItem client:load id="step3-point1">
+    タイトルに装飾的な枠線が表示されている
+  </ChecklistItem>
+  <ChecklistItem client:load id="step3-point2">
+    ボタンに矢印アイコンが表示されている
+  </ChecklistItem>
+  <ChecklistItem client:load id="step3-point3">
+    要素が縦方向に整列している
+  </ChecklistItem>
+</div>
+
+## 🎯 理解度チェック
+
+以下の質問に答えて、学習内容を確認しましょう！
+
+1. **CSSモジュールを使用する利点は？**
+
+   - A: グローバルなスタイルを簡単に適用できる
+   - B: クラス名の衝突を防ぎ、コンポーネントごとにスタイルをカプセル化できる
+   - C: パフォーマンスが向上する
+   - D: アニメーションが簡単に実装できる
+
+<details>
+<summary>答えを見る</summary>
+
+   **答え: B: クラス名の衝突を防ぎ、コンポーネントごとにスタイルをカプセル化できる**
+
+   - CSSモジュールは、コンポーネント単位でスタイルを管理できるため、クラス名の衝突を防ぐことができます
+   - これにより、大規模なアプリケーションでもスタイルの管理が容易になります
+</details>
+
+## 📝 まとめ
+
+このステップでは以下について学びました。
+
+- **CSSモジュールの基本**
+
+  - モジュールのインポート方法
+  - クラス名の指定方法
+  - スタイルの適用方法
+
+---
