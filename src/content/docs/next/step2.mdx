@@ -11,18 +11,15 @@ tags: ['Next.js', 'tutorial']
 
 ## このステップで学ぶこと
 
-前回の環境構築に続いて、今回は実際にページを作成していきます。シンプルな内容から始めて、少しずつ機能を追加していきましょう。
+前のステップに続いて、今回は実際にページを作成していきます。シンプルな内容から始めて少しずつ機能を追加していきましょう。
 
 1. **トップページの編集**
 2. **基本的な JSX の書き方**
-3. **インラインスタイルの適用方法**
-4. **ブラウザの自動更新機能の確認**
+3. **ブラウザの自動更新機能の確認**
 
 ## 用語の説明
 
 > 💡 **JSX**: JavaScript の中で HTML のような記法を使って UI を記述する方法です。例えば `<div>` や `<h1>` などの HTML タグを JavaScript の中で直接使うことができます。
-
-> 💡 **インラインスタイル**: HTML 要素に直接スタイルを適用する方法です。このステップでは `style={{ }}` という書き方で、要素の見た目（余白や幅など）を設定します。
 
 ## シンプルなトップページを作る
 
@@ -34,12 +31,10 @@ src/app/page.js 開いてファイルの中に書かれているものをすべ�
 export default function Home() {
   return (
     // 2. 画面の見た目の定義（HTMLのような記法で記述）
-    <div
-      // 3. インラインスタイルの適用
-      style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}
-    >
-      <h1>タスク管理アプリ</h1>
-      <p>ここにタスクを表示します</p>
+    <div>
+      <h1>はじめてのTodoアプリ</h1>
+      <p>やることリストを簡単に管理できます</p>
+      <button>始める</button>
     </div>
   );
 }
@@ -52,71 +47,64 @@ export default function Home() {
    ```javascript
    export default function Home() {
      return (
-       <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-         <h1>タスク管理アプリ</h1>
-         <p>ここにタスクを表示します</p>
+       <div>
+         <h1>はじめてのTodoアプリ</h1>
+         <p>やることリストを簡単に管理できます</p>
+         <button>始める</button>
        </div>
      );
    }
    ```
 
    - `export default` は、この関数を他のファイルから使えるようにするための記述です
-   - `Home` はコンポーネント名で、必ず大文字で始める必要があります
+   - コンポーネントとは再利用可能な画面部品のことです。Next.js はコンポーネントを組み合わせてレゴブロックのように構築します。  
+   例えば、以下のように同じコンポーネントを複数回使用できます:
+
+     ```javascript
+     <div>
+       <Home />
+       <Home />
+       <Home />
+     </div>
+     ```
+
+     - より詳しく知りたい人は [React の公式ドキュメント](https://ja.react.dev/learn) を参照してください
+   - `Home` はコンポーネントの名前です。コンポーネントの名前は**必ず大文字で始める**必要があります
 
 2. **画面の見た目の定義**
 
    ```javascript
-   <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-     <h1>タスク管理アプリ</h1>
-     <p>ここにタスクを表示します</p>
+   <div>
+     <h1>はじめてのTodoアプリ</h1>
+     <p>やることリストを簡単に管理できます</p>
+     <button>始める</button>
    </div>
    ```
 
    - JSX を使って UI を記述しています
    - `<div>` や `<h1>` などの HTML タグを使って、ページの構造を作ります
-
-3. **インラインスタイルの適用**
-   ```javascript
-   style={{
-     padding: '20px',    // 内側の余白を 20px に設定
-     maxWidth: '600px',  // 最大幅を 600px に制限
-     margin: '0 auto'    // 左右の余白を自動で調整して中央寄せ
-   }}
-   ```
+   - `<button>` タグを使って、アプリページへのリンクボタンを追加しています
 
 ## 変更の確認方法
 
-1. ファイルを保存すると、ブラウザが自動的に更新されます
+1. ファイルを保存すると、ブラウザが自動的に更新されます（ホットリロード機能）
 2. `http://localhost:3000` にアクセスして、変更が反映されているか確認してください
 
 ![Next.jsの初期画面](../../../assets/step2-simple-top-page.png)
 
 ## よくある問題と解決方法
 
-**変更が反映されない場合**
+**変更が反映されない**
 
 - ファイルが正しく保存されているか確認
 - 開発サーバーが正常に動作しているか確認
 - ブラウザを手動で更新（F5 キー）してみる
 
-**エラーが表示される場合**
+**エラーが表示される**
 
 - コードの書き方が正しいか確認
 - 中括弧 `{}` や括弧 `()` の閉じ忘れがないか確認
 - セミコロン `;` の付け忘れがないか確認
-
-**スタイルが適用されない場合**
-
-- `style={{ }}` の書き方が正しいか確認
-- プロパティ名が正しいか確認（例：`padding`、`margin`）
-- 値の単位が正しいか確認（例：`'20px'`）
-
-## 💡 ヒント
-
-- スタイルは `style={{ }}` の中に JavaScript オブジェクトとして記述します
-- コンポーネント名は必ず大文字で始める必要があります
-- ファイルを保存すると、ブラウザが自動的に更新されます（ホットリロード機能）
-- スタイルの値を変更して、見た目の変化を確認してみましょう
 
 ## 🔍 確認
 
@@ -126,10 +114,13 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 <div>
   <ChecklistItem client:load id="step2-point3">
-    トップページに「タスク管理アプリ」というタイトルが表示されている
+    トップページに「はじめてのTodoアプリ」というタイトルが表示されている
   </ChecklistItem>
   <ChecklistItem client:load id="step2-point4">
-    トップページのタイトルの下に「ここにタスクを表示します」と表示されている
+    トップページに「やることリストを簡単に管理できます」という説明文が表示されている
+  </ChecklistItem>
+  <ChecklistItem client:load id="step2-point5">
+    「始める」ボタンが表示され、クリックすると `/app` に遷移する
   </ChecklistItem>
 </div>
 
@@ -137,39 +128,7 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 以下の質問に答えて、学習内容を確認しましょう！
 
-1. **JSX でスタイルを適用する正しい書き方は？**
-
-   - A: `style="padding: 20px"`
-   - B: `style={{ padding: '20px' }}`
-   - C: `style={padding: 20px}`
-   - D: `style={padding: '20px'}`
-
-<details>
-<summary>答えを見る</summary>
-
-   **答え: B: `style={{ padding: '20px' }}`**
-
-   - JSX では、スタイルを JavaScript オブジェクトとして記述します
-   - 外側の `{}` は JSX の式を表し、内側の `{}` は JavaScript オブジェクトを表します
-</details>
-
-2. **ページを中央寄せにするスタイルは？**
-
-   - A: `margin: center`
-   - B: `margin: 0 auto`
-   - C: `align: center`
-   - D: `text-align: center`
-
-<details>
-<summary>答えを見る</summary>
-
-   **答え: B: `margin: 0 auto`**
-
-   - `margin: 0 auto` は、上下の余白を 0 に、左右の余白を自動で調整して中央寄せにします
-   - これは要素を水平方向に中央に配置する一般的な方法です
-</details>
-
-3. **JSX で HTML タグを書く際の注意点は？**
+1. **JSX で HTML タグを書く際の注意点は？**
 
    - A: タグは必ず小文字から始まる（例：`<div>`）
    - B: タグは必ず大文字から始まる（例：`<Div>`）
@@ -193,13 +152,6 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
   - HTML のような記法で UI を記述
   - コンポーネントの定義方法
-  - インラインスタイルの適用方法
-
-- **スタイリング**
-
-  - `style={{ }}` によるスタイル適用
-  - 基本的な CSS プロパティの使い方
-  - 中央寄せなどのレイアウト調整
 
 - **開発の基本**
 
@@ -210,6 +162,5 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 - **トラブルシューティング**
   - 変更が反映されない場合の対処法
   - エラーメッセージの確認方法
-  - スタイル適用の問題解決
 
 ---
