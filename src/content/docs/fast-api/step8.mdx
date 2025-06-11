@@ -1,0 +1,163 @@
+---
+title: '8: エラーハンドリング'
+pubDate: 2024-03-20
+description: 'APIのエラーハンドリングについて学びます'
+author: 'Nabe847'
+image:
+  url: 'https://docs.astro.build/assets/full-logo-light.png'
+  alt: 'FastAPIのロゴ。'
+tags: ['FastAPI', 'tutorial']
+---
+
+## エラーハンドリングの改善
+
+より良いエラーメッセージを提供するために、カスタム例外クラスを作成します。`app/exceptions.py` を作成して以下のように編集します：
+
+```python
+from fastapi import HTTPException, status
+
+class TodoNotFoundError(HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="指定されたTodoが見つかりません"
+        )
+
+class InvalidTodoDataError(HTTPException):
+    def __init__(self, detail: str):
+        super().__init__(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=detail
+        )
+```
+
+`app/main.py` を更新して、新しい例外クラスを使用します：
+
+```python
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+from . import models, schemas, exceptions
+from .database import engine, get_db
+
+# データベースのテーブルを作成
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+# Todoの作成
+@app.post("/todos/", response_model=schemas.Todo)
+def create_todo(todo: schemas.TodoCreate, db: Session = Depends(get_db)):
+    if not todo.title.strip():
+        raise exceptions.InvalidTodoDataError("タイトルは空にできません")
+    db_todo = models.Todo(title=todo.title)
+    db.add(db_todo)
+    db.commit()
+    db.refresh(db_todo)
+    return db_todo
+
+# Todoの一覧取得
+@app.get("/todos/", response_model=list[schemas.Todo])
+def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    todos = db.query(models.Todo).offset(skip).limit(limit).all()
+    return todos
+
+# 特定のTodoの取得
+@app.get("/todos/{todo_id}", response_model=schemas.Todo)
+def read_todo(todo_id: int, db: Session = Depends(get_db)):
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+    if db_todo is None:
+        raise exceptions.TodoNotFoundError()
+    return db_todo
+
+# Todoの更新
+@app.put("/todos/{todo_id}", response_model=schemas.Todo)
+def update_todo(todo_id: int, todo: schemas.TodoCreate, db: Session = Depends(get_db)):
+    if not todo.title.strip():
+        raise exceptions.InvalidTodoDataError("タイトルは空にできません")
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+    if db_todo is None:
+        raise exceptions.TodoNotFoundError()
+    db_todo.title = todo.title
+    db.commit()
+    db.refresh(db_todo)
+    return db_todo
+
+# Todoの完了状態の更新
+@app.patch("/todos/{todo_id}/complete", response_model=schemas.Todo)
+def complete_todo(todo_id: int, db: Session = Depends(get_db)):
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+    if db_todo is None:
+        raise exceptions.TodoNotFoundError()
+    db_todo.completed = True
+    db.commit()
+    db.refresh(db_todo)
+    return db_todo
+
+# Todoの削除
+@app.delete("/todos/{todo_id}")
+def delete_todo(todo_id: int, db: Session = Depends(get_db)):
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+    if db_todo is None:
+        raise exceptions.TodoNotFoundError()
+    db.delete(db_todo)
+    db.commit()
+    return {"message": "Todoを削除しました"}
+```
+
+## エラーハンドリングの動作確認
+
+APIをテストして、エラーハンドリングが正しく動作するか確認しましょう：
+
+1. 存在しないTodoを取得しようとする：
+```bash
+curl http://localhost:8000/todos/999
+```
+期待されるレスポンス：
+```json
+{
+  "detail": "指定されたTodoが見つかりません"
+}
+```
+
+2. 空のタイトルでTodoを作成しようとする：
+```bash
+curl -X POST http://localhost:8000/todos/ -H "Content-Type: application/json" -d '{"title": ""}'
+```
+期待されるレスポンス：
+```json
+{
+  "detail": "タイトルは空にできません"
+}
+```
+
+## よくある問題と解決方法
+
+**エラーメッセージが表示されない場合**
+
+- エラーメッセージ例：`Internal Server Error`
+- 解決方法：
+  1. ログを確認
+  2. 例外処理が正しく実装されているか確認
+  3. デバッグモードを有効にする
+
+## まとめ
+
+これでFastAPIを使ったTodo APIの実装が完了しました。以下の機能を実装しました：
+
+1. 環境構築
+2. データベースの設定
+3. TodoのCRUD機能
+4. エラーハンドリング
+
+このAPIは以下のように拡張できます：
+
+- ユーザー認証の追加
+- カテゴリー機能の追加
+- 期限設定機能の追加
+- フロントエンドの実装
+
+## 次のステップ
+
+- [FastAPI公式ドキュメント](https://fastapi.tiangolo.com/)を読む
+- [SQLAlchemy公式ドキュメント](https://docs.sqlalchemy.org/)を読む
+- より複雑なAPIの実装に挑戦する 
