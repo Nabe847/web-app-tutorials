@@ -11,60 +11,70 @@ tags: ['Next.js', 'tutorial']
 
 ## このステップで学ぶこと
 
-前回の基本ページ作成に続いて、今回はタスクの表示機能を実装していきます。配列データの扱い方や、条件に応じた表示の切り替えを学びましょう。
+前回はページを追加する方法やページ同士をリンクする方法について学びました。  
+今回は配列に格納されているデータからページの内容を組み立てる方法を学びましょう。
 
 1. **配列データの表示方法**
 2. **`map()`を使った繰り返し処理**
 3. **条件分岐による表示切り替え**
-4. **インラインスタイルの応用**
+
+> 💡 **ヒント**:  
+> Webアプリケーションではユーザーや状況などによって表示する内容が変わるのが一般的です。  
+> このステップでは状況に応じて表示内容を変える方法について学びます。
 
 ## タスク表示機能の実装
 
-src/app/page.js を開いて、以下の変更を加えてください：
+まずは配列に格納されたデータをページに表示する方法について学びましょう。  
+`src/app/todos/page.js` を以下の内容に変えます。
 
 ```diff lang="js"
-export default function Home() {
-+  // 1. タスクデータの定義
+// src/app/todos/page.js
+
+import style from './page.module.css';
+
+export default function Todos() {
++  // タスクデータの定義
 +  const tasks = [
 +    { id: 1, title: '買い物に行く', completed: false },
-+    { id: 2, title: '宿題をする', completed: true },
-+    { id: 3, title: '友達に連絡する', completed: false },
++    { id: 2, title: 'メールを確認する', completed: false },
++    { id: 3, title: '資料を作成する', completed: false },
++    { id: 4, title: '友達に電話する', completed: false },
++    { id: 5, title: '部屋の掃除', completed: false },
 +  ];
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <h1>タスク管理アプリ</h1>
--      <p>ここにタスクを表示します</p>
-+      <div>
-+        <h2>タスク一覧</h2>
-+        {/* 2. map() によるタスクの表示 */}
+    <section className={style.container}>
+      <h1>Todoリスト</h1>
+      <div className={style.checkbox}>
+-        <label>
+-          <input type="checkbox" />
+-          買い物に行く
+-        </label>
+-        <label>
+-          <input type="checkbox" />
+-          メールを確認する
+-        </label>
+-        <label>
+-          <input type="checkbox" />
+-          資料を作成する
+-        </label>
+-        <label>
+-          <input type="checkbox" />
+-          友達に電話する
+-        </label>
+-        <label>
+-          <input type="checkbox" />
+-          部屋の掃除
+-        </label>
 +        {tasks.map((task) => (
-+          <div
-+            key={task.id}
-+            style={{
-+              border: '1px solid #ccc',
-+              padding: '10px',
-+              margin: '10px 0',
-+              backgroundColor: task.completed ? '#f0f8f0' : '#fff',
-+            }}
-+          >
-+            {/* 3. 条件付きスタイリング */}
-+            <span
-+              style={{
-+                textDecoration: task.completed ? 'line-through' : 'none',
-+              }}
-+            >
-+              {task.title}
-+            </span>
-+            <span
-+              style={{ marginLeft: '10px', fontSize: '12px', color: '#666' }}
-+            >
-+              {task.completed ? '完了' : '未完了'}
-+            </span>
-+          </div>
++          <label key={task.id}>
++            <input type="checkbox" checked={task.completed} />
++            {task.title}
++          </label>
 +        ))}
-+      </div>
-    </div>
+      </div>
+      <Link href="/">トップへ戻る</Link>
+    </section>
   );
 }
 ```
@@ -75,8 +85,10 @@ export default function Home() {
    ```javascript
    const tasks = [
      { id: 1, title: '買い物に行く', completed: false },
-     { id: 2, title: '宿題をする', completed: true },
-     { id: 3, title: '友達に連絡する', completed: false },
+     { id: 2, title: 'メールを確認する', completed: false },
+     { id: 3, title: '資料を作成する', completed: false },
+     { id: 4, title: '友達に電話する', completed: false },
+     { id: 5, title: '部屋の掃除', completed: false },
    ];
    ```
    - `tasks` 配列に、各タスクの情報を格納
@@ -84,49 +96,19 @@ export default function Home() {
    - `id` は一意の識別子として使用
    - `completed` はタスクの完了状態を表す真偽値
 
-   > 💡 **配列**: 複数のデータを順序付けて格納するデータ構造です。このステップでは、タスクの情報を配列として管理します。
-
 2. **map() によるタスクの表示**
    ```javascript
    {tasks.map((task) => (
-     <div
-       key={task.id}
-       style={{
-         border: '1px solid #ccc',
-         padding: '10px',
-         margin: '10px 0',
-         backgroundColor: task.completed ? '#f0f8f0' : '#fff',
-       }}
-     >
-       {/* ... */}
-     </div>
+     <label key={task.id}>
+       <input type="checkbox" checked={task.completed} />
+       {task.title}
+     </label>
    ))}
    ```
    - `tasks.map()` で各タスクを処理
    - `key={task.id}` で各要素に一意の識別子を付与
-   - 各タスクを `div` 要素として表示
-   - 完了状態に応じて背景色を変更
-
-   > 💡 **map()**: 配列の各要素に対して処理を行い、新しい配列を作成するメソッドです。例えば、タスクの配列から表示用のHTML要素の配列を作成する際に使用します。
-
-   > 💡 **key**: React でリストを表示する際に必要な、各要素を一意に識別するための属性です。Reactが効率的にDOMを更新するために使用されます。
-
-3. **条件付きスタイリング**
-   ```javascript
-   style={{
-     backgroundColor: task.completed ? '#f0f8f0' : '#fff',
-   }}
-   ```
-   ```javascript
-   style={{
-     textDecoration: task.completed ? 'line-through' : 'none',
-   }}
-   ```
-   - 三項演算子を使って、完了状態に応じてスタイルを変更
-   - 完了したタスクは取り消し線と背景色を変更
-   - 未完了のタスクは通常の表示
-
-   > 💡 **三項演算子**: `条件 ? 真の場合の値 : 偽の場合の値` という形式で、条件に応じて異なる値を返す演算子です。条件分岐を簡潔に書くことができます。
+   - 各タスクを `label` 要素として表示
+   - `checked` プロパティでチェックボックスの状態を制御
 
 ## よくある問題と解決方法
 
@@ -136,14 +118,12 @@ export default function Home() {
 - コンソールにエラーが表示されていないか確認
 
 **スタイルが適用されない場合**
-- 三項演算子の条件式が正しいか確認
-- スタイルのプロパティ名が正しいか確認
-- 値の型（文字列、数値）が適切か確認
+- CSSモジュールのインポートが正しいか確認
+- クラス名の指定が正しいか確認
 
 **key の警告が表示される場合**
 - 各タスクに一意の `id` が設定されているか確認
 - `key` プロパティが正しく設定されているか確認
-- `map()` の中で `key` を指定しているか確認
 
 ## 🔍 確認
 
@@ -152,17 +132,14 @@ export default function Home() {
 import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 <div>
-  <ChecklistItem client:load id="step3-point1">
-    3つのタスクが表示される
+  <ChecklistItem client:load id="step5-point1">
+    5つのタスクが表示される
   </ChecklistItem>
-  <ChecklistItem client:load id="step3-point2">
-    完了したタスクに取り消し線が表示される
+  <ChecklistItem client:load id="step5-point2">
+    各タスクにチェックボックスが表示される
   </ChecklistItem>
-  <ChecklistItem client:load id="step3-point3">
-    完了したタスクの背景色が緑っぽくなる
-  </ChecklistItem>
-  <ChecklistItem client:load id="step3-point4">
-    各タスクの状態（完了/未完了）が表示される
+  <ChecklistItem client:load id="step5-point3">
+    スタイルが正しく適用されている
   </ChecklistItem>
 </div>
 
@@ -202,35 +179,14 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
    - React が効率的に DOM を更新するために使用されます
 </details>
 
-3. **条件に応じて異なるスタイルを適用する方法は？**
-
-   - A: `if` 文
-   - B: `switch` 文
-   - C: 三項演算子
-   - D: `for` 文
-
-<details>
-<summary>答えを見る</summary>
-
-   **答え: C: 三項演算子**
-
-   - 三項演算子（`条件 ? 真の場合の値 : 偽の場合の値`）を使って、条件に応じて異なるスタイルを適用できます
-   - このステップでは、タスクの完了状態に応じてスタイルを変更するために使用しています
-</details>
-
 ## 📝 まとめ
 
 このステップでは以下について学びました。
 
-- **配列データの扱い方**
-  - タスクデータの配列定義
-  - `map()` による配列の処理
-  - `key` プロパティの重要性
-
-- **条件付きスタイリング**
-  - 三項演算子の使い方
-  - 完了状態に応じたスタイル変更
-  - インラインスタイルの応用
+- **動的なコンテンツの表示**
+  - 配列データの定義と管理
+  - `map()` を使った繰り返し処理
+  - 条件に応じた表示の切り替え
 
 - **React の基本概念**
   - リストの表示方法
@@ -239,7 +195,6 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 - **トラブルシューティング**
   - 配列処理の問題解決
-  - スタイル適用の問題解決
-  - エラーメッセージの確認方法
+  - `key` プロパティの設定確認
 
 ---
