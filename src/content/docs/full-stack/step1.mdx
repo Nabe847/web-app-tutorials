@@ -1,7 +1,7 @@
 ---
 title: '1: 開発環境の構築'
 pubDate: 2024-03-20
-description: 'フルスタックアプリケーションの開発環境を構築します'
+description: 'アプリケーション開発の準備をします'
 author: 'Nabe847'
 image:
   url: 'https://docs.astro.build/assets/full-logo-light.png'
@@ -11,7 +11,7 @@ tags: ['Next.js', 'FastAPI', 'tutorial']
 
 ## このステップについて
 
-このステップではフルスタックアプリケーションの開発環境を構築します。
+このステップでは、アプリケーションを開発するための環境を整えます。環境構築とは、プログラムを動かすために必要な道具を準備することです。
 
 ## 前提条件
 
@@ -31,12 +31,18 @@ tags: ['Next.js', 'FastAPI', 'tutorial']
 
 ### 1. プロジェクトの作成
 
+まず、フロントエンド（画面側）のプロジェクトを作成します：
+
 ```bash
 # フロントエンドプロジェクトの作成
 npx create-next-app@latest task-manager-frontend
 cd task-manager-frontend
 npm install axios
+```
 
+次に、バックエンド（サーバー側）のプロジェクトを準備します：
+
+```bash
 # バックエンドプロジェクトの準備
 cd ..
 cp -r fast-api-tutorial/task-manager-backend .
@@ -44,13 +50,16 @@ cp -r fast-api-tutorial/task-manager-backend .
 
 ### 2. プロジェクト構造の確認
 
-以下のような構造になっていることを確認します：
+作成したプロジェクトは以下のような構造になっています：
 
 ```
 task-manager/
-├── task-manager-frontend/  # Next.jsプロジェクト
-└── task-manager-backend/   # FastAPIプロジェクト
+├── task-manager-frontend/  # フロントエンド（Next.js）
+└── task-manager-backend/   # バックエンド（FastAPI）
 ```
+
+- **フロントエンド**: ユーザーが操作する画面を作る部分
+- **バックエンド**: データを保存したり処理したりする部分
 
 ## 動作確認
 
@@ -98,4 +107,4 @@ uvicorn app.main:app --reload
 
 ## 次のステップ
 
-これで開発環境の構築は完了です。次のステップでは、バックエンドのCORS設定を行います。 
+これで開発環境の構築は完了です。次のステップでは、フロントエンドとバックエンドを連携するための設定を行います。 
