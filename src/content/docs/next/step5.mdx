@@ -1,5 +1,5 @@
 ---
-title: '5: タスクの表示'
+title: '5: Todoの表示'
 pubDate: 2025-06-09
 description: 'Next.js の初心者向けチュートリアルです'
 author: 'Nabe847'
@@ -22,7 +22,7 @@ tags: ['Next.js', 'tutorial']
 > Webアプリケーションではユーザーや状況などによって表示する内容が変わるのが一般的です。  
 > このステップでは状況に応じて表示内容を変える方法について学びます。
 
-## タスク表示機能の実装
+## Todo表示機能の実装
 
 まずは配列に格納されたデータをページに表示する方法について学びましょう。  
 `src/app/todos/page.js` を以下の内容に変えます。
@@ -33,7 +33,7 @@ tags: ['Next.js', 'tutorial']
 import style from './page.module.css';
 
 export default function Todos() {
-+  // タスクデータの定義
++  // Todoデータの定義
 +  const tasks = [
 +    { id: 1, title: '買い物に行く', completed: false },
 +    { id: 2, title: 'メールを確認する', completed: false },
@@ -81,7 +81,7 @@ export default function Todos() {
 
 ## コードの解説
 
-1. **タスクデータの定義**
+1. **Todoデータの定義**
    ```javascript
    const tasks = [
      { id: 1, title: '買い物に行く', completed: false },
@@ -91,12 +91,12 @@ export default function Todos() {
      { id: 5, title: '部屋の掃除', completed: false },
    ];
    ```
-   - `tasks` 配列に、各タスクの情報を格納
-   - 各タスクは `id`、`title`、`completed` の3つのプロパティを持つオブジェクト
+   - `tasks` 配列に、各Todoの情報を格納
+   - 各Todoは `id`、`title`、`completed` の3つのプロパティを持つオブジェクト
    - `id` は一意の識別子として使用
-   - `completed` はタスクの完了状態を表す真偽値
+   - `completed` はTodoの完了状態を表す真偽値
 
-2. **map() によるタスクの表示**
+2. **map() によるTodoの表示**
    ```javascript
    {tasks.map((task) => (
      <label key={task.id}>
@@ -105,14 +105,14 @@ export default function Todos() {
      </label>
    ))}
    ```
-   - `tasks.map()` で各タスクを処理
+   - `tasks.map()` で各Todoを処理
    - `key={task.id}` で各要素に一意の識別子を付与
-   - 各タスクを `label` 要素として表示
+   - 各Todoを `label` 要素として表示
    - `checked` プロパティでチェックボックスの状態を制御
 
 ## よくある問題と解決方法
 
-**タスクが表示されない場合**
+**Todoが表示されない場合**
 - `tasks` 配列が正しく定義されているか確認
 - `map()` の構文が正しいか確認
 - コンソールにエラーが表示されていないか確認
@@ -122,7 +122,7 @@ export default function Todos() {
 - クラス名の指定が正しいか確認
 
 **key の警告が表示される場合**
-- 各タスクに一意の `id` が設定されているか確認
+- 各Todoに一意の `id` が設定されているか確認
 - `key` プロパティが正しく設定されているか確認
 
 ## 🔍 確認
@@ -133,10 +133,10 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 <div>
   <ChecklistItem client:load id="step5-point1">
-    5つのタスクが表示される
+    5つのTodoが表示される
   </ChecklistItem>
   <ChecklistItem client:load id="step5-point2">
-    各タスクにチェックボックスが表示される
+    各Todoにチェックボックスが表示される
   </ChecklistItem>
 </div>
 
@@ -157,7 +157,7 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
    **答え: B: `map()`**
 
    - `map()` は配列の各要素に対して処理を行い、新しい配列を作成します
-   - このステップでは、タスクデータを HTML 要素の配列に変換するために使用しています
+   - このステップでは、Todoデータを HTML 要素の配列に変換するために使用しています
 </details>
 
 2. **React でリストを表示する際に必要な属性は？**

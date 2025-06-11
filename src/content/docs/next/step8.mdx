@@ -1,5 +1,5 @@
 ---
-title: '8: 次のステップ'
+title: '8: Todoの削除'
 pubDate: 2025-06-09
 description: 'Next.js の初心者向けチュートリアルです'
 author: 'Nabe847'
@@ -9,157 +9,236 @@ image:
 tags: ['Next.js', 'tutorial']
 ---
 
-## このステップで学んだこと
+## このステップで学ぶこと
 
-これまでのチュートリアルで実装した機能を振り返り、次のステップについて学びます。
+前回はTodoの完了状態を更新する機能を実装しました。  
+今回はTodoを削除する機能を実装していきましょう。
 
-### 完成したアプリの機能
-
-1. **タスクの表示（Read）**
-   - タスク一覧の表示
-   - 完了/未完了の状態表示
-   - 統計情報の表示
-
-2. **タスクの追加（Create）**
-   - 新しいタスクの入力
-   - タスクの追加処理
-   - 入力値のバリデーション
-
-3. **タスクの完了状態更新（Update）**
-   - 完了状態の切り替え
-   - 視覚的なフィードバック
-   - 状態の永続化
-
-4. **タスクの削除（Delete）**
-   - タスクの削除機能
-   - 確認ダイアログ
-   - 安全な削除処理
-
-5. **統計情報の表示**
-   - 全タスク数
-   - 完了タスク数
-   - 未完了タスク数
-
-### 学んだ Next.js の基本概念
-
-1. **コンポーネント**
-   - UI の部品を関数として作成
-   - 再利用可能なコードの作成
-   - コンポーネントの分割
-
-2. **State（状態）**
-   - データの管理と更新
-   - useState フックの使用
-   - 状態の更新方法
-
+1. **配列の要素の削除**
+2. **確認ダイアログの表示**
 3. **イベントハンドリング**
-   - ユーザーの操作に応答
-   - イベントハンドラの設定
-   - フォームの処理
 
-4. **条件付きレンダリング**
-   - 条件に応じた表示切り替え
-   - 三項演算子の使用
-   - 条件分岐の実装
+> 💡 **ヒント**:  
+> Webアプリケーションでは、データの削除は慎重に行う必要があります。  
+> このステップでは、削除前に確認を取る方法を学びます。
 
-5. **配列の操作**
-   - map メソッド
-   - filter メソッド
-   - スプレッド演算子
+## Todo削除機能の実装
 
-### さらなる機能拡張
+`src/app/todos/page.js` を以下の内容に更新します。
 
-このチュートリアルをマスターしたら、以下の機能を追加してみましょう：
+```javascript
+'use client';
+import { useState } from 'react';
+import style from './page.module.css';
 
-1. **タスクの編集機能**
-   - 既存タスクのタイトル変更
-   - インライン編集
-   - 編集履歴の管理
+export default function Todos() {
+  // Todoデータの定義
+  const [tasks, setTasks] = useState([
+    { id: 1, title: '買い物に行く', completed: false },
+    { id: 2, title: 'メールを確認する', completed: false },
+    { id: 3, title: '資料を作成する', completed: false },
+    { id: 4, title: '友達に電話する', completed: false },
+    { id: 5, title: '部屋の掃除', completed: false },
+  ]);
 
-2. **カテゴリー分け**
-   - 仕事、プライベートなどの分類
-   - カテゴリー別の表示
-   - フィルタリング機能
+  // 入力値の状態管理
+  const [newTask, setNewTask] = useState('');
 
-3. **期限設定**
-   - 締切日の管理
-   - 期限切れの通知
-   - 優先順位の設定
+  // Todo追加処理
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (newTask.trim() === '') return;
 
-4. **サーバーサイドでのデータ永続化**
-   - データベースの使用
-   - API ルートの実装
-   - データの同期
+    const newId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+    setTasks([...tasks, { id: newId, title: newTask, completed: false }]);
+    setNewTask('');
+  };
 
-5. **複数ページの作成**
-   - タスク詳細ページ
-   - 設定ページ
-   - ルーティングの実装
+  // Todoの完了状態を更新する処理
+  const handleToggleComplete = (taskId) => {
+    setTasks(tasks.map(task =>
+      task.id === taskId
+        ? { ...task, completed: !task.completed }
+        : task
+    ));
+  };
 
-### サーバーサイドデータ永続化の実装例
+  // Todoを削除する処理
+  const handleDelete = (taskId) => {
+    if (window.confirm('このTodoを削除しますか？')) {
+      setTasks(tasks.filter(task => task.id !== taskId));
+    }
+  };
 
-現在はブラウザのメモリ上でデータを管理していますが、実際のアプリではサーバーでデータを保存します：
+  return (
+    <section className={style.container}>
+      <h1>Todoリスト</h1>
+      
+      {/* Todo追加フォーム */}
+      <form onSubmit={handleSubmit} className={style.form}>
+        <input
+          type="text"
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+          placeholder="新しいTodoを入力"
+          className={style.input}
+        />
+        <button type="submit" className={style.button}>追加</button>
+      </form>
 
-1. **API Route の作成**
+      {/* Todo一覧 */}
+      <div className={style.checkbox}>
+        {tasks.map(task => (
+          <div key={task.id} className={style.taskItem}>
+            <label className={task.completed ? style.completed : ''}>
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => handleToggleComplete(task.id)}
+              />
+              {task.title}
+            </label>
+            <button
+              onClick={() => handleDelete(task.id)}
+              className={style.deleteButton}
+            >
+              削除
+            </button>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+```
 
+### コードの説明
+
+1. **状態管理の基本**
+   - `useState` フックを使って、データを保存する場所（状態）を作ります
+   - `tasks`: Todo一覧を保存する配列
+   - `newTask`: 入力フォームの文字を保存する変数
+
+2. **Todoを削除する仕組み**
    ```javascript
-   // app/api/tasks/route.js
-   let tasks = []; // 実際はデータベースを使用
-
-   export async function GET() {
-     return Response.json(tasks);
-   }
-
-   export async function POST(request) {
-     const newTask = await request.json();
-     tasks.push(newTask);
-     return Response.json(newTask);
-   }
-   ```
-
-2. **フロントエンドで API 呼び出し**
-
-   ```javascript
-   // タスク取得
-   const fetchTasks = async () => {
-     const response = await fetch('/api/tasks');
-     const data = await response.json();
-     setTasks(data);
-   };
-
-   // タスク追加
-   const addTask = async (taskData) => {
-     await fetch('/api/tasks', {
-       method: 'POST',
-       headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify(taskData),
-     });
-     fetchTasks(); // 最新データを取得
+   const handleDelete = (taskId) => {
+     if (window.confirm('このTodoを削除しますか？')) {
+       setTasks(tasks.filter(task => task.id !== taskId));
+     }
    };
    ```
+   - `window.confirm()`: 削除する前に確認ダイアログを表示します
+   - `filter()`: 配列から条件に合う要素だけを選び出します
+   - `task.id !== taskId`: 削除するTodo以外を選び出します
+   - `setTasks()`: 更新されたTodo一覧を保存します
 
-### 参考リンク
+3. **削除ボタンの基本**
+   - `onClick`: ボタンがクリックされたときの処理を指定します
+   - `className`: ボタンの見た目を指定します
 
-- [Next.js 公式ドキュメント](https://nextjs.org/docs)
-- [React 公式ドキュメント](https://react.dev/)
+## スタイルの更新
 
-お疲れさまでした！このチュートリアルで Next.js の基本的な CRUD 操作を学ぶことができました。
+`src/app/todos/page.module.css` に以下のスタイルを追加します。
 
-### 🎯 達成目標
+```css
+.taskItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.deleteButton {
+  padding: 0.3em 0.8em;
+  border: none;
+  border-radius: 3px;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background-color: #c82333;
+}
+```
+
+## 🔍 確認
+
+実装した機能が正しく動作しているか確認しましょう：
 
 import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 <div>
-  <ChecklistItem client:load id="step6-point1">
-    Next.jsの基本概念を理解した
+  <ChecklistItem client:load id="step8-point1">
+    削除ボタンをクリックすると確認ダイアログが表示される
   </ChecklistItem>
-  <ChecklistItem client:load id="step6-point2">
-    CRUD操作の実装方法を学んだ
+  <ChecklistItem client:load id="step8-point2">
+    確認後にTodoが削除される
   </ChecklistItem>
-  <ChecklistItem client:load id="step6-point3">
-    サーバーサイドの実装方法を理解した
-  </ChecklistItem>
-  <ChecklistItem client:load id="step6-point4">
-    次のステップの方向性を把握した
+  <ChecklistItem client:load id="step8-point3">
+    キャンセルした場合はTodoが削除されない
   </ChecklistItem>
 </div>
+
+## よくある問題と解決方法
+
+**削除が機能しない**
+- `handleDelete` 関数が正しく呼び出されているか確認
+- 確認ダイアログの表示が正しく機能しているか確認
+- `filter` メソッドの条件が正しいか確認
+
+**スタイルが適用されない**
+- CSSクラス名が正しく設定されているか確認
+- スタイルの優先順位が正しいか確認
+
+## 🎯 理解度チェック
+
+以下の質問に答えて、学習内容を確認しましょう！
+
+1. **配列から特定の要素を削除するために使用するメソッドは？**
+
+   - A: `forEach()`
+   - B: `map()`
+   - C: `filter()`
+   - D: `reduce()`
+
+<details>
+<summary>答えを見る</summary>
+
+   **答え: C: `filter()`**
+   - `filter()` は条件に合う要素だけを抽出して新しい配列を作成します
+   - このステップでは、特定のID以外のTodoを抽出するために使用しています
+</details>
+
+2. **確認ダイアログを表示するために使用するメソッドは？**
+
+   - A: `window.alert()`
+   - B: `window.prompt()`
+   - C: `window.confirm()`
+   - D: `window.dialog()`
+
+<details>
+<summary>答えを見る</summary>
+
+   **答え: C: `window.confirm()`**
+   - `window.confirm()` はユーザーに確認を求めるダイアログを表示します
+   - このステップでは、Todoの削除前に確認を取るために使用しています
+</details>
+
+## 📝 まとめ
+
+このステップでは以下について学びました。
+
+- **データの削除**
+  - 配列からの要素の削除
+  - `filter` メソッドの使用
+  - 確認ダイアログの表示
+
+- **イベントハンドリング**
+  - 削除ボタンのクリックイベント
+  - 確認ダイアログの処理
+
+- **UI/UX**
+  - 削除前の確認
+  - 視覚的なフィードバック
+  - エラー防止

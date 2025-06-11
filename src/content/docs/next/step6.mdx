@@ -1,6 +1,6 @@
 ---
-title: '6: タスクの追加'
-pubDate: 2025-06-10
+title: '6: Todoの追加'
+pubDate: 2025-06-09
 description: 'Next.js の初心者向けチュートリアルです'
 author: 'Nabe847'
 image:
@@ -9,340 +9,186 @@ image:
 tags: ['Next.js', 'tutorial']
 ---
 
-import { Steps } from '@astrojs/starlight/components';
-
 ## このステップで学ぶこと
 
-前回のタスク表示機能に続いて、今回はタスクの追加機能を実装していきます。
+前回はTodoの表示機能を実装しました。  
+今回は新しいTodoを追加する機能を実装していきましょう。
 
-まず、フォームの基本的な使い方と状態管理について学びます：
-- フォームの値は状態で管理する
-- 入力値の変更を検知して状態を更新する
-- フォーム送信時に新しいタスクを追加する
-- Enterキーでのタスク追加
-- 入力値のバリデーション
+1. **フォームの基本的な使い方**
+2. **状態管理の方法**
+3. **イベントハンドリング**
 
-### app/page.js を更新
+> 💡 **ヒント**:  
+> Webアプリケーションでは、ユーザーからの入力を受け付けて処理することが重要です。  
+> このステップでは、フォームを使った入力処理の基本を学びます。
 
-タスク追加機能を実装します：
+## Todo追加機能の実装
+
+`src/app/todos/page.js` を以下の内容に更新します。
 
 ```javascript
 'use client';
 import { useState } from 'react';
+import style from './page.module.css';
 
-export default function Home() {
-  // 1. 状態の定義
+export default function Todos() {
+  // Todoデータの定義
   const [tasks, setTasks] = useState([
     { id: 1, title: '買い物に行く', completed: false },
-    { id: 2, title: '宿題をする', completed: true },
-    { id: 3, title: '友達に連絡する', completed: false },
+    { id: 2, title: 'メールを確認する', completed: false },
+    { id: 3, title: '資料を作成する', completed: false },
+    { id: 4, title: '友達に電話する', completed: false },
+    { id: 5, title: '部屋の掃除', completed: false },
   ]);
-  const [newTaskTitle, setNewTaskTitle] = useState('');
 
-  // 2. タスク追加の処理
-  const handleAddTask = (e) => {
+  // 入力値の状態管理
+  const [newTask, setNewTask] = useState('');
+
+  // Todo追加処理
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!newTaskTitle.trim()) {
-      alert('タスクタイトルを入力してください');
-      return;
-    }
+    if (newTask.trim() === '') return;
 
-    const newTask = {
-      id: Date.now(), // 簡単なID生成（現在時刻を使用）
-      title: newTaskTitle,
-      completed: false,
-    };
-
-    setTasks([...tasks, newTask]);
-    setNewTaskTitle('');
+    const newId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+    setTasks([...tasks, { id: newId, title: newTask, completed: false }]);
+    setNewTask('');
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <h1>タスク管理アプリ</h1>
-
-      {/* 3. タスク追加フォーム */}
-      <form onSubmit={handleAddTask} style={{ marginBottom: '20px' }}>
+    <section className={style.container}>
+      <h1>Todoリスト</h1>
+      
+      {/* Todo追加フォーム */}
+      <form onSubmit={handleSubmit} className={style.form}>
         <input
           type="text"
-          value={newTaskTitle}
-          onChange={(e) => setNewTaskTitle(e.target.value)}
-          placeholder="新しいタスクを入力"
-          style={{
-            padding: '8px',
-            width: '70%',
-            marginRight: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-          }}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              handleAddTask(e);
-            }
-          }}
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+          placeholder="新しいTodoを入力"
+          className={style.input}
         />
-        <button
-          type="submit"
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          追加
-        </button>
+        <button type="submit" className={style.button}>追加</button>
       </form>
 
-      {/* 4. タスク一覧の表示 */}
-      <div>
-        <h2>タスク一覧 ({tasks.length}件)</h2>
-        {tasks.map((task) => (
-          <div
-            key={task.id}
-            style={{
-              border: '1px solid #ccc',
-              padding: '15px',
-              margin: '10px 0',
-              backgroundColor: task.completed ? '#f0f8f0' : '#fff',
-              borderRadius: '4px',
-            }}
-          >
-            <span
-              style={{
-                textDecoration: task.completed ? 'line-through' : 'none',
-                fontSize: '16px',
-              }}
-            >
+      {/* Todo一覧 */}
+      <div className={style.checkbox}>
+        {tasks.map(task => (
+          <div key={task.id}>
+            <label>
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => {}}
+              />
               {task.title}
-            </span>
-            <span
-              style={{ marginLeft: '10px', fontSize: '12px', color: '#666' }}
-            >
-              {task.completed ? '完了' : '未完了'}
-            </span>
-
-            <div style={{ marginTop: '10px' }}>
-              <button
-                style={{
-                  marginRight: '5px',
-                  padding: '4px 8px',
-                  fontSize: '12px',
-                  backgroundColor: task.completed ? '#ffc107' : '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                }}
-              >
-                {task.completed ? '未完了にする' : '完了にする'}
-              </button>
-              <button
-                style={{
-                  padding: '4px 8px',
-                  fontSize: '12px',
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                }}
-              >
-                削除
-              </button>
-            </div>
+            </label>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 ```
 
-### コードの解説
+## コードの解説
 
-<Steps>
+1. **状態管理の基本**
+   - `useState` フックを使って、データを保存する場所（状態）を作ります
+   - `tasks`: Todo一覧を保存する配列
+   - `newTask`: 入力フォームの文字を保存する変数
 
-1. **状態の定義**
-
+2. **Todo追加の仕組み**
    ```javascript
-   const [tasks, setTasks] = useState([
-     { id: 1, title: '買い物に行く', completed: false },
-     { id: 2, title: '宿題をする', completed: true },
-     { id: 3, title: '友達に連絡する', completed: false },
-   ]);
-   const [newTaskTitle, setNewTaskTitle] = useState('');
-   ```
-
-   > 💡 **状態管理について**
-   > - 状態とは、コンポーネントが保持するデータのことです
-   > - `useState`は状態の値と、それを更新する関数のペアを返します
-   > - 状態が更新されると、Reactは自動的に画面を更新します
-   > - この例では2つの状態を管理しています：
-   >   1. `tasks`: タスクの配列（初期値として3つのタスクを設定）
-   >   2. `newTaskTitle`: 新規タスクの入力値（初期値は空文字列）
-   >
-   > より詳しく知りたい方は、[https://ja.react.dev/learn/state-a-components-memory](https://ja.react.dev/learn/state-a-components-memory) を参考にしてください。
-
-2. **タスク追加の処理**
-
-   ```javascript
-   const handleAddTask = (e) => {
+   const handleSubmit = (e) => {
      e.preventDefault();
-     if (!newTaskTitle.trim()) {
-       alert('タスクタイトルを入力してください');
-       return;
-     }
+     if (newTask.trim() === '') return;
 
-     const newTask = {
-       id: Date.now(), // 簡単なID生成（現在時刻を使用）
-       title: newTaskTitle,
-       completed: false,
-     };
-
-     setTasks([...tasks, newTask]);
-     setNewTaskTitle('');
+     const newId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+     setTasks([...tasks, { id: newId, title: newTask, completed: false }]);
+     setNewTask('');
    };
    ```
+   - `e.preventDefault()`: フォームの送信ボタンを押したときの、ページの更新を防ぎます
+   - `newTask.trim()`: 入力された文字の前後の空白を削除します
+   - `if (newTask.trim() === '') return`: 空のTodoは追加しないようにします
+   - `tasks.length > 0 ? ... : 1`: Todoが1つもない場合は1から始めます
+   - `setTasks([...tasks, { id: newId, title: newTask, completed: false }])`: 新しいTodoを配列に追加します
+   - `setNewTask('')`: 入力フォームを空にします
 
-   > 💡 **タスク追加の処理について**
-   > - `e.preventDefault()`: フォームのデフォルトの送信動作を防止
-   > - `newTaskTitle.trim()`: 入力値の前後の空白を削除してチェック
-   > - `Date.now()`: 現在のタイムスタンプをIDとして使用（一意の値）
-   > - `[...tasks, newTask]`: スプレッド演算子を使用して既存のタスク配列に新しいタスクを追加
-   > - `setNewTaskTitle('')`: 入力フィールドをクリア
+3. **フォームの基本**
+   - `onSubmit`: フォームの送信ボタンが押されたときの処理を指定します
+   - `value`: 入力フォームに表示する文字を指定します
+   - `onChange`: 入力フォームの文字が変わったときの処理を指定します
+   - `placeholder`: 入力フォームが空のときに表示する説明文を指定します
 
-3. **フォームの実装**
+## スタイルの更新
 
-   ```javascript
-   <form onSubmit={handleAddTask} style={{ marginBottom: '20px' }}>
-     <input
-       type="text"
-       value={newTaskTitle}
-       onChange={(e) => setNewTaskTitle(e.target.value)}
-       placeholder="新しいタスクを入力"
-       style={{
-         padding: '8px',
-         width: '70%',
-         marginRight: '10px',
-         border: '1px solid #ccc',
-         borderRadius: '4px',
-       }}
-       onKeyPress={(e) => {
-         if (e.key === 'Enter') {
-           handleAddTask(e);
-         }
-       }}
-     />
-     <button type="submit">追加</button>
-   </form>
-   ```
+`src/app/todos/page.module.css` に以下のスタイルを追加します。
 
-   > 💡 **フォームの実装について**
-   > - `onSubmit`: フォーム送信時のイベントハンドラ
-   > - `value={newTaskTitle}`: 入力フィールドの値を状態と同期
-   > - `onChange`: 入力値が変更された時のイベントハンドラ
-   > - `onKeyPress`: Enterキーが押された時のイベントハンドラ
-   > - スタイリングはインラインで実装（後ほどCSSモジュールやTailwind CSSなどで改善可能）
+```css
+.form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
 
-4. **タスク一覧の表示**
+.input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
 
-   ```javascript
-   <div>
-     <h2>タスク一覧 ({tasks.length}件)</h2>
-     {tasks.map((task) => (
-       <div key={task.id}>
-         <span>{task.title}</span>
-         <span>{task.completed ? '完了' : '未完了'}</span>
-         <div>
-           <button>{task.completed ? '未完了にする' : '完了にする'}</button>
-           <button>削除</button>
-         </div>
-       </div>
-     ))}
-   </div>
-   ```
+.button {
+  padding: 0.5rem 1rem;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
 
-   > 💡 **タスク一覧の表示について**
-   > - `tasks.map()`: 配列の各要素に対して処理を実行
-   > - `key={task.id}`: Reactのリスト表示で必要な一意のキー
-   > - 条件付きレンダリング: `task.completed ? '完了' : '未完了'`
-   > - スタイリング: 完了状態に応じて背景色やテキストの装飾を変更
+.button:hover {
+  background-color: #0051a2;
+}
+```
 
-5. **フォームのイベントハンドリング**
+## 🔍 確認
 
-   ```javascript
-   <form onSubmit={handleAddTask}>
-     <input
-       onChange={(e) => setNewTaskTitle(e.target.value)}
-       onKeyPress={(e) => {
-         if (e.key === 'Enter') {
-           handleAddTask(e);
-         }
-       }}
-     />
-   </form>
-   ```
-
-   > 💡 **フォームのイベントハンドリングについて**
-   > - `onSubmit`: フォーム送信時のイベントハンドラ
-   >   - `e.preventDefault()`でデフォルトの送信動作を防止
-   >   - 入力値のバリデーションを実行
-   >   - 新しいタスクを追加
-   > 
-   > - `onChange`: 入力値変更時のイベントハンドラ
-   >   - `e.target.value`で入力フィールドの現在の値を取得
-   >   - `setNewTaskTitle`で状態を更新
-   > 
-   > - `onKeyPress`: Enterキー押下時のイベントハンドラ
-   >   - `e.key === 'Enter'`でEnterキーの押下を検知
-   >   - Enterキー押下時も`handleAddTask`を実行
-   >
-   > より詳しく知りたい方は、[MDNのイベントハンドリングの解説](https://developer.mozilla.org/ja/docs/Learn/JavaScript/Building_blocks/Events)を参考にしてください。
-
-</Steps>
-
-### よくある問題と解決方法
-
-**タスクが追加されない場合**
-- `useState` が正しくインポートされているか確認
-- フォームの送信イベントが正しく処理されているか確認
-- コンソールにエラーが表示されていないか確認
-
-**入力フィールドが更新されない場合**
-- `onChange` イベントハンドラが正しく設定されているか確認
-- 状態の更新関数が正しく呼び出されているか確認
-
-### 🔍 動作確認
-
-実装した機能が正しく動作するか確認してみましょう：
+実装した機能が正しく動作しているか確認しましょう:
 
 import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 <div>
-  <ChecklistItem client:load id="step4-point1">
-    新しいタスクを入力できる
+  <ChecklistItem client:load id="step6-point1">
+    新しいTodoを追加できる
   </ChecklistItem>
-  <ChecklistItem client:load id="step4-point2">
-    追加ボタンをクリックするとタスクが追加される
+  <ChecklistItem client:load id="step6-point2">
+    追加ボタンをクリックするとTodoが追加される
   </ChecklistItem>
-  <ChecklistItem client:load id="step4-point3">
-    タスク追加後に入力フィールドがクリアされる
+  <ChecklistItem client:load id="step6-point3">
+    追加後に入力フィールドがクリアされる
   </ChecklistItem>
-  <ChecklistItem client:load id="step4-point4">
-    空のタスクは追加されない
-  </ChecklistItem>
-  <ChecklistItem client:load id="step4-point5">
-    Enterキーでもタスクが追加される
-  </ChecklistItem>
-  <ChecklistItem client:load id="step4-point6">
-    タスク件数が正しく表示される
+  <ChecklistItem client:load id="step6-point4">
+    空のTodoは追加されない
   </ChecklistItem>
 </div>
 
-### 🎯 理解度チェッククイズ
+## よくある問題と解決方法
+
+**フォームが送信されない**
+- `preventDefault()` が正しく呼び出されているか確認
+- フォームの `onSubmit` イベントが正しく設定されているか確認
+
+**状態が更新されない**
+- `useState` の初期値が正しく設定されているか確認
+- 状態更新関数が正しく呼び出されているか確認
+
+**スタイルが適用されない**
+- CSSモジュールのインポートが正しいか確認
+- クラス名の指定が正しいか確認
+
+## 🎯 理解度チェック
 
 以下の質問に答えて、学習内容を確認しましょう！
 
@@ -353,13 +199,13 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
    - C: `useContext`
    - D: `useReducer`
 
-   <details>
-   <summary>答えを見る</summary>
+<details>
+<summary>答えを見る</summary>
 
    **答え: B: `useState`**
    - `useState` はコンポーネント内で状態を管理するための基本的なフックです
    - 状態の値と、それを更新する関数のペアを返します
-   </details>
+</details>
 
 2. **フォームの送信を防止するために使用するメソッドは？**
 
@@ -368,27 +214,31 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
    - C: `stopImmediatePropagation()`
    - D: `cancelBubble()`
 
-   <details>
-   <summary>答えを見る</summary>
+<details>
+<summary>答えを見る</summary>
 
    **答え: B: `preventDefault()`**
    - `preventDefault()` はイベントのデフォルトの動作を防止します
    - フォームの送信時には、ページのリロードを防ぐために使用します
-   </details>
+</details>
 
-3. **入力フィールドの値が変更された時に発生するイベントは？**
+## 📝 まとめ
 
-   - A: `onClick`
-   - B: `onChange`
-   - C: `onSubmit`
-   - D: `onInput`
+このステップでは以下について学びました。
 
-   <details>
-   <summary>答えを見る</summary>
+- **フォームの基本**
+  - 入力フィールドの作成
+  - フォーム送信の処理
+  - 入力値のバリデーション
 
-   **答え: B: `onChange`**
-   - `onChange` イベントは、入力フィールドの値が変更されるたびに発生します
-   - フォームの制御には、このイベントを使用して状態を更新します
-   </details>
+- **状態管理**
+  - `useState` フックの使用
+  - 状態の更新方法
+  - 配列の操作
+
+- **イベントハンドリング**
+  - フォーム送信イベント
+  - 入力値の変更イベント
+  - イベントのデフォルト動作の防止
 
 --- 
