@@ -1,0 +1,101 @@
+---
+title: '1: 開発環境の構築'
+pubDate: 2024-03-20
+description: 'フルスタックアプリケーションの開発環境を構築します'
+author: 'Nabe847'
+image:
+  url: 'https://docs.astro.build/assets/full-logo-light.png'
+  alt: 'フルスタックアプリケーションのロゴ。'
+tags: ['Next.js', 'FastAPI', 'tutorial']
+---
+
+## このステップについて
+
+このステップではフルスタックアプリケーションの開発環境を構築します。
+
+## 前提条件
+
+このチュートリアルを始める前に、以下のチュートリアルを完了している必要があります：
+
+1. **Next.jsチュートリアル**
+   - 基本的なNext.jsの使い方
+   - コンポーネントの作成
+   - 状態管理
+
+2. **FastAPIチュートリアル**
+   - 基本的なFastAPIの使い方
+   - データベースの設定
+   - APIエンドポイントの実装
+
+## 開発環境の構築
+
+### 1. プロジェクトの作成
+
+```bash
+# フロントエンドプロジェクトの作成
+npx create-next-app@latest task-manager-frontend
+cd task-manager-frontend
+npm install axios
+
+# バックエンドプロジェクトの準備
+cd ..
+cp -r fast-api-tutorial/task-manager-backend .
+```
+
+### 2. プロジェクト構造の確認
+
+以下のような構造になっていることを確認します：
+
+```
+task-manager/
+├── task-manager-frontend/  # Next.jsプロジェクト
+└── task-manager-backend/   # FastAPIプロジェクト
+```
+
+## 動作確認
+
+### 1. フロントエンドの起動
+
+```bash
+cd task-manager-frontend
+npm run dev
+```
+
+ブラウザで `http://localhost:3000` を開き、Next.jsのデフォルトページが表示されることを確認します。
+
+### 2. バックエンドの起動
+
+```bash
+cd ../task-manager-backend
+# 仮想環境の有効化
+source venv/bin/activate  # Mac/Linux
+# または
+venv\Scripts\activate  # Windows
+
+# サーバーの起動
+uvicorn app.main:app --reload
+```
+
+ブラウザで `http://localhost:8000/docs` を開き、Swagger UIが表示されることを確認します。
+
+## よくある問題と解決方法
+
+**フロントエンドが起動しない場合**
+
+- エラーメッセージ例：`command not found: npm`
+- 解決方法：
+  1. Node.jsがインストールされているか確認
+  2. `node -v` でバージョンを確認
+  3. 必要に応じてNode.jsをインストール
+
+**バックエンドが起動しない場合**
+
+- エラーメッセージ例：`ModuleNotFoundError: No module named 'fastapi'`
+- 解決方法：
+  1. 仮想環境が有効化されているか確認
+  2. 必要なパッケージがインストールされているか確認
+  3. `pip install -r requirements.txt` を実行
+
+## 次のステップ
+
+これで開発環境の構築は完了です。次のステップでは、バックエンドのCORS設定を行います。 
