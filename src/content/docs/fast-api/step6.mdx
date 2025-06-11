@@ -1,0 +1,74 @@
+---
+title: '6: Todoの更新機能の実装'
+pubDate: 2024-03-20
+description: 'Todoの更新機能を実装します'
+author: 'Nabe847'
+image:
+  url: 'https://docs.astro.build/assets/full-logo-light.png'
+  alt: 'FastAPIのロゴ。'
+tags: ['FastAPI', 'tutorial']
+---
+
+## Update機能の実装
+
+`app/main.py` に以下のコードを追加して、Todoの更新機能を実装します：
+
+```python
+# Todoの更新
+@app.put("/todos/{todo_id}", response_model=schemas.Todo)
+def update_todo(todo_id: int, todo: schemas.TodoCreate, db: Session = Depends(get_db)):
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+    if db_todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    db_todo.title = todo.title
+    db.commit()
+    db.refresh(db_todo)
+    return db_todo
+
+# Todoの完了状態の更新
+@app.patch("/todos/{todo_id}/complete", response_model=schemas.Todo)
+def complete_todo(todo_id: int, db: Session = Depends(get_db)):
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+    if db_todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    db_todo.completed = True
+    db.commit()
+    db.refresh(db_todo)
+    return db_todo
+```
+
+> 💡 **PUT**: リソースの完全な更新に使用されます。
+> 💡 **PATCH**: リソースの部分的な更新に使用されます。
+
+## APIの動作確認
+
+1. サーバーが起動していることを確認します：
+```bash
+uvicorn app.main:app --reload
+```
+
+2. ブラウザで `http://127.0.0.1:8000/docs` を開きます。
+
+3. 以下の操作を試してみましょう：
+
+- Todoの更新（PUT `/todos/{todo_id}`）
+```json
+{
+  "title": "スーパーで買い物に行く"
+}
+```
+
+- Todoの完了（PATCH `/todos/{todo_id}/complete`）
+
+## よくある問題と解決方法
+
+**404エラーが発生する場合**
+
+- エラーメッセージ例：`{"detail": "Todo not found"}`
+- 解決方法：
+  1. 指定したIDのTodoが存在するか確認
+  2. 正しいIDを指定しているか確認
+
+## 次のステップ
+
+これでTodoの更新機能の実装が完了しました。次のステップでは、Todoの削除機能を実装します。 

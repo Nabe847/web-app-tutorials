@@ -1,0 +1,94 @@
+---
+title: '4: Todoの作成機能の実装'
+pubDate: 2024-03-20
+description: 'Todoの作成機能を実装します'
+author: 'Nabe847'
+image:
+  url: 'https://docs.astro.build/assets/full-logo-light.png'
+  alt: 'FastAPIのロゴ。'
+tags: ['FastAPI', 'tutorial']
+---
+
+## スキーマの作成
+
+まず、APIのリクエストとレスポンスの形式を定義します。`app/schemas.py` を作成して以下のように編集します：
+
+```python
+# app/schemas.py
+
+from pydantic import BaseModel
+
+class TodoBase(BaseModel):
+    title: str
+
+class TodoCreate(TodoBase):
+    pass
+
+class Todo(TodoBase):
+    id: int
+    completed: bool
+
+    class Config:
+        from_attributes = True
+```
+
+> 💡 **スキーマ**: APIのリクエストとレスポンスのデータ形式を定義するクラスです。
+> 💡 **Pydantic**: データの検証と変換を行うライブラリです。
+
+## Create機能の実装
+
+`app/main.py` を以下のように更新して、Todoの作成機能を実装します：
+
+```python
+# app/main.py
+
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+from . import models, schemas
+from .database import engine, get_db
+
+# データベースのテーブルを作成
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+# Todoの作成
+@app.post("/todos/", response_model=schemas.Todo)
+def create_todo(todo: schemas.TodoCreate, db: Session = Depends(get_db)):
+    db_todo = models.Todo(title=todo.title)
+    db.add(db_todo)
+    db.commit()
+    db.refresh(db_todo)
+    return db_todo
+```
+
+## APIの動作確認
+
+サーバーを再起動して、APIの動作を確認しましょう：
+
+1. サーバーを再起動します：
+```bash
+uvicorn app.main:app --reload
+```
+
+2. ブラウザで `http://127.0.0.1:8000/docs` を開きます。
+
+3. Todoの作成（POST /todos/）を試してみましょう：
+```json
+{
+  "title": "買い物に行く"
+}
+```
+
+## よくある問題と解決方法
+
+**データベースエラーが発生する場合**
+
+- エラーメッセージ例：`sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed`
+- 解決方法：
+  1. 必須フィールドが正しく設定されているか確認
+  2. データベースのスキーマを確認
+
+## 次のステップ
+
+これでTodoの作成機能の実装が完了しました。次のステップでは、Todoの読み取り機能を実装します。 
