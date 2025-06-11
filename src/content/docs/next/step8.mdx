@@ -1,0 +1,165 @@
+---
+title: '6: 次のステップ'
+pubDate: 2025-06-09
+description: 'Next.js の初心者向けチュートリアルです'
+author: 'Nabe847'
+image:
+  url: 'https://docs.astro.build/assets/full-logo-light.png'
+  alt: 'Astroのロゴ。'
+tags: ['Next.js', 'tutorial']
+---
+
+## このステップで学んだこと
+
+これまでのチュートリアルで実装した機能を振り返り、次のステップについて学びます。
+
+### 完成したアプリの機能
+
+1. **タスクの表示（Read）**
+   - タスク一覧の表示
+   - 完了/未完了の状態表示
+   - 統計情報の表示
+
+2. **タスクの追加（Create）**
+   - 新しいタスクの入力
+   - タスクの追加処理
+   - 入力値のバリデーション
+
+3. **タスクの完了状態更新（Update）**
+   - 完了状態の切り替え
+   - 視覚的なフィードバック
+   - 状態の永続化
+
+4. **タスクの削除（Delete）**
+   - タスクの削除機能
+   - 確認ダイアログ
+   - 安全な削除処理
+
+5. **統計情報の表示**
+   - 全タスク数
+   - 完了タスク数
+   - 未完了タスク数
+
+### 学んだ Next.js の基本概念
+
+1. **コンポーネント**
+   - UI の部品を関数として作成
+   - 再利用可能なコードの作成
+   - コンポーネントの分割
+
+2. **State（状態）**
+   - データの管理と更新
+   - useState フックの使用
+   - 状態の更新方法
+
+3. **イベントハンドリング**
+   - ユーザーの操作に応答
+   - イベントハンドラの設定
+   - フォームの処理
+
+4. **条件付きレンダリング**
+   - 条件に応じた表示切り替え
+   - 三項演算子の使用
+   - 条件分岐の実装
+
+5. **配列の操作**
+   - map メソッド
+   - filter メソッド
+   - スプレッド演算子
+
+### さらなる機能拡張
+
+このチュートリアルをマスターしたら、以下の機能を追加してみましょう：
+
+1. **タスクの編集機能**
+   - 既存タスクのタイトル変更
+   - インライン編集
+   - 編集履歴の管理
+
+2. **カテゴリー分け**
+   - 仕事、プライベートなどの分類
+   - カテゴリー別の表示
+   - フィルタリング機能
+
+3. **期限設定**
+   - 締切日の管理
+   - 期限切れの通知
+   - 優先順位の設定
+
+4. **サーバーサイドでのデータ永続化**
+   - データベースの使用
+   - API ルートの実装
+   - データの同期
+
+5. **複数ページの作成**
+   - タスク詳細ページ
+   - 設定ページ
+   - ルーティングの実装
+
+### サーバーサイドデータ永続化の実装例
+
+現在はブラウザのメモリ上でデータを管理していますが、実際のアプリではサーバーでデータを保存します：
+
+1. **API Route の作成**
+
+   ```javascript
+   // app/api/tasks/route.js
+   let tasks = []; // 実際はデータベースを使用
+
+   export async function GET() {
+     return Response.json(tasks);
+   }
+
+   export async function POST(request) {
+     const newTask = await request.json();
+     tasks.push(newTask);
+     return Response.json(newTask);
+   }
+   ```
+
+2. **フロントエンドで API 呼び出し**
+
+   ```javascript
+   // タスク取得
+   const fetchTasks = async () => {
+     const response = await fetch('/api/tasks');
+     const data = await response.json();
+     setTasks(data);
+   };
+
+   // タスク追加
+   const addTask = async (taskData) => {
+     await fetch('/api/tasks', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify(taskData),
+     });
+     fetchTasks(); // 最新データを取得
+   };
+   ```
+
+### 参考リンク
+
+- [Next.js 公式ドキュメント](https://nextjs.org/docs)
+- [React 公式ドキュメント](https://react.dev/)
+
+お疲れさまでした！このチュートリアルで Next.js の基本的な CRUD 操作を学ぶことができました。
+
+### 🎯 達成目標
+
+import ChecklistItem from '../../../components/ChecklistItem.jsx';
+
+<div>
+  <ChecklistItem client:load id="step6-point1">
+    Next.jsの基本概念を理解した
+  </ChecklistItem>
+  <ChecklistItem client:load id="step6-point2">
+    CRUD操作の実装方法を学んだ
+  </ChecklistItem>
+  <ChecklistItem client:load id="step6-point3">
+    サーバーサイドの実装方法を理解した
+  </ChecklistItem>
+  <ChecklistItem client:load id="step6-point4">
+    次のステップの方向性を把握した
+  </ChecklistItem>
+</div>

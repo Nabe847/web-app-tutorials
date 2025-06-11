@@ -1,5 +1,5 @@
 ---
-title: '6: 次のステップ'
+title: '5: タスクの更新/削除'
 pubDate: 2025-06-09
 description: 'Next.js の初心者向けチュートリアルです'
 author: 'Nabe847'
@@ -9,157 +9,357 @@ image:
 tags: ['Next.js', 'tutorial']
 ---
 
-## このステップで学んだこと
+import { Steps } from '@astrojs/starlight/components';
 
-これまでのチュートリアルで実装した機能を振り返り、次のステップについて学びます。
+## このステップで学ぶこと
 
-### 完成したアプリの機能
+前回のタスク追加機能に続いて、今回はタスクの更新と削除機能を実装していきます。
 
-1. **タスクの表示（Read）**
-   - タスク一覧の表示
-   - 完了/未完了の状態表示
-   - 統計情報の表示
+以下の機能について学びます：
+- タスクの完了状態の切り替え
+- タスクの削除機能
+- 確認ダイアログの表示
+- 配列の操作（map, filter）
+- 条件付きレンダリング
+- 統計情報の表示
 
-2. **タスクの追加（Create）**
-   - 新しいタスクの入力
-   - タスクの追加処理
-   - 入力値のバリデーション
+### app/page.js を更新
 
-3. **タスクの完了状態更新（Update）**
-   - 完了状態の切り替え
-   - 視覚的なフィードバック
-   - 状態の永続化
+タスクの更新と削除機能を実装します：
 
-4. **タスクの削除（Delete）**
-   - タスクの削除機能
-   - 確認ダイアログ
-   - 安全な削除処理
+```javascript
+'use client';
 
-5. **統計情報の表示**
-   - 全タスク数
-   - 完了タスク数
-   - 未完了タスク数
+import { useState } from 'react';
 
-### 学んだ Next.js の基本概念
+export default function Home() {
+  const [tasks, setTasks] = useState([
+    { id: 1, title: '買い物に行く', completed: false },
+    { id: 2, title: '宿題をする', completed: true },
+    { id: 3, title: '友達に連絡する', completed: false },
+  ]);
 
-1. **コンポーネント**
-   - UI の部品を関数として作成
-   - 再利用可能なコードの作成
-   - コンポーネントの分割
+  const [newTaskTitle, setNewTaskTitle] = useState('');
 
-2. **State（状態）**
-   - データの管理と更新
-   - useState フックの使用
-   - 状態の更新方法
+  // タスクを追加する関数
+  const addTask = () => {
+    if (newTaskTitle.trim() === '') {
+      alert('タスクタイトルを入力してください');
+      return;
+    }
 
-3. **イベントハンドリング**
-   - ユーザーの操作に応答
-   - イベントハンドラの設定
-   - フォームの処理
+    const newTask = {
+      id: Date.now(),
+      title: newTaskTitle,
+      completed: false,
+    };
 
-4. **条件付きレンダリング**
-   - 条件に応じた表示切り替え
-   - 三項演算子の使用
-   - 条件分岐の実装
+    setTasks([...tasks, newTask]);
+    setNewTaskTitle('');
+  };
 
-5. **配列の操作**
-   - map メソッド
-   - filter メソッド
-   - スプレッド演算子
+  // タスクの完了状態を切り替える関数
+  const toggleTask = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task,
+      ),
+    );
+  };
 
-### さらなる機能拡張
+  // タスクを削除する関数
+  const deleteTask = (id) => {
+    if (window.confirm('このタスクを削除しますか？')) {
+      setTasks(tasks.filter((task) => task.id !== id));
+    }
+  };
 
-このチュートリアルをマスターしたら、以下の機能を追加してみましょう：
+  return (
+    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+      <h1>タスク管理アプリ</h1>
 
-1. **タスクの編集機能**
-   - 既存タスクのタイトル変更
-   - インライン編集
-   - 編集履歴の管理
+      <div style={{ marginBottom: '20px' }}>
+        <h2>新しいタスクを追加</h2>
+        <input
+          type="text"
+          value={newTaskTitle}
+          onChange={(e) => setNewTaskTitle(e.target.value)}
+          placeholder="タスクを入力してください"
+          style={{
+            padding: '8px',
+            width: '300px',
+            marginRight: '10px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+          }}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              addTask();
+            }
+          }}
+        />
+        <button
+          onClick={addTask}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          追加
+        </button>
+      </div>
 
-2. **カテゴリー分け**
-   - 仕事、プライベートなどの分類
-   - カテゴリー別の表示
-   - フィルタリング機能
+      <div>
+        <h2>タスク一覧 ({tasks.length}件)</h2>
+        {tasks.length === 0 ? (
+          <p style={{ color: '#666', fontStyle: 'italic' }}>
+            タスクがありません。上記から新しいタスクを追加してください。
+          </p>
+        ) : (
+          tasks.map((task) => (
+            <div
+              key={task.id}
+              style={{
+                border: '1px solid #ccc',
+                padding: '15px',
+                margin: '10px 0',
+                backgroundColor: task.completed ? '#f0f8f0' : '#fff',
+                borderRadius: '4px',
+              }}
+            >
+              <span
+                style={{
+                  textDecoration: task.completed ? 'line-through' : 'none',
+                  fontSize: '16px',
+                }}
+              >
+                {task.title}
+              </span>
+              <span
+                style={{ marginLeft: '10px', fontSize: '12px', color: '#666' }}
+              >
+                {task.completed ? '完了' : '未完了'}
+              </span>
 
-3. **期限設定**
-   - 締切日の管理
-   - 期限切れの通知
-   - 優先順位の設定
+              <div style={{ marginTop: '10px' }}>
+                <button
+                  onClick={() => toggleTask(task.id)}
+                  style={{
+                    marginRight: '5px',
+                    padding: '4px 8px',
+                    fontSize: '12px',
+                    backgroundColor: task.completed ? '#ffc107' : '#28a745',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '3px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {task.completed ? '未完了にする' : '完了にする'}
+                </button>
+                <button
+                  onClick={() => deleteTask(task.id)}
+                  style={{
+                    padding: '4px 8px',
+                    fontSize: '12px',
+                    backgroundColor: '#dc3545',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '3px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  削除
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
 
-4. **サーバーサイドでのデータ永続化**
-   - データベースの使用
-   - API ルートの実装
-   - データの同期
+      {/* 統計情報 */}
+      <div
+        style={{
+          marginTop: '20px',
+          padding: '15px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '4px',
+        }}
+      >
+        <h3>統計</h3>
+        <p>全タスク: {tasks.length}件</p>
+        <p>完了: {tasks.filter((task) => task.completed).length}件</p>
+        <p>未完了: {tasks.filter((task) => !task.completed).length}件</p>
+      </div>
+    </div>
+  );
+}
+```
 
-5. **複数ページの作成**
-   - タスク詳細ページ
-   - 設定ページ
-   - ルーティングの実装
+### コードの解説
 
-### サーバーサイドデータ永続化の実装例
+<Steps>
 
-現在はブラウザのメモリ上でデータを管理していますが、実際のアプリではサーバーでデータを保存します：
-
-1. **API Route の作成**
+1. **タスクの完了状態を切り替える関数**
 
    ```javascript
-   // app/api/tasks/route.js
-   let tasks = []; // 実際はデータベースを使用
-
-   export async function GET() {
-     return Response.json(tasks);
-   }
-
-   export async function POST(request) {
-     const newTask = await request.json();
-     tasks.push(newTask);
-     return Response.json(newTask);
-   }
+   const toggleTask = (id) => {
+     setTasks(
+       tasks.map((task) =>
+         task.id === id ? { ...task, completed: !task.completed } : task,
+       ),
+     );
+   };
    ```
 
-2. **フロントエンドで API 呼び出し**
+   > 💡 **タスクの更新について**
+   > - `map`メソッドを使用して配列の各要素を処理
+   > - スプレッド演算子（`...`）で既存のタスクのプロパティをコピー
+   > - 条件演算子（`?:`）で該当するタスクの`completed`プロパティを反転
+   > - 該当しないタスクはそのまま返す
+
+2. **タスクを削除する関数**
 
    ```javascript
-   // タスク取得
-   const fetchTasks = async () => {
-     const response = await fetch('/api/tasks');
-     const data = await response.json();
-     setTasks(data);
-   };
-
-   // タスク追加
-   const addTask = async (taskData) => {
-     await fetch('/api/tasks', {
-       method: 'POST',
-       headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify(taskData),
-     });
-     fetchTasks(); // 最新データを取得
+   const deleteTask = (id) => {
+     if (window.confirm('このタスクを削除しますか？')) {
+       setTasks(tasks.filter((task) => task.id !== id));
+     }
    };
    ```
 
-### 参考リンク
+   > 💡 **タスクの削除について**
+   > - `window.confirm`で確認ダイアログを表示
+   > - `filter`メソッドで指定されたID以外のタスクを抽出
+   > - 新しい配列を`setTasks`で状態として設定
 
-- [Next.js 公式ドキュメント](https://nextjs.org/docs)
-- [React 公式ドキュメント](https://react.dev/)
+3. **条件付きレンダリング**
 
-お疲れさまでした！このチュートリアルで Next.js の基本的な CRUD 操作を学ぶことができました。
+   ```javascript
+   {tasks.length === 0 ? (
+     <p style={{ color: '#666', fontStyle: 'italic' }}>
+       タスクがありません。上記から新しいタスクを追加してください。
+     </p>
+   ) : (
+     tasks.map((task) => (
+       // タスクの表示
+     ))
+   )}
+   ```
 
-### 🎯 達成目標
+   > 💡 **条件付きレンダリングについて**
+   > - 三項演算子（`?:`）を使用して条件分岐
+   > - タスクが0件の場合はメッセージを表示
+   > - タスクがある場合は一覧を表示
+
+4. **統計情報の表示**
+
+   ```javascript
+   <div>
+     <h3>統計</h3>
+     <p>全タスク: {tasks.length}件</p>
+     <p>完了: {tasks.filter((task) => task.completed).length}件</p>
+     <p>未完了: {tasks.filter((task) => !task.completed).length}件</p>
+   </div>
+   ```
+
+   > 💡 **統計情報について**
+   > - `filter`メソッドで完了/未完了のタスクをカウント
+   > - リアルタイムで統計情報が更新される
+   > - スタイリングで視覚的に区別
+
+</Steps>
+
+### よくある問題と解決方法
+
+**タスクの更新が反映されない場合**
+- `toggleTask`関数が正しく呼び出されているか確認
+- イベントハンドラの設定が正しいか確認
+- コンソールにエラーが表示されていないか確認
+
+**タスクの削除が機能しない場合**
+- `deleteTask`関数が正しく呼び出されているか確認
+- 確認ダイアログの表示が正しく機能しているか確認
+- `filter`メソッドの条件が正しいか確認
+
+### 🔍 動作確認
+
+実装した機能が正しく動作するか確認してみましょう：
 
 import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 <div>
-  <ChecklistItem client:load id="step6-point1">
-    Next.jsの基本概念を理解した
+  <ChecklistItem client:load id="step5-point1">
+    タスクの完了状態が切り替わる
   </ChecklistItem>
-  <ChecklistItem client:load id="step6-point2">
-    CRUD操作の実装方法を学んだ
+  <ChecklistItem client:load id="step5-point2">
+    完了したタスクの表示が変わる
   </ChecklistItem>
-  <ChecklistItem client:load id="step6-point3">
-    サーバーサイドの実装方法を理解した
+  <ChecklistItem client:load id="step5-point3">
+    削除時に確認ダイアログが表示される
   </ChecklistItem>
-  <ChecklistItem client:load id="step6-point4">
-    次のステップの方向性を把握した
+  <ChecklistItem client:load id="step5-point4">
+    タスクが正しく削除される
+  </ChecklistItem>
+  <ChecklistItem client:load id="step5-point5">
+    統計情報が正しく表示される
+  </ChecklistItem>
+  <ChecklistItem client:load id="step5-point6">
+    タスクが0件の時にメッセージが表示される
   </ChecklistItem>
 </div>
+
+### 🎯 理解度チェッククイズ
+
+以下の質問に答えて、学習内容を確認しましょう！
+
+1. **配列の要素を更新するために使用するメソッドは？**
+
+   - A: `filter`
+   - B: `map`
+   - C: `reduce`
+   - D: `forEach`
+
+   <details>
+   <summary>答えを見る</summary>
+
+   **答え: B: `map`**
+   - `map`メソッドは配列の各要素を変換して新しい配列を作成します
+   - タスクの更新には、`map`を使用して特定のタスクのプロパティを変更します
+   </details>
+
+2. **配列から要素を削除するために使用するメソッドは？**
+
+   - A: `map`
+   - B: `filter`
+   - C: `splice`
+   - D: `slice`
+
+   <details>
+   <summary>答えを見る</summary>
+
+   **答え: B: `filter`**
+   - `filter`メソッドは条件に合う要素だけを抽出して新しい配列を作成します
+   - タスクの削除には、`filter`を使用して特定のID以外のタスクを抽出します
+   </details>
+
+3. **確認ダイアログを表示するために使用するメソッドは？**
+
+   - A: `window.alert`
+   - B: `window.prompt`
+   - C: `window.confirm`
+   - D: `window.dialog`
+
+   <details>
+   <summary>答えを見る</summary>
+
+   **答え: C: `window.confirm`**
+   - `window.confirm`はユーザーに確認を求めるダイアログを表示します
+   - タスクの削除前に確認を取るために使用します
+   </details>
+
+---

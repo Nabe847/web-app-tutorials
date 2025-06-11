@@ -1,6 +1,6 @@
 ---
-title: '4: タスクの追加'
-pubDate: 2025-06-10
+title: '3: タスクの表示'
+pubDate: 2025-06-09
 description: 'Next.js の初心者向けチュートリアルです'
 author: 'Nabe847'
 image:
@@ -9,386 +9,237 @@ image:
 tags: ['Next.js', 'tutorial']
 ---
 
-import { Steps } from '@astrojs/starlight/components';
-
 ## このステップで学ぶこと
 
-前回のタスク表示機能に続いて、今回はタスクの追加機能を実装していきます。
+前回の基本ページ作成に続いて、今回はタスクの表示機能を実装していきます。配列データの扱い方や、条件に応じた表示の切り替えを学びましょう。
 
-まず、フォームの基本的な使い方と状態管理について学びます：
-- フォームの値は状態で管理する
-- 入力値の変更を検知して状態を更新する
-- フォーム送信時に新しいタスクを追加する
-- Enterキーでのタスク追加
-- 入力値のバリデーション
+1. **配列データの表示方法**
+2. **`map()`を使った繰り返し処理**
+3. **条件分岐による表示切り替え**
+4. **インラインスタイルの応用**
 
-### app/page.js を更新
+## タスク表示機能の実装
 
-タスク追加機能を実装します：
+src/app/page.js を開いて、以下の変更を加えてください：
 
-```javascript
-'use client';
-import { useState } from 'react';
-
+```diff lang="js"
 export default function Home() {
-  // 1. 状態の定義
-  const [tasks, setTasks] = useState([
-    { id: 1, title: '買い物に行く', completed: false },
-    { id: 2, title: '宿題をする', completed: true },
-    { id: 3, title: '友達に連絡する', completed: false },
-  ]);
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-
-  // 2. タスク追加の処理
-  const handleAddTask = (e) => {
-    e.preventDefault();
-    if (!newTaskTitle.trim()) {
-      alert('タスクタイトルを入力してください');
-      return;
-    }
-
-    const newTask = {
-      id: Date.now(), // 簡単なID生成（現在時刻を使用）
-      title: newTaskTitle,
-      completed: false,
-    };
-
-    setTasks([...tasks, newTask]);
-    setNewTaskTitle('');
-  };
++  // 1. タスクデータの定義
++  const tasks = [
++    { id: 1, title: '買い物に行く', completed: false },
++    { id: 2, title: '宿題をする', completed: true },
++    { id: 3, title: '友達に連絡する', completed: false },
++  ];
 
   return (
     <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
       <h1>タスク管理アプリ</h1>
-
-      {/* 3. タスク追加フォーム */}
-      <form onSubmit={handleAddTask} style={{ marginBottom: '20px' }}>
-        <input
-          type="text"
-          value={newTaskTitle}
-          onChange={(e) => setNewTaskTitle(e.target.value)}
-          placeholder="新しいタスクを入力"
-          style={{
-            padding: '8px',
-            width: '70%',
-            marginRight: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-          }}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              handleAddTask(e);
-            }
-          }}
-        />
-        <button
-          type="submit"
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          追加
-        </button>
-      </form>
-
-      {/* 4. タスク一覧の表示 */}
-      <div>
-        <h2>タスク一覧 ({tasks.length}件)</h2>
-        {tasks.map((task) => (
-          <div
-            key={task.id}
-            style={{
-              border: '1px solid #ccc',
-              padding: '15px',
-              margin: '10px 0',
-              backgroundColor: task.completed ? '#f0f8f0' : '#fff',
-              borderRadius: '4px',
-            }}
-          >
-            <span
-              style={{
-                textDecoration: task.completed ? 'line-through' : 'none',
-                fontSize: '16px',
-              }}
-            >
-              {task.title}
-            </span>
-            <span
-              style={{ marginLeft: '10px', fontSize: '12px', color: '#666' }}
-            >
-              {task.completed ? '完了' : '未完了'}
-            </span>
-
-            <div style={{ marginTop: '10px' }}>
-              <button
-                style={{
-                  marginRight: '5px',
-                  padding: '4px 8px',
-                  fontSize: '12px',
-                  backgroundColor: task.completed ? '#ffc107' : '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                }}
-              >
-                {task.completed ? '未完了にする' : '完了にする'}
-              </button>
-              <button
-                style={{
-                  padding: '4px 8px',
-                  fontSize: '12px',
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                }}
-              >
-                削除
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+-      <p>ここにタスクを表示します</p>
++      <div>
++        <h2>タスク一覧</h2>
++        {/* 2. map() によるタスクの表示 */}
++        {tasks.map((task) => (
++          <div
++            key={task.id}
++            style={{
++              border: '1px solid #ccc',
++              padding: '10px',
++              margin: '10px 0',
++              backgroundColor: task.completed ? '#f0f8f0' : '#fff',
++            }}
++          >
++            {/* 3. 条件付きスタイリング */}
++            <span
++              style={{
++                textDecoration: task.completed ? 'line-through' : 'none',
++              }}
++            >
++              {task.title}
++            </span>
++            <span
++              style={{ marginLeft: '10px', fontSize: '12px', color: '#666' }}
++            >
++              {task.completed ? '完了' : '未完了'}
++            </span>
++          </div>
++        ))}
++      </div>
     </div>
   );
 }
 ```
 
-### コードの解説
+## コードの解説
 
-<Steps>
-
-1. **状態の定義**
-
+1. **タスクデータの定義**
    ```javascript
-   const [tasks, setTasks] = useState([
+   const tasks = [
      { id: 1, title: '買い物に行く', completed: false },
      { id: 2, title: '宿題をする', completed: true },
      { id: 3, title: '友達に連絡する', completed: false },
-   ]);
-   const [newTaskTitle, setNewTaskTitle] = useState('');
+   ];
    ```
+   - `tasks` 配列に、各タスクの情報を格納
+   - 各タスクは `id`、`title`、`completed` の3つのプロパティを持つオブジェクト
+   - `id` は一意の識別子として使用
+   - `completed` はタスクの完了状態を表す真偽値
 
-   > 💡 **状態管理について**
-   > - 状態とは、コンポーネントが保持するデータのことです
-   > - `useState`は状態の値と、それを更新する関数のペアを返します
-   > - 状態が更新されると、Reactは自動的に画面を更新します
-   > - この例では2つの状態を管理しています：
-   >   1. `tasks`: タスクの配列（初期値として3つのタスクを設定）
-   >   2. `newTaskTitle`: 新規タスクの入力値（初期値は空文字列）
-   >
-   > より詳しく知りたい方は、[https://ja.react.dev/learn/state-a-components-memory](https://ja.react.dev/learn/state-a-components-memory) を参考にしてください。
+   > 💡 **配列**: 複数のデータを順序付けて格納するデータ構造です。このステップでは、タスクの情報を配列として管理します。
 
-2. **タスク追加の処理**
-
+2. **map() によるタスクの表示**
    ```javascript
-   const handleAddTask = (e) => {
-     e.preventDefault();
-     if (!newTaskTitle.trim()) {
-       alert('タスクタイトルを入力してください');
-       return;
-     }
-
-     const newTask = {
-       id: Date.now(), // 簡単なID生成（現在時刻を使用）
-       title: newTaskTitle,
-       completed: false,
-     };
-
-     setTasks([...tasks, newTask]);
-     setNewTaskTitle('');
-   };
-   ```
-
-   > 💡 **タスク追加の処理について**
-   > - `e.preventDefault()`: フォームのデフォルトの送信動作を防止
-   > - `newTaskTitle.trim()`: 入力値の前後の空白を削除してチェック
-   > - `Date.now()`: 現在のタイムスタンプをIDとして使用（一意の値）
-   > - `[...tasks, newTask]`: スプレッド演算子を使用して既存のタスク配列に新しいタスクを追加
-   > - `setNewTaskTitle('')`: 入力フィールドをクリア
-
-3. **フォームの実装**
-
-   ```javascript
-   <form onSubmit={handleAddTask} style={{ marginBottom: '20px' }}>
-     <input
-       type="text"
-       value={newTaskTitle}
-       onChange={(e) => setNewTaskTitle(e.target.value)}
-       placeholder="新しいタスクを入力"
+   {tasks.map((task) => (
+     <div
+       key={task.id}
        style={{
-         padding: '8px',
-         width: '70%',
-         marginRight: '10px',
          border: '1px solid #ccc',
-         borderRadius: '4px',
+         padding: '10px',
+         margin: '10px 0',
+         backgroundColor: task.completed ? '#f0f8f0' : '#fff',
        }}
-       onKeyPress={(e) => {
-         if (e.key === 'Enter') {
-           handleAddTask(e);
-         }
-       }}
-     />
-     <button type="submit">追加</button>
-   </form>
+     >
+       {/* ... */}
+     </div>
+   ))}
    ```
+   - `tasks.map()` で各タスクを処理
+   - `key={task.id}` で各要素に一意の識別子を付与
+   - 各タスクを `div` 要素として表示
+   - 完了状態に応じて背景色を変更
 
-   > 💡 **フォームの実装について**
-   > - `onSubmit`: フォーム送信時のイベントハンドラ
-   > - `value={newTaskTitle}`: 入力フィールドの値を状態と同期
-   > - `onChange`: 入力値が変更された時のイベントハンドラ
-   > - `onKeyPress`: Enterキーが押された時のイベントハンドラ
-   > - スタイリングはインラインで実装（後ほどCSSモジュールやTailwind CSSなどで改善可能）
+   > 💡 **map()**: 配列の各要素に対して処理を行い、新しい配列を作成するメソッドです。例えば、タスクの配列から表示用のHTML要素の配列を作成する際に使用します。
 
-4. **タスク一覧の表示**
+   > 💡 **key**: React でリストを表示する際に必要な、各要素を一意に識別するための属性です。Reactが効率的にDOMを更新するために使用されます。
 
+3. **条件付きスタイリング**
    ```javascript
-   <div>
-     <h2>タスク一覧 ({tasks.length}件)</h2>
-     {tasks.map((task) => (
-       <div key={task.id}>
-         <span>{task.title}</span>
-         <span>{task.completed ? '完了' : '未完了'}</span>
-         <div>
-           <button>{task.completed ? '未完了にする' : '完了にする'}</button>
-           <button>削除</button>
-         </div>
-       </div>
-     ))}
-   </div>
+   style={{
+     backgroundColor: task.completed ? '#f0f8f0' : '#fff',
+   }}
    ```
-
-   > 💡 **タスク一覧の表示について**
-   > - `tasks.map()`: 配列の各要素に対して処理を実行
-   > - `key={task.id}`: Reactのリスト表示で必要な一意のキー
-   > - 条件付きレンダリング: `task.completed ? '完了' : '未完了'`
-   > - スタイリング: 完了状態に応じて背景色やテキストの装飾を変更
-
-5. **フォームのイベントハンドリング**
-
    ```javascript
-   <form onSubmit={handleAddTask}>
-     <input
-       onChange={(e) => setNewTaskTitle(e.target.value)}
-       onKeyPress={(e) => {
-         if (e.key === 'Enter') {
-           handleAddTask(e);
-         }
-       }}
-     />
-   </form>
+   style={{
+     textDecoration: task.completed ? 'line-through' : 'none',
+   }}
    ```
+   - 三項演算子を使って、完了状態に応じてスタイルを変更
+   - 完了したタスクは取り消し線と背景色を変更
+   - 未完了のタスクは通常の表示
 
-   > 💡 **フォームのイベントハンドリングについて**
-   > - `onSubmit`: フォーム送信時のイベントハンドラ
-   >   - `e.preventDefault()`でデフォルトの送信動作を防止
-   >   - 入力値のバリデーションを実行
-   >   - 新しいタスクを追加
-   > 
-   > - `onChange`: 入力値変更時のイベントハンドラ
-   >   - `e.target.value`で入力フィールドの現在の値を取得
-   >   - `setNewTaskTitle`で状態を更新
-   > 
-   > - `onKeyPress`: Enterキー押下時のイベントハンドラ
-   >   - `e.key === 'Enter'`でEnterキーの押下を検知
-   >   - Enterキー押下時も`handleAddTask`を実行
-   >
-   > より詳しく知りたい方は、[MDNのイベントハンドリングの解説](https://developer.mozilla.org/ja/docs/Learn/JavaScript/Building_blocks/Events)を参考にしてください。
+   > 💡 **三項演算子**: `条件 ? 真の場合の値 : 偽の場合の値` という形式で、条件に応じて異なる値を返す演算子です。条件分岐を簡潔に書くことができます。
 
-</Steps>
+## よくある問題と解決方法
 
-### よくある問題と解決方法
-
-**タスクが追加されない場合**
-- `useState` が正しくインポートされているか確認
-- フォームの送信イベントが正しく処理されているか確認
+**タスクが表示されない場合**
+- `tasks` 配列が正しく定義されているか確認
+- `map()` の構文が正しいか確認
 - コンソールにエラーが表示されていないか確認
 
-**入力フィールドが更新されない場合**
-- `onChange` イベントハンドラが正しく設定されているか確認
-- 状態の更新関数が正しく呼び出されているか確認
+**スタイルが適用されない場合**
+- 三項演算子の条件式が正しいか確認
+- スタイルのプロパティ名が正しいか確認
+- 値の型（文字列、数値）が適切か確認
 
-### 🔍 動作確認
+**key の警告が表示される場合**
+- 各タスクに一意の `id` が設定されているか確認
+- `key` プロパティが正しく設定されているか確認
+- `map()` の中で `key` を指定しているか確認
 
-実装した機能が正しく動作するか確認してみましょう：
+## 🔍 確認
+
+実装した機能が正しく動作しているか確認しましょう：
 
 import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 <div>
-  <ChecklistItem client:load id="step4-point1">
-    新しいタスクを入力できる
+  <ChecklistItem client:load id="step3-point1">
+    3つのタスクが表示される
   </ChecklistItem>
-  <ChecklistItem client:load id="step4-point2">
-    追加ボタンをクリックするとタスクが追加される
+  <ChecklistItem client:load id="step3-point2">
+    完了したタスクに取り消し線が表示される
   </ChecklistItem>
-  <ChecklistItem client:load id="step4-point3">
-    タスク追加後に入力フィールドがクリアされる
+  <ChecklistItem client:load id="step3-point3">
+    完了したタスクの背景色が緑っぽくなる
   </ChecklistItem>
-  <ChecklistItem client:load id="step4-point4">
-    空のタスクは追加されない
-  </ChecklistItem>
-  <ChecklistItem client:load id="step4-point5">
-    Enterキーでもタスクが追加される
-  </ChecklistItem>
-  <ChecklistItem client:load id="step4-point6">
-    タスク件数が正しく表示される
+  <ChecklistItem client:load id="step3-point4">
+    各タスクの状態（完了/未完了）が表示される
   </ChecklistItem>
 </div>
 
-### 🎯 理解度チェッククイズ
+## 🎯 理解度チェック
 
 以下の質問に答えて、学習内容を確認しましょう！
 
-1. **Reactで状態を管理するために使用するフックは？**
+1. **配列の各要素を処理して新しい配列を作成するメソッドは？**
 
-   - A: `useEffect`
-   - B: `useState`
-   - C: `useContext`
-   - D: `useReducer`
+   - A: `forEach()`
+   - B: `map()`
+   - C: `filter()`
+   - D: `reduce()`
 
-   <details>
-   <summary>答えを見る</summary>
+<details>
+<summary>答えを見る</summary>
 
-   **答え: B: `useState`**
-   - `useState` はコンポーネント内で状態を管理するための基本的なフックです
-   - 状態の値と、それを更新する関数のペアを返します
-   </details>
+   **答え: B: `map()`**
 
-2. **フォームの送信を防止するために使用するメソッドは？**
+   - `map()` は配列の各要素に対して処理を行い、新しい配列を作成します
+   - このステップでは、タスクデータを HTML 要素の配列に変換するために使用しています
+</details>
 
-   - A: `stopPropagation()`
-   - B: `preventDefault()`
-   - C: `stopImmediatePropagation()`
-   - D: `cancelBubble()`
+2. **React でリストを表示する際に必要な属性は？**
 
-   <details>
-   <summary>答えを見る</summary>
+   - A: `id`
+   - B: `key`
+   - C: `name`
+   - D: `index`
 
-   **答え: B: `preventDefault()`**
-   - `preventDefault()` はイベントのデフォルトの動作を防止します
-   - フォームの送信時には、ページのリロードを防ぐために使用します
-   </details>
+<details>
+<summary>答えを見る</summary>
 
-3. **入力フィールドの値が変更された時に発生するイベントは？**
+   **答え: B: `key`**
 
-   - A: `onClick`
-   - B: `onChange`
-   - C: `onSubmit`
-   - D: `onInput`
+   - `key` は各要素を一意に識別するために必要な属性です
+   - React が効率的に DOM を更新するために使用されます
+</details>
 
-   <details>
-   <summary>答えを見る</summary>
+3. **条件に応じて異なるスタイルを適用する方法は？**
 
-   **答え: B: `onChange`**
-   - `onChange` イベントは、入力フィールドの値が変更されるたびに発生します
-   - フォームの制御には、このイベントを使用して状態を更新します
-   </details>
+   - A: `if` 文
+   - B: `switch` 文
+   - C: 三項演算子
+   - D: `for` 文
 
---- 
+<details>
+<summary>答えを見る</summary>
+
+   **答え: C: 三項演算子**
+
+   - 三項演算子（`条件 ? 真の場合の値 : 偽の場合の値`）を使って、条件に応じて異なるスタイルを適用できます
+   - このステップでは、タスクの完了状態に応じてスタイルを変更するために使用しています
+</details>
+
+## 📝 まとめ
+
+このステップでは以下について学びました。
+
+- **配列データの扱い方**
+  - タスクデータの配列定義
+  - `map()` による配列の処理
+  - `key` プロパティの重要性
+
+- **条件付きスタイリング**
+  - 三項演算子の使い方
+  - 完了状態に応じたスタイル変更
+  - インラインスタイルの応用
+
+- **React の基本概念**
+  - リストの表示方法
+  - コンポーネントの構造
+  - 条件付きレンダリング
+
+- **トラブルシューティング**
+  - 配列処理の問題解決
+  - スタイル適用の問題解決
+  - エラーメッセージの確認方法
+
+---

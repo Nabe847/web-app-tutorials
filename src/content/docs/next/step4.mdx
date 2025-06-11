@@ -1,5 +1,5 @@
 ---
-title: '3: タスクの表示'
+title: '4: メインページの追加'
 pubDate: 2025-06-09
 description: 'Next.js の初心者向けチュートリアルです'
 author: 'Nabe847'
@@ -11,139 +11,243 @@ tags: ['Next.js', 'tutorial']
 
 ## このステップで学ぶこと
 
-前回の基本ページ作成に続いて、今回はタスクの表示機能を実装していきます。配列データの扱い方や、条件に応じた表示の切り替えを学びましょう。
+前はトップページのスタイリングを行いました。  
+今回はTodoリストを表示するメインページの追加とページ間をリンクさせる方法について学びます。
 
-1. **配列データの表示方法**
-2. **`map()`を使った繰り返し処理**
-3. **条件分岐による表示切り替え**
-4. **インラインスタイルの応用**
+1. **新しいページの作成方法**
+2. **ページ間のリンク機能**
 
-## タスク表示機能の実装
+## メインページの実装
 
-src/app/page.js を開いて、以下の変更を加えてください：
+まず、`src/app/todos`ディレクトリを作成し、その中に`page.js`ファイルを作成しましょう。  
+作成した`page.js`に以下のコードを貼り付けましょう。
 
-```diff lang="js"
-export default function Home() {
-+  // 1. タスクデータの定義
-+  const tasks = [
-+    { id: 1, title: '買い物に行く', completed: false },
-+    { id: 2, title: '宿題をする', completed: true },
-+    { id: 3, title: '友達に連絡する', completed: false },
-+  ];
+```javascript
+// src/app/todos/page.js
 
+export default function Todos() {
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <h1>タスク管理アプリ</h1>
--      <p>ここにタスクを表示します</p>
-+      <div>
-+        <h2>タスク一覧</h2>
-+        {/* 2. map() によるタスクの表示 */}
-+        {tasks.map((task) => (
-+          <div
-+            key={task.id}
-+            style={{
-+              border: '1px solid #ccc',
-+              padding: '10px',
-+              margin: '10px 0',
-+              backgroundColor: task.completed ? '#f0f8f0' : '#fff',
-+            }}
-+          >
-+            {/* 3. 条件付きスタイリング */}
-+            <span
-+              style={{
-+                textDecoration: task.completed ? 'line-through' : 'none',
-+              }}
-+            >
-+              {task.title}
-+            </span>
-+            <span
-+              style={{ marginLeft: '10px', fontSize: '12px', color: '#666' }}
-+            >
-+              {task.completed ? '完了' : '未完了'}
-+            </span>
-+          </div>
-+        ))}
-+      </div>
-    </div>
+    <section>
+      <h1>Todoリスト</h1>
+      <div>
+        <label>
+          <input type="checkbox" />
+          買い物に行く
+        </label>
+        <label>
+          <input type="checkbox" />
+          メールを確認する
+        </label>
+        <label>
+          <input type="checkbox" />
+          資料を作成する
+        </label>
+        <label>
+          <input type="checkbox" />
+          友達に電話する
+        </label>
+        <label>
+          <input type="checkbox" />
+          部屋の掃除
+        </label>
+      </div>
+    </section>
   );
 }
 ```
 
-## コードの解説
+## 🚀 動作確認(ページの追加)
 
-1. **タスクデータの定義**
-   ```javascript
-   const tasks = [
-     { id: 1, title: '買い物に行く', completed: false },
-     { id: 2, title: '宿題をする', completed: true },
-     { id: 3, title: '友達に連絡する', completed: false },
-   ];
-   ```
-   - `tasks` 配列に、各タスクの情報を格納
-   - 各タスクは `id`、`title`、`completed` の3つのプロパティを持つオブジェクト
-   - `id` は一意の識別子として使用
-   - `completed` はタスクの完了状態を表す真偽値
+`http://localhost:3000/todos` にアクセスして、変更が反映されているか確認してください。  
+以下のように表示されていればOKです。
 
-   > 💡 **配列**: 複数のデータを順序付けて格納するデータ構造です。このステップでは、タスクの情報を配列として管理します。
+![Next.jsの初期画面](../../../assets/step4-simple-main-page.png)
 
-2. **map() によるタスクの表示**
-   ```javascript
-   {tasks.map((task) => (
-     <div
-       key={task.id}
-       style={{
-         border: '1px solid #ccc',
-         padding: '10px',
-         margin: '10px 0',
-         backgroundColor: task.completed ? '#f0f8f0' : '#fff',
-       }}
-     >
-       {/* ... */}
-     </div>
-   ))}
-   ```
-   - `tasks.map()` で各タスクを処理
-   - `key={task.id}` で各要素に一意の識別子を付与
-   - 各タスクを `div` 要素として表示
-   - 完了状態に応じて背景色を変更
+## メインページのスタイリング
 
-   > 💡 **map()**: 配列の各要素に対して処理を行い、新しい配列を作成するメソッドです。例えば、タスクの配列から表示用のHTML要素の配列を作成する際に使用します。
+次にTodoリストのスタイルを整えましょう。  
+`src/app/todos`ディレクトリに`page.module.css`ファイルを作成し、以下の内容を貼り付けます。
 
-   > 💡 **key**: React でリストを表示する際に必要な、各要素を一意に識別するための属性です。Reactが効率的にDOMを更新するために使用されます。
+```css
+// src/app/todos/page.module.css
 
-3. **条件付きスタイリング**
-   ```javascript
-   style={{
-     backgroundColor: task.completed ? '#f0f8f0' : '#fff',
-   }}
-   ```
-   ```javascript
-   style={{
-     textDecoration: task.completed ? 'line-through' : 'none',
-   }}
-   ```
-   - 三項演算子を使って、完了状態に応じてスタイルを変更
-   - 完了したタスクは取り消し線と背景色を変更
-   - 未完了のタスクは通常の表示
+/*
+ * 出典：CSS Stock
+ * URL: https://pote-chil.com/css-stock/ja/
+ * 一部カスタマイズして使用
+ */
 
-   > 💡 **三項演算子**: `条件 ? 真の場合の値 : 偽の場合の値` という形式で、条件に応じて異なる値を返す演算子です。条件分岐を簡潔に書くことができます。
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  padding: 30px;
+  padding-top: 10%;
+}
 
-## よくある問題と解決方法
+.checkbox {
+  width: 40%;
+  border: none;
+}
 
-**タスクが表示されない場合**
-- `tasks` 配列が正しく定義されているか確認
-- `map()` の構文が正しいか確認
-- コンソールにエラーが表示されていないか確認
+.checkbox label {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0 0.6em;
+  position: relative;
+  margin-bottom: 0.6em;
+  padding: 0.5em 0.7em;
+  border: 1px solid #2589d0;
+  border-radius: 3px;
+  background-color: #2589d026;
+  cursor: pointer;
+}
 
-**スタイルが適用されない場合**
-- 三項演算子の条件式が正しいか確認
-- スタイルのプロパティ名が正しいか確認
-- 値の型（文字列、数値）が適切か確認
+.checkbox label:has(:checked) {
+  background-color: #2589d0;
+  color: #fff;
+}
 
-**key の警告が表示される場合**
-- 各タスクに一意の `id` が設定されているか確認
-- `key` プロパティが正しく設定されているか確認
-- `map()` の中で `key` を指定しているか確認
+.checkbox label::before {
+  width: 14px;
+  height: 14px;
+  border-radius: 1px;
+  background-color: #fff;
+  content: '';
+}
+
+.checkbox label:has(:checked)::after {
+  position: absolute;
+  top: 14px;
+  left: 15px;
+  transform: rotate(45deg);
+  width: 4px;
+  height: 8px;
+  border: solid #2589d0;
+  border-width: 0 2px 2px 0;
+  content: '';
+}
+
+.checkbox input {
+  display: none;
+}
+```
+
+`page.module.css`を`page.js`に適用しましょう。
+
+```diff lang="jsx"
+// src/app/todos/page.js
+
++ import style from './page.module.css';
+
+export default function Todos() {
+  return (
++    <section className={style.container}>
+      <h1>Todoリスト</h1>
++      <div className={style.checkbox}>
+        <label>
+          <input type="checkbox" />
+          買い物に行く
+        </label>
+        <label>
+          <input type="checkbox" />
+          メールを確認する
+        </label>
+        <label>
+          <input type="checkbox" />
+          資料を作成する
+        </label>
+        <label>
+          <input type="checkbox" />
+          友達に電話する
+        </label>
+        <label>
+          <input type="checkbox" />
+          部屋の掃除
+        </label>
+      </div>
+    </section>
+  );
+}
+```
+
+## 🚀 動作確認(スタイルの適用)
+
+1. ファイルを保存すると、ブラウザが自動的に更新されます（ホットリロード機能）
+2. `http://localhost:3000` にアクセスして、変更が反映されているか確認してください
+
+![Next.jsの初期画面](../../../assets/step4-styled-main-page.png)
+
+
+## メインページへのリンクの作成
+
+トップページにメインページへのリンクを作りましょう。
+
+```diff lang="jsx"
+// src/app/todos/page.js
+
+import style from './page.module.css';
+import Link from 'next/link';
+
+export default function Home() {
+  return (
+    <div className={style.container}>
+      <h1 className={style.heading}>はじめてのTodoアプリ</h1>
+      <p className={style.box}>やることリストを簡単に管理できます</p>
++      <Link href="/todos">
+        <button className={style.button}>始める</button>
++      </Link>
+    </div>
+  );
+}
+
+```
+
+## トップページへのリンクの作成
+
+メインページにトップページへのリンクを作りましょう。
+
+```diff lang="jsx"
+// src/app/todos/page.js
+
+import style from './page.module.css';
++import Link from 'next/link';
+
+export default function Todos() {
+  return (
+    <section className={style.container}>
+      <h1>Todoリスト</h1>
+      <div className={style.checkbox}>
+        <label>
+          <input type="checkbox" />
+          買い物に行く
+        </label>
+        <label>
+          <input type="checkbox" />
+          メールを確認する
+        </label>
+        <label>
+          <input type="checkbox" />
+          資料を作成する
+        </label>
+        <label>
+          <input type="checkbox" />
+          友達に電話する
+        </label>
+        <label>
+          <input type="checkbox" />
+          部屋の掃除
+        </label>
+      </div>
++      <Link href="/">トップへ戻る</Link>
+    </section>
+  );
+}
+```
+
+これでトップページからメインページ、メインからトップページに移動できるようになりました 🎉
 
 ## 🔍 確認
 
@@ -152,94 +256,57 @@ export default function Home() {
 import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 <div>
-  <ChecklistItem client:load id="step3-point1">
-    3つのタスクが表示される
+  <ChecklistItem client:load id="step4-point1">
+    トップページの「始める」ボタンをクリックするとメインページ(`/todos`)が表示される
   </ChecklistItem>
-  <ChecklistItem client:load id="step3-point2">
-    完了したタスクに取り消し線が表示される
-  </ChecklistItem>
-  <ChecklistItem client:load id="step3-point3">
-    完了したタスクの背景色が緑っぽくなる
-  </ChecklistItem>
-  <ChecklistItem client:load id="step3-point4">
-    各タスクの状態（完了/未完了）が表示される
+  <ChecklistItem client:load id="step4-point2">
+    メインページの「トップへ戻る」をクリックするとトップページ(`/`)が表示される
   </ChecklistItem>
 </div>
+
+## よくある問題と解決方法
+
+**リンクが機能しない**
+
+- `Link`コンポーネントが正しくインポートされているか確認
+- `href`属性のパスが正しいか確認
+
+**スタイルが適用されない**
+
+- CSSモジュールのインポートが正しいか確認
+- クラス名の指定が正しいか確認
+- ファイル名が`.module.css`で終わっているか確認
 
 ## 🎯 理解度チェック
 
 以下の質問に答えて、学習内容を確認しましょう！
 
-1. **配列の各要素を処理して新しい配列を作成するメソッドは？**
+1. **Next.jsでページ間のリンクを作成する際に使用するコンポーネントは？**
 
-   - A: `forEach()`
-   - B: `map()`
-   - C: `filter()`
-   - D: `reduce()`
-
-<details>
-<summary>答えを見る</summary>
-
-   **答え: B: `map()`**
-
-   - `map()` は配列の各要素に対して処理を行い、新しい配列を作成します
-   - このステップでは、タスクデータを HTML 要素の配列に変換するために使用しています
-</details>
-
-2. **React でリストを表示する際に必要な属性は？**
-
-   - A: `id`
-   - B: `key`
-   - C: `name`
-   - D: `index`
+   - A: `<a>`
+   - B: `<Link>`
+   - C: `<Route>`
+   - D: `<Navigate>`
 
 <details>
 <summary>答えを見る</summary>
 
-   **答え: B: `key`**
+   **答え: B: `<Link>`**
 
-   - `key` は各要素を一意に識別するために必要な属性です
-   - React が効率的に DOM を更新するために使用されます
-</details>
-
-3. **条件に応じて異なるスタイルを適用する方法は？**
-
-   - A: `if` 文
-   - B: `switch` 文
-   - C: 三項演算子
-   - D: `for` 文
-
-<details>
-<summary>答えを見る</summary>
-
-   **答え: C: 三項演算子**
-
-   - 三項演算子（`条件 ? 真の場合の値 : 偽の場合の値`）を使って、条件に応じて異なるスタイルを適用できます
-   - このステップでは、タスクの完了状態に応じてスタイルを変更するために使用しています
+   - Next.jsでは、ページ間のクライアントサイドナビゲーションを実現するために`Link`コンポーネントを使用します
+   - 通常の`<a>`タグと異なり、ページの完全なリロードを避け、必要な部分のみを更新することができます
 </details>
 
 ## 📝 まとめ
 
 このステップでは以下について学びました。
 
-- **配列データの扱い方**
-  - タスクデータの配列定義
-  - `map()` による配列の処理
-  - `key` プロパティの重要性
+- **ページの追加方法**
+  - 新しいページの作成
+  - コンポーネントの実装
+  - スタイルの適用
 
-- **条件付きスタイリング**
-  - 三項演算子の使い方
-  - 完了状態に応じたスタイル変更
-  - インラインスタイルの応用
-
-- **React の基本概念**
-  - リストの表示方法
-  - コンポーネントの構造
-  - 条件付きレンダリング
-
-- **トラブルシューティング**
-  - 配列処理の問題解決
-  - スタイル適用の問題解決
-  - エラーメッセージの確認方法
+- **ページ間のリンク**
+  - `Link`コンポーネントの使用方法
 
 ---
