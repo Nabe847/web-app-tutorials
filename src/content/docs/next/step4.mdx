@@ -11,7 +11,7 @@ tags: ['Next.js', 'tutorial']
 
 ## このステップで学ぶこと
 
-前はトップページのスタイリングを行いました。  
+前回はトップページのスタイリングを行いました。  
 今回はTodoリストを表示するメインページの追加とページ間をリンクさせる方法について学びます。
 
 1. **新しいページの作成方法**
@@ -66,154 +66,40 @@ export default function Todos() {
 ## メインページのスタイリング
 
 次にTodoリストのスタイルを整えましょう。  
-`src/app/todos`ディレクトリに`page.module.css`ファイルを作成し、以下の内容を貼り付けます。
+`src/app/todos/page.module.css`ファイルを作成し、以下の内容を追加します：
 
 ```css
-// src/app/todos/page.module.css
-
-/*
- * 出典：CSS Stock
- * URL: https://pote-chil.com/css-stock/ja/
- * 一部カスタマイズして使用
- */
-
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3rem;
-  padding: 30px;
-  padding-top: 10%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
 .checkbox {
-  width: 40%;
-  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .checkbox label {
-  width: 100%;
   display: flex;
   align-items: center;
-  gap: 0 0.6em;
-  position: relative;
-  margin-bottom: 0.6em;
-  padding: 0.5em 0.7em;
-  border: 1px solid #2589d0;
-  border-radius: 3px;
-  background-color: #2589d026;
-  cursor: pointer;
+  gap: 0.5rem;
+  font-size: 1.1rem;
 }
 
-.checkbox label:has(:checked) {
-  background-color: #2589d0;
-  color: #fff;
-}
-
-.checkbox label::before {
-  width: 14px;
-  height: 14px;
-  border-radius: 1px;
-  background-color: #fff;
-  content: '';
-}
-
-.checkbox label:has(:checked)::after {
-  position: absolute;
-  top: 14px;
-  left: 15px;
-  transform: rotate(45deg);
-  width: 4px;
-  height: 8px;
-  border: solid #2589d0;
-  border-width: 0 2px 2px 0;
-  content: '';
-}
-
-.checkbox input {
-  display: none;
+.checkbox input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
 }
 ```
 
-`page.module.css`を`page.js`に適用しましょう。
+そして、`page.js`を以下のように更新します：
 
-```diff lang="jsx"
-// src/app/todos/page.js
-
-+ import style from './page.module.css';
-
-export default function Todos() {
-  return (
-+    <section className={style.container}>
-      <h1>Todoリスト</h1>
-+      <div className={style.checkbox}>
-        <label>
-          <input type="checkbox" />
-          買い物に行く
-        </label>
-        <label>
-          <input type="checkbox" />
-          メールを確認する
-        </label>
-        <label>
-          <input type="checkbox" />
-          資料を作成する
-        </label>
-        <label>
-          <input type="checkbox" />
-          友達に電話する
-        </label>
-        <label>
-          <input type="checkbox" />
-          部屋の掃除
-        </label>
-      </div>
-    </section>
-  );
-}
-```
-
-## 🚀 動作確認(スタイルの適用)
-
-1. ファイルを保存すると、ブラウザが自動的に更新されます（ホットリロード機能）
-2. `http://localhost:3000` にアクセスして、変更が反映されているか確認してください
-
-![Next.jsの初期画面](../../../assets/step4-styled-main-page.png)
-
-
-## メインページへのリンクの作成
-
-トップページにメインページへのリンクを作りましょう。
-
-```diff lang="jsx"
+```javascript
 // src/app/todos/page.js
 
 import style from './page.module.css';
-import Link from 'next/link';
-
-export default function Home() {
-  return (
-    <div className={style.container}>
-      <h1 className={style.heading}>はじめてのTodoアプリ</h1>
-      <p className={style.box}>やることリストを簡単に管理できます</p>
-+      <Link href="/todos">
-        <button className={style.button}>始める</button>
-+      </Link>
-    </div>
-  );
-}
-
-```
-
-## トップページへのリンクの作成
-
-メインページにトップページへのリンクを作りましょう。
-
-```diff lang="jsx"
-// src/app/todos/page.js
-
-import style from './page.module.css';
-+import Link from 'next/link';
 
 export default function Todos() {
   return (
@@ -241,13 +127,34 @@ export default function Todos() {
           部屋の掃除
         </label>
       </div>
-+      <Link href="/">トップへ戻る</Link>
     </section>
   );
 }
 ```
 
-これでトップページからメインページ、メインからトップページに移動できるようになりました 🎉
+## ページ間のリンク
+
+トップページからメインページへのリンクを追加しましょう。  
+`src/app/page.js`を以下のように更新します：
+
+```javascript
+// src/app/page.js
+
+import style from './page.module.css';
+import Link from 'next/link';
+
+export default function Home() {
+  return (
+    <div className={style.container}>
+      <h1 className={style.heading}>はじめてのTodoアプリ</h1>
+      <p className={style.box}>やることリストを簡単に管理できます</p>
+      <Link href="/todos">
+        <button className={style.button}>始める</button>
+      </Link>
+    </div>
+  );
+}
+```
 
 ## 🔍 確認
 
@@ -277,6 +184,63 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 - クラス名の指定が正しいか確認
 - ファイル名が`.module.css`で終わっているか確認
 
+## ここまでの作業の解説
+
+ここまでで、新しいページの追加とページ間のリンクを実装しました。  
+この実装の背景にある重要な概念を説明します。
+
+### ルーティング
+
+ルーティングとは、WebアプリケーションでURLに応じて適切なページを表示する仕組みのことです。
+
+> 💡 **URLのパス**: URLの中で、ドメイン名の後ろに続く部分のことです。  
+> 例えば、`http://localhost:3000/todos`の場合、`/todos`がパスです。  
+> パスは`/`（スラッシュ）で始まり、その後に続く文字列でページを区別します。
+
+この章では以下のようなルーティングを設定しました：
+- `http://localhost:3000/` → トップページ（`app/page.js`）
+- `http://localhost:3000/todos` → Todoリストページ（`app/todos/page.js`）
+
+このように、URLのパス（`/`や`/todos`など）に応じて、表示するページを切り替える必要があります。
+
+### ファイルベースルーティング
+
+Webアプリケーションでルーティングを実装する方法はいくつかありますが、Next.jsでは「ファイルベースルーティング」という方式を採用しています。
+
+> 💡 **ファイルベースルーティング**: フォルダとファイルの配置を使ってルーティングを定義する方式です。  
+> フォルダとファイルの配置がそのままURLのパスになります。  
+> この章では、`app/todos/page.js`というファイルを作成することで、`/todos`というURLでアクセスできるようになりました。
+
+この方式のメリット：
+- 直感的：ファイルの場所がそのままURLになる
+- シンプル：特別な設定ファイルが不要
+
+### Next.jsのファイルベースルーティングの仕組み
+
+Next.jsのファイルベースルーティングについて詳しく説明します：
+
+1. **基本的なルール**
+   - `app`フォルダの中に作ったフォルダとファイルがURLのパスになります
+   - `page.js`というファイル名のファイルが、そのフォルダのページになります
+   - この章で実装した例：
+     - `app/page.js` → `/`（トップページ）
+     - `app/todos/page.js` → `/todos`（Todoリストページ）
+
+2. **動的ルーティング**
+   - `[id]`のような角括弧で囲まれたフォルダ名は動的なパラメータになります
+   - 例：`app/todos/[id]/page.js` → `/todos/1`, `/todos/2`など
+
+> 💡 **動的**: 「動的」とは、URLの一部が固定ではなく、様々な値を受け取れることを意味します。例えば、`/todos/1`や`/todos/2`のように、IDをパスに含めることで各Todoにユニークなパスを表現できます。
+
+> 💡 **動的ルーティングのパラメータ**: 動的ルーティングで受け取ったパラメータは、`page.js`の中で以下のように取得できます。  
+> ```javascript
+> // app/todos/[id]/page.js
+> export default function TodoDetail({ params }) {
+>   // params.id でURLのパラメータを取得できます（例：/todos/1 の場合、params.id は "1"）
+>   return <div>Todo ID: {params.id}</div>
+> }
+> ```
+
 ## 🎯 理解度チェック
 
 以下の質問に答えて、学習内容を確認しましょう！
@@ -297,16 +261,51 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
    - 通常の`<a>`タグと異なり、ページの完全なリロードを避け、必要な部分のみを更新することができます
 </details>
 
+2. **Next.jsのファイルベースルーティングで、`src/app/todos/page.js`はどのURLに対応しますか？**
+
+   - A: `/`
+   - B: `/todos`
+   - C: `/page`
+   - D: `/todos/page`
+
+<details>
+<summary>答えを見る</summary>
+
+   **答え: B: `/todos`**
+
+   - ファイルベースルーティングでは、`src/app`フォルダの中のファイル構造がそのままURLのパスになります
+   - `page.js`は`/todos`にアクセスしたときに表示されるページを定義します
+</details>
+
+3. **動的ルーティングで、`src/app/todos/[id]/page.js`の`[id]`は何を表しますか？**
+
+   - A: 決まった値
+   - B: 自由に変えられる値
+   - C: データベースのID
+   - D: ページ番号
+
+<details>
+<summary>答えを見る</summary>
+
+   **答え: B: 自由に変えられる値**
+
+   - `[id]`は`/todos/1`や`/todos/2`のように、URLの一部として自由に値を変えられます
+   - この値は`page.js`の中で`params.id`として取得できます
+</details>
+
 ## 📝 まとめ
 
-このステップでは以下について学びました。
+このステップでは、以下の内容を学びました：
 
-- **ページの追加方法**
-  - 新しいページの作成
-  - コンポーネントの実装
-  - スタイルの適用
+- ページ間のリンクの作成方法
+  - `Link`コンポーネントを使って、ページ間を移動できます
+- ファイルベースルーティングの仕組み
+  - `src/app`フォルダの中のファイル構造がURLのパスになります
+  - `page.js`はそのパスにアクセスしたときに表示されるページを定義します
+- 動的ルーティングの基本的な使い方
+  - `[id]`のような角括弧で囲まれたフォルダ名で、自由に値を変えられるパスを作れます
+  - この値は`page.js`の中で`params.id`として取得できます
 
-- **ページ間のリンク**
-  - `Link`コンポーネントの使用方法
+次のステップでは、Todoリストの機能を実装していきます。
 
 ---
