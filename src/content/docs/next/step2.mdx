@@ -89,9 +89,12 @@ export default function Home() {
 ## 🚀 動作確認
 
 1. ファイルを保存すると、ブラウザが自動的に更新されます（ホットリロード機能）
-2. `http://localhost:3000` にアクセスして、変更が反映されているか確認してください
+2. `http://localhost:3000` にアクセスして変更が反映されているか確認しましょう    
 
 ![Next.jsの初期画面](../../../assets/step2-simple-top-page.png)
+    - トップページに「はじめてのTodoアプリ」というタイトルが表示されている
+    - トップページに「やることリストを簡単に管理できます」という説明文が表示されている
+    - 「始める」ボタンが表示されている
 
 ## よくある問題と解決方法
 
@@ -106,24 +109,6 @@ export default function Home() {
 - コードの書き方が正しいか確認
 - 中括弧 `{}` や括弧 `()` の閉じ忘れがないか確認
 - セミコロン `;` の付け忘れがないか確認
-
-## 🔍 確認
-
-実装した機能が正しく動作しているか確認しましょう：
-
-import ChecklistItem from '../../../components/ChecklistItem.jsx';
-
-<div>
-  <ChecklistItem client:load id="step2-point3">
-    トップページに「はじめてのTodoアプリ」というタイトルが表示されている
-  </ChecklistItem>
-  <ChecklistItem client:load id="step2-point4">
-    トップページに「やることリストを簡単に管理できます」という説明文が表示されている
-  </ChecklistItem>
-  <ChecklistItem client:load id="step2-point5">
-    「始める」ボタンが表示されている
-  </ChecklistItem>
-</div>
 
 ## 🎯 理解度チェック
 
