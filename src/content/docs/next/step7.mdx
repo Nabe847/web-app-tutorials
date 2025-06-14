@@ -78,11 +78,13 @@ export default function Todos() {
       <div className={style.checkbox}>
         {todos.map(todo => (
           <div key={todo.id}>
++            {/* 2. Todoの完了状態に応じたスタイルの切り替え*/}
 +            <label className={todo.completed ? style.completed : ''}>
               <input
                 type="checkbox"
-                checked={todo.completed}
-+                onChange={() => handleToggleComplete(todo.id)}
++                onChange={() =>
++                  // 3. チェックボックスがクリックされたときの処理の登録
++                  handleToggleComplete(todo.id)}
               />
               {todo.title}
             </label>
@@ -96,12 +98,7 @@ export default function Todos() {
 
 ### コードの説明
 
-1. **状態管理の基本**
-   - `useState` フックを使って、データを保存する場所（状態）を作ります
-   - `todos`: Todo一覧を保存する配列
-   - `newTodo`: 入力フォームの文字を保存する変数
-
-2. **Todoの完了状態を更新する仕組み**
+1. **Todoの完了状態を更新する処理**
    ```javascript
    const handleToggleComplete = (todoId) => {
      setTodos(todos.map(todo =>
@@ -111,15 +108,14 @@ export default function Todos() {
      ));
    };
    ```
-   - `map()`: 配列の各要素に対して、同じ処理を行います
-   - `todo.id === todoId`: クリックされたTodoを見つけます
+   - `todoId`: 更新対象のTodoのIDを受け取ります
+   - `todos.map()`: 配列の各要素に対して処理を行います
+   - `todo.id === todoId`: 更新対象のTodoを見つけます
    - `{ ...todo, completed: !todo.completed }`: Todoの完了状態を反転させます
    - `setTodos()`: 更新されたTodo一覧を保存します
 
-3. **チェックボックスの基本**
-   - `checked`: チェックボックスの状態（チェックされているかどうか）を指定します
-   - `onChange`: チェックボックスがクリックされたときの処理を指定します
-   - `className={todo.completed ? style.completed : ''}`: Todoが完了しているかどうかで、見た目を変えます
+2. チェック状態に応じたスタイルの切り替え
+3. チェックボックスがクリックされたときの処理の登録
 
 ## スタイルの更新
 
