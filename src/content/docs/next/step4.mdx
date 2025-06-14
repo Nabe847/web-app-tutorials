@@ -14,7 +14,7 @@ tags: ['Next.js', 'tutorial']
 前回はトップページのスタイリングを行いました。  
 今回はTodoリストを表示するメインページの追加とページ間をリンクさせる方法について学びます。
 
-1. **新しいページの作成方法**
+1. **新しいページを追加する方法**
 2. **ページ間のリンク機能**
 
 ## メインページの実装
@@ -30,30 +30,41 @@ export default function Todos() {
     <section>
       <h1>Todoリスト</h1>
       <div>
-        <label>
-          <input type="checkbox" />
-          買い物に行く
-        </label>
-        <label>
-          <input type="checkbox" />
-          メールを確認する
-        </label>
-        <label>
-          <input type="checkbox" />
-          資料を作成する
-        </label>
-        <label>
-          <input type="checkbox" />
-          友達に電話する
-        </label>
-        <label>
-          <input type="checkbox" />
-          部屋の掃除
-        </label>
+        <div>
+          <label>
+            <input type="checkbox" />
+            買い物に行く
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            メールを確認する
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            資料を作成する
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            友達に電話する
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            部屋の掃除
+          </label>
+        </div>
       </div>
     </section>
   );
 }
+
 ```
 
 ## 🚀 動作確認(ページの追加)
@@ -69,107 +80,206 @@ export default function Todos() {
 `src/app/todos/page.module.css`ファイルを作成し、以下の内容を追加します：
 
 ```css
+// src/app/todos/page.module.css
+
+/*
+ * 出典：CSS Stock
+ * URL: https://pote-chil.com/css-stock/ja/
+ * 一部カスタマイズして使用
+ */
+
 .container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  padding: 30px;
+  padding-top: 10%;
 }
 
 .checkbox {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  width: 40%;
+  border: none;
 }
 
 .checkbox label {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.1rem;
+  gap: 0 0.6em;
+  position: relative;
+  margin-bottom: 0.6em;
+  padding: 0.5em 0.7em;
+  border: 1px solid #2589d0;
+  border-radius: 3px;
+  background-color: #2589d026;
+  cursor: pointer;
 }
 
-.checkbox input[type="checkbox"] {
-  width: 1.2rem;
-  height: 1.2rem;
+.checkbox label:has(:checked) {
+  background-color: #2589d0;
+  color: #fff;
 }
+
+.checkbox label::before {
+  width: 14px;
+  height: 14px;
+  border-radius: 1px;
+  background-color: #fff;
+  content: '';
+}
+
+.checkbox label:has(:checked)::after {
+  position: absolute;
+  top: 14px;
+  left: 15px;
+  transform: rotate(45deg);
+  width: 4px;
+  height: 8px;
+  border: solid #2589d0;
+  border-width: 0 2px 2px 0;
+  content: '';
+}
+
+.checkbox input {
+  display: none;
+}
+
 ```
 
 そして、`page.js`を以下のように更新します：
 
-```javascript
+```diff lang="jsx"
 // src/app/todos/page.js
 
-import style from './page.module.css';
++import style from './page.module.css';
 
 export default function Todos() {
   return (
-    <section className={style.container}>
++    <section className={style.container}>
       <h1>Todoリスト</h1>
-      <div className={style.checkbox}>
-        <label>
-          <input type="checkbox" />
-          買い物に行く
-        </label>
-        <label>
-          <input type="checkbox" />
-          メールを確認する
-        </label>
-        <label>
-          <input type="checkbox" />
-          資料を作成する
-        </label>
-        <label>
-          <input type="checkbox" />
-          友達に電話する
-        </label>
-        <label>
-          <input type="checkbox" />
-          部屋の掃除
-        </label>
++      <div className={style.checkbox}>
+        <div>
+          <label>
+            <input type="checkbox" />
+            買い物に行く
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            メールを確認する
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            資料を作成する
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            友達に電話する
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            部屋の掃除
+          </label>
+        </div>
       </div>
     </section>
   );
 }
+
 ```
+
+![](../../../assets/step4-styled-main-page.png)
 
 ## ページ間のリンク
 
-トップページからメインページへのリンクを追加しましょう。  
+まずはトップページからメインページへのリンクを追加しましょう。  
 `src/app/page.js`を以下のように更新します：
 
-```javascript
+```diff lang="jsx"
 // src/app/page.js
 
 import style from './page.module.css';
-import Link from 'next/link';
++import Link from 'next/link';
 
 export default function Home() {
   return (
     <div className={style.container}>
       <h1 className={style.heading}>はじめてのTodoアプリ</h1>
       <p className={style.box}>やることリストを簡単に管理できます</p>
-      <Link href="/todos">
++      <Link href="/todos">
         <button className={style.button}>始める</button>
-      </Link>
++      </Link>
     </div>
   );
 }
 ```
 
-## 🔍 確認
+次にメインページからトップページへのリンクを作りましょう。
+
+```diff lang="jsx"
+// src/app/todos/page.js
+
+import style from './page.module.css';
++import Link from 'next/link';
+
+export default function Todos() {
+  return (
+    <section className={style.container}>
+      <h1>Todoリスト</h1>
+      <div className={style.container}>
+        <div>
+          <label>
+            <input type="checkbox" />
+            買い物に行く
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            メールを確認する
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            資料を作成する
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            友達に電話する
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" />
+            部屋の掃除
+          </label>
+        </div>
+      </div>
++      <Link href="/">トップへ戻る</Link>
+    </section>
+  );
+}
+```
+
+これでトップページからメインページ、メインからトップページに移動できるようになりました 🎉
+
+## 🚀 動作確認
 
 実装した機能が正しく動作しているか確認しましょう：
 
-import ChecklistItem from '../../../components/ChecklistItem.jsx';
-
-<div>
-  <ChecklistItem client:load id="step4-point1">
-    トップページの「始める」ボタンをクリックするとメインページ(`/todos`)が表示される
-  </ChecklistItem>
-  <ChecklistItem client:load id="step4-point2">
-    メインページの「トップへ戻る」をクリックするとトップページ(`/`)が表示される
-  </ChecklistItem>
-</div>
+- トップページの「始める」ボタンをクリックするとメインページ(`/todos`)が表示される
+- メインページの「トップへ戻る」をクリックするとトップページ(`/`)が表示される
 
 ## よくある問題と解決方法
 
