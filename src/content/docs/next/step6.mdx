@@ -30,19 +30,19 @@ tags: ['Next.js', 'tutorial']
 import style from './page.module.css';
 
 export default function Todos() {
-  // Todoデータの定義
-  const [todos, setTodos] = useState([
-    { id: 1, title: '買い物に行く', completed: false },
-    { id: 2, title: 'メールを確認する', completed: false },
-    { id: 3, title: '資料を作成する', completed: false },
-    { id: 4, title: '友達に電話する', completed: false },
-    { id: 5, title: '部屋の掃除', completed: false },
-  ]);
++  // 1. Todoデータをステートとして管理する
++  const [todos, setTodos] = useState([
++    { id: 1, title: '買い物に行く', completed: false },
++    { id: 2, title: 'メールを確認する', completed: false },
++    { id: 3, title: '資料を作成する', completed: false },
++    { id: 4, title: '友達に電話する', completed: false },
++    { id: 5, title: '部屋の掃除', completed: false },
++  ]);
 
-+  // 1. 入力値の状態管理
++  // 2. 入力値をステートとして管理する
 +  const [newTodo, setNewTodo] = useState('');
 
-+  // 2. Todoをリストに追加する
++  // 3. Todoをリストに追加する
 +  const handleSubmit = (e) => {
 +    e.preventDefault();
 +    if (newTodo.trim() === '') return;
@@ -56,7 +56,7 @@ export default function Todos() {
     <section className={style.container}>
       <h1>Todoリスト</h1>
 
-+      {/* 3. Todo入力フォーム */}
++      {/* 4. Todo入力フォーム */}
 +      <form className={style.form} onSubmit={handleSubmit}>
 +        <input
 +          type="text"
@@ -86,12 +86,11 @@ export default function Todos() {
 
 ## コードの解説
 
-1. **状態管理の基本**
-   - `useState` フックを使って、データを保存する場所（状態）を作ります
-   - `todos`: Todo一覧を保存する配列
-   - `newTodo`: 入力フォームの文字を保存する変数
-
-2. **Todoをリストに追加する**
+1. **Todoデータをステートとして管理する**
+   - コンポーネントの状態としてTodo一覧を保持するようにします
+2. **入力値をステートとして管理する**
+   - テキストボックスに入力された値をコンポーネントの状態として保持するようにします
+3. **Todoをリストに追加する**
    ```javascript
    const handleSubmit = (e) => {
      e.preventDefault();
@@ -102,14 +101,14 @@ export default function Todos() {
      setNewTodo('');
    };
    ```
-   - `e.preventDefault()`: フォームの送信ボタンを押したときの、ページの更新を防ぎます
+   - `e.preventDefault()`: 追加ボタンが押されたときにページがリロードされるデフォルトの挙動を抑制します
    - `newTodo.trim()`: 入力された文字の前後の空白を削除します
    - `if (newTodo.trim() === '') return`: 空のTodoは追加しないようにします
-   - `todos.length > 0 ? ... : 1`: Todoが1つもない場合は1から始めます
+   - `todos.length > 0 ? ... : 1`: Todoが1つもない場合に新しい ID を1にします
    - `setTodos([...todos, { id: newId, title: newTodo, completed: false }])`: 新しいTodoを配列に追加します
-   - `setNewTodo('')`: 入力フォームを空にします
+   - `setNewTodo('')`: Todo入力フォームを空にします
 
-3. **フォームの基本**
+4. **Todo入力フォーム**
    ```jsx
       <form className={style.form} onSubmit={handleSubmit}>
         <input
@@ -129,72 +128,59 @@ export default function Todos() {
    ここでは新しい値を保存しています
    - `placeholder`: 入力フォームが空のときに表示する説明を指定します
 
-## スタイルの更新
+## Todo入力フォームのスタイリング
 
 `src/app/todos/page.module.css` に以下のスタイルを追加します。
 
-```css
-.form {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
+```diff lang="css"
+/* 省略 */
+
+.checkbox input {
+  display: none;
 }
 
-.input {
-  flex: 1;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
++.form {
++  display: flex;
++  gap: 1rem;
++  margin-bottom: 2rem;
++}
++
++.input {
++  flex: 1;
++  padding: 0.5rem;
++  border: 1px solid #ccc;
++  border-radius: 3px;
++}
++
++.button {
++  padding: 0.5rem 1rem;
++  background-color: #0070f3;
++  color: white;
++  border: none;
++  border-radius: 3px;
++  cursor: pointer;
++}
++
++.button:hover {
++  background-color: #0051a2;
++}
 
-.button {
-  padding: 0.5rem 1rem;
-  background-color: #0070f3;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.button:hover {
-  background-color: #0051a2;
-}
 ```
 
-## 🔍 確認
+## 🚀 動作確認
 
-実装した機能が正しく動作しているか確認しましょう:
+正しく動作しているか確認しましょう。
 
-import ChecklistItem from '../../../components/ChecklistItem.jsx';
-
-<div>
-  <ChecklistItem client:load id="step6-point1">
-    新しいTodoを追加できる
-  </ChecklistItem>
-  <ChecklistItem client:load id="step6-point2">
-    追加ボタンをクリックするとTodoが追加される
-  </ChecklistItem>
-  <ChecklistItem client:load id="step6-point3">
-    追加後に入力フィールドがクリアされる
-  </ChecklistItem>
-  <ChecklistItem client:load id="step6-point4">
-    空のTodoは追加されない
-  </ChecklistItem>
-</div>
+- 追加ボタンをクリックするとTodoが追加される
+- 追加後に入力フィールドがクリアされる
+- 空のTodoは追加できない
 
 ## よくある問題と解決方法
 
-**フォームが送信されない**
+**追加ボタンを押しても追加されない**
 - `preventDefault()` が正しく呼び出されているか確認
 - フォームの `onSubmit` イベントが正しく設定されているか確認
-
-**状態が更新されない**
-- `useState` の初期値が正しく設定されているか確認
 - 状態更新関数が正しく呼び出されているか確認
-
-**スタイルが適用されない**
-- CSSモジュールのインポートが正しいか確認
-- クラス名の指定が正しいか確認
 
 ## 🎯 理解度チェック
 
@@ -213,6 +199,7 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
    **答え: B: `useState`**
    - `useState` はコンポーネント内で状態を管理するための基本的なフックです
    - 状態の値と、それを更新する関数のペアを返します
+   - 参考: [useState](https://ja.react.dev/reference/react/useState)
 </details>
 
 2. **フォームの送信を防止するために使用するメソッドは？**
@@ -227,7 +214,7 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
    **答え: B: `preventDefault()`**
    - `preventDefault()` はイベントのデフォルトの動作を防止します
-   - フォームの送信時には、ページのリロードを防ぐために使用します
+   - 今回は追加ボタンを押した時にページがリロードされるのを防ぐために使いました
 </details>
 
 ## 📝 まとめ
