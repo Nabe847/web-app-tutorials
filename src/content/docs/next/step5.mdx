@@ -28,12 +28,14 @@ tags: ['Next.js', 'tutorial']
 
 ```diff lang="js"
 // src/app/todos/page.js
+
++ // 1. コードをブラウザ上で実行させる
 + "use client"
 
 import style from './page.module.css';
 
 export default function Todos() {
-+  // 1. Todoデータの定義
++  // 2. Todoデータの定義
 +  const todos = [
 +    { id: 1, title: '買い物に行く', completed: false },
 +    { id: 2, title: 'メールを確認する', completed: false },
@@ -94,7 +96,12 @@ export default function Todos() {
 
 ## コードの解説
 
-1. **Todoデータの定義**
+1. **コードをブラウザ上で実行させる**
+  - このファイルに書いたコードをブラウザ上で実行するようにNext.jsに指示します
+  - "use client" を書かない場合はサーバとクライアントの両方で実行される可能性があります
+  - サーバ上で`onChange`に関数を設定するとエラーになるため、この指定が必要です
+  - 参考: ['use client'](https://ja.react.dev/reference/rsc/use-client)
+2. **Todoデータの定義**
    ```javascript
    const todos = [
      { id: 1, title: '買い物に行く', completed: false },
@@ -109,7 +116,7 @@ export default function Todos() {
    - `id` は一意の識別子として使用
    - `completed` はTodoの完了状態を表す真偽値
 
-2. **map() によるTodoの表示**
+3. **map() によるTodoの表示**
    ```javascript
    {todos.map((task) => (
      <div>
@@ -137,20 +144,11 @@ export default function Todos() {
 - 各Todoに一意の `id` が設定されているか確認
 - `key` プロパティが正しく設定されているか確認
 
-## 🚀 確認
+## 🚀 動作確認
 
-実装した機能が正しく動作しているか確認しましょう:
+step4と同じように表示されていればOKです。
 
-import ChecklistItem from '../../../components/ChecklistItem.jsx';
-
-<div>
-  <ChecklistItem client:load id="step5-point1">
-    5つのTodoが表示される
-  </ChecklistItem>
-  <ChecklistItem client:load id="step5-point2">
-    各Todoにチェックボックスが表示される
-  </ChecklistItem>
-</div>
+![](../../../assets/step4-styled-main-page.png)
 
 ## 🎯 理解度チェック
 
