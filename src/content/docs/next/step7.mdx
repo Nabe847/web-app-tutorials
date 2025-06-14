@@ -14,9 +14,12 @@ tags: ['Next.js', 'tutorial']
 前回はTodoの追加機能を実装しました。  
 今回はTodoの完了状態を更新する機能を実装していきましょう。
 
-1. **状態の更新方法**
-2. **イベントハンドリング**
-3. **条件付きレンダリング**
+1. **状態の更新**
+   - 配列の要素の更新
+   - オブジェクトのプロパティの更新
+
+2. **条件付きレンダリング**
+   - 完了状態に応じたスタイルの適用
 
 ## Todoの完了状態更新機能の実装
 
@@ -49,14 +52,14 @@ export default function Todos() {
     setNewTodo('');
   };
 
-+  // 1. Todoの完了状態を更新する処理
-+  const handleToggleComplete = (todoId) => {
-+    setTodos(todos.map(todo =>
-+      todo.id === todoId
-+        ? { ...todo, completed: !todo.completed }
-+        : todo
-+    ));
-+  };
+  // 1. Todoの完了状態を更新する処理
+  const handleToggleComplete = (todoId) => {
+    setTodos(todos.map(todo =>
+      todo.id === todoId
+        ? { ...todo, completed: !todo.completed }
+        : todo
+    ));
+  };
 
   return (
     <section className={style.container}>
@@ -78,13 +81,11 @@ export default function Todos() {
       <div className={style.checkbox}>
         {todos.map(todo => (
           <div key={todo.id}>
-+            {/* 2. Todoの完了状態に応じたスタイルの切り替え*/}
-+            <label className={todo.completed ? style.completed : ''}>
+            {/* 2. Todoの完了状態に応じたスタイルの切り替え*/}
+            <label className={todo.completed ? style.completed : ''}>
               <input
                 type="checkbox"
-+                onChange={() =>
-+                  // 3. チェックボックスがクリックされたときの処理の登録
-+                  handleToggleComplete(todo.id)}
+                onChange={() => handleToggleComplete(todo.id)}
               />
               {todo.title}
             </label>
@@ -98,7 +99,7 @@ export default function Todos() {
 
 ### コードの説明
 
-1. **Todoの完了状態を更新する処理**
+1. Todoの完了状態を更新する処理
    ```javascript
    const handleToggleComplete = (todoId) => {
      setTodos(todos.map(todo =>
@@ -115,7 +116,23 @@ export default function Todos() {
    - `setTodos()`: 更新されたTodo一覧を保存します
 
 2. チェック状態に応じたスタイルの切り替え
+   ```javascript
+   <label className={todo.completed ? style.completed : ''}>
+   ```
+   - 三項演算子を使用して、Todoの完了状態に応じてクラス名を動的に切り替えます
+   - `todo.completed` が `true` の場合は `style.completed` クラスを適用
+   - `false` の場合は空文字列（デフォルトスタイル）を適用
+
 3. チェックボックスがクリックされたときの処理の登録
+   ```javascript
+   <input
+     type="checkbox"
+     onChange={() => handleToggleComplete(todo.id)}
+   />
+   ```
+   - `onChange` イベントハンドラを使用して、チェックボックスの状態変更を検知
+   - クリック時に `handleToggleComplete` 関数を呼び出し、該当するTodoのIDを渡す
+   - これにより、チェックボックスの状態に応じてTodoの完了状態が更新される
 
 ## スタイルの更新
 
