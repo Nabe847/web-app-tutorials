@@ -18,21 +18,16 @@ tags: ['Next.js', 'tutorial']
 2. **イベントハンドリング**
 3. **条件付きレンダリング**
 
-> 💡 **ヒント**:  
-> Webアプリケーションでは、ユーザーの操作に応じて状態を更新することが重要です。  
-> このステップでは、チェックボックスの状態に応じてTodoの完了状態を更新する方法を学びます。
-
 ## Todoの完了状態更新機能の実装
 
 `src/app/todos/page.js` を以下の内容に更新します。
 
-```javascript
+```diff lang=jsx
 'use client';
-import { useState } from 'react';
 import style from './page.module.css';
+import { useState } from 'react';
 
 export default function Todos() {
-  // Todoデータの定義
   const [todos, setTodos] = useState([
     { id: 1, title: '買い物に行く', completed: false },
     { id: 2, title: 'メールを確認する', completed: false },
@@ -54,19 +49,19 @@ export default function Todos() {
     setNewTodo('');
   };
 
-  // Todoの完了状態を更新する処理
-  const handleToggleComplete = (todoId) => {
-    setTodos(todos.map(todo =>
-      todo.id === todoId
-        ? { ...todo, completed: !todo.completed }
-        : todo
-    ));
-  };
++  // 1. Todoの完了状態を更新する処理
++  const handleToggleComplete = (todoId) => {
++    setTodos(todos.map(todo =>
++      todo.id === todoId
++        ? { ...todo, completed: !todo.completed }
++        : todo
++    ));
++  };
 
   return (
     <section className={style.container}>
       <h1>Todoリスト</h1>
-      
+
       {/* Todo追加フォーム */}
       <form onSubmit={handleSubmit} className={style.form}>
         <input
@@ -83,11 +78,11 @@ export default function Todos() {
       <div className={style.checkbox}>
         {todos.map(todo => (
           <div key={todo.id}>
-            <label className={todo.completed ? style.completed : ''}>
++            <label className={todo.completed ? style.completed : ''}>
               <input
                 type="checkbox"
                 checked={todo.completed}
-                onChange={() => handleToggleComplete(todo.id)}
++                onChange={() => handleToggleComplete(todo.id)}
               />
               {todo.title}
             </label>
@@ -130,36 +125,26 @@ export default function Todos() {
 
 `src/app/todos/page.module.css` に以下のスタイルを追加します。
 
-```css
-.completed {
-  text-decoration: line-through;
-  color: #888;
+```diff lang=css
+/* 省略 */
+
+.button:hover {
+  background-color: #0051a2;
 }
+
++.completed {
++  text-decoration: line-through;
++  color: #888;
++}
+
 ```
 
-### スタイルの説明
+## 🚀 動作確認
 
-1. **完了Todoのスタイル**
-   - `text-decoration: line-through`: 取り消し線を表示
-   - `color: #888`: グレーアウトして視覚的に区別
+実装した機能が正しく動作しているか確認しましょう。
 
-## 🔍 確認
-
-実装した機能が正しく動作しているか確認しましょう：
-
-import ChecklistItem from '../../../components/ChecklistItem.jsx';
-
-<div>
-  <ChecklistItem client:load id="step7-point1">
-    チェックボックスをクリックするとTodoの完了状態が切り替わる
-  </ChecklistItem>
-  <ChecklistItem client:load id="step7-point2">
-    完了したTodoの見た目が変わる
-  </ChecklistItem>
-  <ChecklistItem client:load id="step7-point3">
-    完了状態が正しく保持される
-  </ChecklistItem>
-</div>
+- チェックボックスをクリックするとTodoの完了状態が切り替わる
+- 完了したTodoの見た目が変わる
 
 ## よくある問題と解決方法
 
