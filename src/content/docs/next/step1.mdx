@@ -57,7 +57,7 @@ Node.js がインストールされていない場合は、[公式サイト](htt
 ターミナルで以下のコマンドを実行してください:
 
 ```bash
-npx create-next-app@latest task-manager
+npx create-next-app@latest todo-manager
 ```
 
 いくつか質問が表示されます:
@@ -106,14 +106,14 @@ Would you like to customize the default import alias (@/*)? No / Yes
 セットアップが完了したら、プロジェクトフォルダに移動して開発サーバーを起動します:
 
 ```bash
-cd task-manager
+cd todo-manager
 npm run dev
 ```
 
 以下のような出力が表示されれば成功です:
 
 ```
-> task-manager@0.1.0 dev
+> todo-manager@0.1.0 dev
 > next dev
 
    ▲ Next.js 15.3.2
@@ -135,7 +135,7 @@ npm run dev
 作成されたプロジェクトの構造を詳しく見ていきましょう：
 
 ```
-task-manager/
+todo-manager/
 ├── .next/             # Next.js が自動生成するビルドファイル（編集不要）
 ├── node_modules/      # インストールしたパッケージが保存されるフォルダ（編集不要）
 ├── README.md          # プロジェクトの説明書
@@ -164,7 +164,7 @@ task-manager/
 2. **node_modules フォルダ**
 
    - インストールしたパッケージ（追加の機能）が保存されるフォルダです
-   - 非常に多くのファイルが含まれるため、通常は編集しません
+   - このフォルダは通常編集しません
 
 3. **README.md**
 
@@ -208,8 +208,8 @@ task-manager/
 
 10. **app フォルダ**
     - Next.js のアプリケーションの中心となるフォルダです
-    - このフォルダ内のファイル名が、ブラウザでアクセスする URL になります
-    - 例：`page.js` → `http://localhost:3000/` で表示されます
+    - appフォルダの中に作ったのフォルダの名前がページの URL になります
+    - 例：`src/app/users/page.js` → `http://localhost:3000/users` をブラウザで開くと `page.js` の内容が表示されます
 
 > 💡 **ヒント**:
 >
@@ -250,7 +250,7 @@ task-manager/
 
 - エラーが発生する可能性があります
 - フォルダ名は英語（アルファベット）のみを使用することをお勧めします
-- 例：`Todo管理` → `task-manager`
+- 例：`Todo管理` → `todo-manager`
 
 ## 🔍 確認
 

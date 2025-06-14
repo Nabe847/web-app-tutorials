@@ -35,8 +35,8 @@ tags: ['Next.js', 'FastAPI', 'tutorial']
 
 ```bash
 # フロントエンドプロジェクトの作成
-npx create-next-app@latest task-manager-frontend
-cd task-manager-frontend
+npx create-next-app@latest todo-manager-frontend
+cd todo-manager-frontend
 npm install axios
 ```
 
@@ -45,7 +45,7 @@ npm install axios
 ```bash
 # バックエンドプロジェクトの準備
 cd ..
-cp -r fast-api-tutorial/task-manager-backend .
+cp -r fast-api-tutorial/todo-manager-backend .
 ```
 
 ### 2. プロジェクト構造の確認
@@ -53,9 +53,9 @@ cp -r fast-api-tutorial/task-manager-backend .
 作成したプロジェクトは以下のような構造になっています：
 
 ```
-task-manager/
-├── task-manager-frontend/  # フロントエンド（Next.js）
-└── task-manager-backend/   # バックエンド（FastAPI）
+todo-manager/
+├── todo-manager-frontend/  # フロントエンド（Next.js）
+└── todo-manager-backend/   # バックエンド（FastAPI）
 ```
 
 - **フロントエンド**: ユーザーが操作する画面を作る部分
@@ -66,7 +66,7 @@ task-manager/
 ### 1. フロントエンドの起動
 
 ```bash
-cd task-manager-frontend
+cd todo-manager-frontend
 npm run dev
 ```
 
@@ -75,7 +75,7 @@ npm run dev
 ### 2. バックエンドの起動
 
 ```bash
-cd ../task-manager-backend
+cd ../todo-manager-backend
 # 仮想環境の有効化
 source venv/bin/activate  # Mac/Linux
 # または
