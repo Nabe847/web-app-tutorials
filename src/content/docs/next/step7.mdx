@@ -33,7 +33,7 @@ import style from './page.module.css';
 
 export default function Todos() {
   // Todoデータの定義
-  const [tasks, setTasks] = useState([
+  const [todos, setTodos] = useState([
     { id: 1, title: '買い物に行く', completed: false },
     { id: 2, title: 'メールを確認する', completed: false },
     { id: 3, title: '資料を作成する', completed: false },
@@ -42,24 +42,24 @@ export default function Todos() {
   ]);
 
   // 入力値の状態管理
-  const [newTask, setNewTask] = useState('');
+  const [newTodo, setNewTodo] = useState('');
 
   // Todo追加処理
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (newTask.trim() === '') return;
+    if (newTodo.trim() === '') return;
 
-    const newId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
-    setTasks([...tasks, { id: newId, title: newTask, completed: false }]);
-    setNewTask('');
+    const newId = todos.length > 0 ? Math.max(...todos.map(t => t.id)) + 1 : 1;
+    setTodos([...todos, { id: newId, title: newTodo, completed: false }]);
+    setNewTodo('');
   };
 
   // Todoの完了状態を更新する処理
-  const handleToggleComplete = (taskId) => {
-    setTasks(tasks.map(task =>
-      task.id === taskId
-        ? { ...task, completed: !task.completed }
-        : task
+  const handleToggleComplete = (todoId) => {
+    setTodos(todos.map(todo =>
+      todo.id === todoId
+        ? { ...todo, completed: !todo.completed }
+        : todo
     ));
   };
 
@@ -71,8 +71,8 @@ export default function Todos() {
       <form onSubmit={handleSubmit} className={style.form}>
         <input
           type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
+          value={newTodo}
+          onChange={(e) => setNewTodo(e.target.value)}
           placeholder="新しいTodoを入力"
           className={style.input}
         />
@@ -81,15 +81,15 @@ export default function Todos() {
 
       {/* Todo一覧 */}
       <div className={style.checkbox}>
-        {tasks.map(task => (
-          <div key={task.id}>
-            <label className={task.completed ? style.completed : ''}>
+        {todos.map(todo => (
+          <div key={todo.id}>
+            <label className={todo.completed ? style.completed : ''}>
               <input
                 type="checkbox"
-                checked={task.completed}
-                onChange={() => handleToggleComplete(task.id)}
+                checked={todo.completed}
+                onChange={() => handleToggleComplete(todo.id)}
               />
-              {task.title}
+              {todo.title}
             </label>
           </div>
         ))}
@@ -103,28 +103,28 @@ export default function Todos() {
 
 1. **状態管理の基本**
    - `useState` フックを使って、データを保存する場所（状態）を作ります
-   - `tasks`: Todo一覧を保存する配列
-   - `newTask`: 入力フォームの文字を保存する変数
+   - `todos`: Todo一覧を保存する配列
+   - `newTodo`: 入力フォームの文字を保存する変数
 
 2. **Todoの完了状態を更新する仕組み**
    ```javascript
-   const handleToggleComplete = (taskId) => {
-     setTasks(tasks.map(task =>
-       task.id === taskId
-         ? { ...task, completed: !task.completed }
-         : task
+   const handleToggleComplete = (todoId) => {
+     setTodos(todos.map(todo =>
+       todo.id === todoId
+         ? { ...todo, completed: !todo.completed }
+         : todo
      ));
    };
    ```
    - `map()`: 配列の各要素に対して、同じ処理を行います
-   - `task.id === taskId`: クリックされたTodoを見つけます
-   - `{ ...task, completed: !task.completed }`: Todoの完了状態を反転させます
-   - `setTasks()`: 更新されたTodo一覧を保存します
+   - `todo.id === todoId`: クリックされたTodoを見つけます
+   - `{ ...todo, completed: !todo.completed }`: Todoの完了状態を反転させます
+   - `setTodos()`: 更新されたTodo一覧を保存します
 
 3. **チェックボックスの基本**
    - `checked`: チェックボックスの状態（チェックされているかどうか）を指定します
    - `onChange`: チェックボックスがクリックされたときの処理を指定します
-   - `className={task.completed ? style.completed : ''}`: Todoが完了しているかどうかで、見た目を変えます
+   - `className={todo.completed ? style.completed : ''}`: Todoが完了しているかどうかで、見た目を変えます
 
 ## スタイルの更新
 
