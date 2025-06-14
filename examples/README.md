@@ -4,13 +4,28 @@
 
 ## バックエンド（FastAPI）の起動
 
-1. 必要なパッケージのインストール:
+1. 仮想環境の作成と有効化:
+
+Macの場合:
 ```bash
 cd todo-api
+python -m venv venv
+source venv/bin/activate
+```
+
+Windowsの場合:
+```bash
+cd todo-api
+python -m venv venv
+.\venv\Scripts\activate
+```
+
+2. 必要なパッケージのインストール:
+```bash
 pip install -r requirements.txt
 ```
 
-2. サーバーの起動:
+3. サーバーの起動:
 ```bash
 uvicorn app.main:app --reload
 ```
@@ -21,7 +36,7 @@ uvicorn app.main:app --reload
 
 1. 必要なパッケージのインストール:
 ```bash
-cd todo-app
+cd todo-manager
 npm install
 ```
 

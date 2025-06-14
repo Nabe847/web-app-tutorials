@@ -1,44 +1,58 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getTodos, createTodo, completeTodo, deleteTodo } from '../api/todos';
 import style from './page.module.css';
 
 export default function Todos() {
-  // Todoデータの定義
-  const [todos, setTodos] = useState([
-    { id: 1, title: '買い物に行く', completed: false },
-    { id: 2, title: 'メールを確認する', completed: false },
-    { id: 3, title: '資料を作成する', completed: false },
-    { id: 4, title: '友達に電話する', completed: false },
-    { id: 5, title: '部屋の掃除', completed: false },
-  ]);
-
-  // 入力値の状態管理
+  const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState('');
 
+  // Todo一覧の取得
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const data = await getTodos();
+        setTodos(data);
+      } catch (error) {
+        console.error('Todoの取得に失敗しました:', error);
+      }
+    };
+    fetchTodos();
+  }, []);
+
   // Todo追加処理
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (newTodo.trim() === '') return;
 
-    const newId =
-      todos.length > 0 ? Math.max(...todos.map((t) => t.id)) + 1 : 1;
-    setTodos([...todos, { id: newId, title: newTodo, completed: false }]);
-    setNewTodo('');
+    try {
+      const newTodoData = await createTodo(newTodo);
+      setTodos([...todos, newTodoData]);
+      setNewTodo('');
+    } catch (error) {
+      console.error('Todoの作成に失敗しました:', error);
+    }
   };
 
   // Todoの完了状態を更新する処理
-  const handleToggleComplete = (todoId) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    );
+  const handleToggleComplete = async (todoId) => {
+    try {
+      const updatedTodo = await completeTodo(todoId);
+      setTodos(todos.map((todo) => (todo.id === todoId ? updatedTodo : todo)));
+    } catch (error) {
+      console.error('Todoの更新に失敗しました:', error);
+    }
   };
 
-  // 1. Todoを削除する処理
-  const handleDelete = (todoId) => {
+  // Todoを削除する処理
+  const handleDelete = async (todoId) => {
     if (window.confirm('このTodoを削除しますか？')) {
-      setTodos(todos.filter((todo) => todo.id !== todoId));
+      try {
+        await deleteTodo(todoId);
+        setTodos(todos.filter((todo) => todo.id !== todoId));
+      } catch (error) {
+        console.error('Todoの削除に失敗しました:', error);
+      }
     }
   };
 
@@ -46,7 +60,6 @@ export default function Todos() {
     <section className={style.container}>
       <h1>Todoリスト</h1>
 
-      {/* Todo追加フォーム */}
       <form onSubmit={handleSubmit} className={style.form}>
         <input
           type="text"
@@ -60,7 +73,6 @@ export default function Todos() {
         </button>
       </form>
 
-      {/* Todo一覧 */}
       <div className={style.checkbox}>
         {todos.map((todo) => (
           <div key={todo.id} className={style.todoItem}>
