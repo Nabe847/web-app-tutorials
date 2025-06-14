@@ -33,6 +33,7 @@ tags: ['Next.js', 'tutorial']
 + "use client"
 
 import style from './page.module.css';
+import Link from 'next/link';
 
 export default function Todos() {
 +  // 2. Todoデータの定義
@@ -119,8 +120,8 @@ export default function Todos() {
 3. **map() によるTodoの表示**
    ```javascript
    {todos.map((todo) => (
-     <div>
-       <label key={todo.id}>
+     <div key={todo.id}>
+       <label>
          <input type="checkbox" checked={todo.completed} onChange={(e) => { console.log(e.target.checked)}} />
          {todo.title}
        </label>
