@@ -19,7 +19,7 @@ tags: ['Next.js', 'tutorial']
    - オブジェクトのプロパティの更新
 
 2. **条件付きレンダリング**
-   - 完了状態に応じたスタイルの適用
+   - Todoの完了状態に応じたスタイルの切り替え
 
 ## Todoの完了状態更新機能の実装
 
@@ -52,14 +52,14 @@ export default function Todos() {
     setNewTodo('');
   };
 
-  // 1. Todoの完了状態を更新する処理
-  const handleToggleComplete = (todoId) => {
-    setTodos(todos.map(todo =>
-      todo.id === todoId
-        ? { ...todo, completed: !todo.completed }
-        : todo
-    ));
-  };
++  // 1. Todoの完了状態を更新する処理
++  const handleToggleComplete = (todoId) => {
++    setTodos(todos.map(todo =>
++      todo.id === todoId
++        ? { ...todo, completed: !todo.completed }
++        : todo
++    ));
++  };
 
   return (
     <section className={style.container}>
@@ -81,11 +81,13 @@ export default function Todos() {
       <div className={style.checkbox}>
         {todos.map(todo => (
           <div key={todo.id}>
-            {/* 2. Todoの完了状態に応じたスタイルの切り替え*/}
-            <label className={todo.completed ? style.completed : ''}>
++            {/* 2. Todoの完了状態に応じたスタイルの切り替え*/}
++            <label className={todo.completed ? style.completed : ''}>
               <input
                 type="checkbox"
-                onChange={() => handleToggleComplete(todo.id)}
++                onChange={() =>
++                  // 3. チェックボックスがクリックされたときの処理の登録
++                  handleToggleComplete(todo.id)}
               />
               {todo.title}
             </label>
@@ -115,7 +117,7 @@ export default function Todos() {
    - `{ ...todo, completed: !todo.completed }`: Todoの完了状態を反転させます
    - `setTodos()`: 更新されたTodo一覧を保存します
 
-2. チェック状態に応じたスタイルの切り替え
+2. Todoの完了状態に応じたスタイルの切り替え
    ```javascript
    <label className={todo.completed ? style.completed : ''}>
    ```
