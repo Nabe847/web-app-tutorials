@@ -18,22 +18,20 @@ tags: ['Next.js', 'tutorial']
 2. **状態管理の方法**
 3. **イベントハンドリング**
 
-> 💡 **ヒント**:  
-> Webアプリケーションでは、ユーザーからの入力を受け付けて処理することが重要です。  
-> このステップでは、フォームを使った入力処理の基本を学びます。
+このステップでは、フォームを使った入力処理の基本を学びます。
 
-## Todo追加機能の実装
+## Todo追加機能の作成
 
 `src/app/todos/page.js` を以下の内容に更新します。
 
-```javascript
+```diff lang="jsx"
 'use client';
 import { useState } from 'react';
 import style from './page.module.css';
 
 export default function Todos() {
   // Todoデータの定義
-  const [tasks, setTasks] = useState([
+  const [todos, setTasks] = useState([
     { id: 1, title: '買い物に行く', completed: false },
     { id: 2, title: 'メールを確認する', completed: false },
     { id: 3, title: '資料を作成する', completed: false },
@@ -41,45 +39,41 @@ export default function Todos() {
     { id: 5, title: '部屋の掃除', completed: false },
   ]);
 
-  // 入力値の状態管理
-  const [newTask, setNewTask] = useState('');
++  // 1. 入力値の状態管理
++  const [newTask, setNewTask] = useState('');
 
-  // Todo追加処理
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (newTask.trim() === '') return;
-
-    const newId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
-    setTasks([...tasks, { id: newId, title: newTask, completed: false }]);
-    setNewTask('');
-  };
++  // 2. Todoをリストに追加する
++  const handleSubmit = (e) => {
++    e.preventDefault();
++    if (newTask.trim() === '') return;
++
++    const newId = todos.length > 0 ? Math.max(...todos.map(t => t.id)) + 1 : 1;
++    setTasks([...todos, { id: newId, title: newTask, completed: false }]);
++    setNewTask('');
++  };
 
   return (
     <section className={style.container}>
       <h1>Todoリスト</h1>
-      
-      {/* Todo追加フォーム */}
-      <form onSubmit={handleSubmit} className={style.form}>
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="新しいTodoを入力"
-          className={style.input}
-        />
-        <button type="submit" className={style.button}>追加</button>
-      </form>
+
++      {/* 3. Todo入力フォーム */}
++      <form className={style.form} onSubmit={handleSubmit}>
++        <input
++          type="text"
++          value={newTask}
++          onChange={(e) => setNewTask(e.target.value)}
++          placeholder="新しいTodoを入力"
++          className={style.input}
++        />
++        <button type="submit" className={style.button}>追加</button>
++      </form>
 
       {/* Todo一覧 */}
       <div className={style.checkbox}>
-        {tasks.map(task => (
+        {todos.map((task) => (
           <div key={task.id}>
             <label>
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => {}}
-              />
+              <input type="checkbox" checked={task.completed} onChange={(e) => {console.log(e.target.checked)}} />
               {task.title}
             </label>
           </div>
@@ -94,32 +88,46 @@ export default function Todos() {
 
 1. **状態管理の基本**
    - `useState` フックを使って、データを保存する場所（状態）を作ります
-   - `tasks`: Todo一覧を保存する配列
+   - `todos`: Todo一覧を保存する配列
    - `newTask`: 入力フォームの文字を保存する変数
 
-2. **Todo追加の仕組み**
+2. **Todoをリストに追加する**
    ```javascript
    const handleSubmit = (e) => {
      e.preventDefault();
      if (newTask.trim() === '') return;
 
-     const newId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
-     setTasks([...tasks, { id: newId, title: newTask, completed: false }]);
+     const newId = todos.length > 0 ? Math.max(...todos.map(t => t.id)) + 1 : 1;
+     setTasks([...todos, { id: newId, title: newTask, completed: false }]);
      setNewTask('');
    };
    ```
    - `e.preventDefault()`: フォームの送信ボタンを押したときの、ページの更新を防ぎます
    - `newTask.trim()`: 入力された文字の前後の空白を削除します
    - `if (newTask.trim() === '') return`: 空のTodoは追加しないようにします
-   - `tasks.length > 0 ? ... : 1`: Todoが1つもない場合は1から始めます
-   - `setTasks([...tasks, { id: newId, title: newTask, completed: false }])`: 新しいTodoを配列に追加します
+   - `todos.length > 0 ? ... : 1`: Todoが1つもない場合は1から始めます
+   - `setTasks([...todos, { id: newId, title: newTask, completed: false }])`: 新しいTodoを配列に追加します
    - `setNewTask('')`: 入力フォームを空にします
 
 3. **フォームの基本**
-   - `onSubmit`: フォームの送信ボタンが押されたときの処理を指定します
-   - `value`: 入力フォームに表示する文字を指定します
-   - `onChange`: 入力フォームの文字が変わったときの処理を指定します
-   - `placeholder`: 入力フォームが空のときに表示する説明文を指定します
+   ```jsx
+      <form className={style.form} onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+          placeholder="新しいTodoを入力"
+          className={style.input}
+        />
+        <button type="submit" className={style.button}>追加</button>
+      </form>
+   ```
+   - `onSubmit`: 追加ボタンが押されたときの処理を指定します  
+   ここではTodoをリストに追加する処理を指定しています
+   - `value`: テキストボックスに表示する値を指定します
+   - `onChange`: テキストボックス内容が変わったときの処理を指定します  
+   ここでは新しい値を保存しています
+   - `placeholder`: 入力フォームが空のときに表示する説明を指定します
 
 ## スタイルの更新
 
