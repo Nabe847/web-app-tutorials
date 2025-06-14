@@ -28,12 +28,13 @@ tags: ['Next.js', 'tutorial']
 
 ```diff lang="js"
 // src/app/todos/page.js
++ "use client"
 
 import style from './page.module.css';
 
 export default function Todos() {
-+  // Todoデータの定義
-+  const tasks = [
++  // 1. Todoデータの定義
++  const todos = [
 +    { id: 1, title: '買い物に行く', completed: false },
 +    { id: 2, title: 'メールを確認する', completed: false },
 +    { id: 3, title: '資料を作成する', completed: false },
@@ -45,31 +46,44 @@ export default function Todos() {
     <section className={style.container}>
       <h1>Todoリスト</h1>
       <div className={style.checkbox}>
--        <label>
--          <input type="checkbox" />
--          買い物に行く
--        </label>
--        <label>
--          <input type="checkbox" />
--          メールを確認する
--        </label>
--        <label>
--          <input type="checkbox" />
--          資料を作成する
--        </label>
--        <label>
--          <input type="checkbox" />
--          友達に電話する
--        </label>
--        <label>
--          <input type="checkbox" />
--          部屋の掃除
--        </label>
-+        {tasks.map((task) => (
-+          <label key={task.id}>
-+            <input type="checkbox" checked={task.completed} />
-+            {task.title}
-+          </label>
+-        <div>
+-          <label>
+-            <input type="checkbox" />
+-            買い物に行く
+-          </label>
+-        </div>
+-        <div>
+-          <label>
+-            <input type="checkbox" />
+-            メールを確認する
+-          </label>
+-        </div>
+-        <div>
+-          <label>
+-            <input type="checkbox" />
+-            資料を作成する
+-          </label>
+-        </div>
+-        <div>
+-          <label>
+-            <input type="checkbox" />
+-            友達に電話する
+-          </label>
+-        </div>
+-        <div>
+-          <label>
+-            <input type="checkbox" />
+-            部屋の掃除
+-          </label>
+-        </div>
++        { /* 2. map() によるTodoの表示 */}
++        {todos.map((task) => (
++          <div key={task.id}>
++            <label>
++              <input type="checkbox" checked={task.completed} onChange={(e) => { console.log(e.target.checked)}} />
++              {task.title}
++            </label>
++          </div>
 +        ))}
       </div>
       <Link href="/">トップへ戻る</Link>
@@ -82,7 +96,7 @@ export default function Todos() {
 
 1. **Todoデータの定義**
    ```javascript
-   const tasks = [
+   const todos = [
      { id: 1, title: '買い物に行く', completed: false },
      { id: 2, title: 'メールを確認する', completed: false },
      { id: 3, title: '資料を作成する', completed: false },
@@ -90,29 +104,32 @@ export default function Todos() {
      { id: 5, title: '部屋の掃除', completed: false },
    ];
    ```
-   - `tasks` 配列に、各Todoの情報を格納
+   - `todos` 配列に、各Todoの情報を格納
    - 各Todoは `id`、`title`、`completed` の3つのプロパティを持つオブジェクト
    - `id` は一意の識別子として使用
    - `completed` はTodoの完了状態を表す真偽値
 
 2. **map() によるTodoの表示**
    ```javascript
-   {tasks.map((task) => (
-     <label key={task.id}>
-       <input type="checkbox" checked={task.completed} />
-       {task.title}
-     </label>
+   {todos.map((task) => (
+     <div>
+       <label key={task.id}>
+         <input type="checkbox" checked={task.completed} onChange={(e) => { console.log(e.target.checked)}} />
+         {task.title}
+       </label>
+     </div>
    ))}
    ```
-   - `tasks.map()` で各Todoを処理
+   - `todos.map()` で各Todoを処理
    - `key={task.id}` で各要素に一意の識別子を付与
-   - 各Todoを `label` 要素として表示
-   - `checked` プロパティでチェックボックスの状態を制御
+   - `checked` に true を設定するとチェックボックスにチェックマークが表示されます
+   - `onChange` はチェックボックスがクリックされたときに実行する処理を書きます
+       - ここではブラウザのコンソールにチェックボックスがチェックされているかどうかを表す値を表示しています
 
 ## よくある問題と解決方法
 
 **Todoが表示されない場合**
-- `tasks` 配列が正しく定義されているか確認
+- `todos` 配列が正しく定義されているか確認
 - `map()` の構文が正しいか確認
 - コンソールにエラーが表示されていないか確認
 
@@ -120,7 +137,7 @@ export default function Todos() {
 - 各Todoに一意の `id` が設定されているか確認
 - `key` プロパティが正しく設定されているか確認
 
-## 🔍 確認
+## 🚀 確認
 
 実装した機能が正しく動作しているか確認しましょう:
 
