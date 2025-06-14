@@ -11,7 +11,8 @@ tags: ['Next.js', 'tutorial']
 
 ## このステップで学ぶこと
 
-前のステップではシンプルなトップページを作成しました。今回は、CSSを使ってページのデザインを整えていきましょう。
+前回はシンプルなトップページを作成しました。  
+今回はCSSを使ってページの見た目を整えていきましょう。
 
 1. **CSSモジュールの使い方**
 2. **スタイリングの基本**
@@ -20,7 +21,7 @@ tags: ['Next.js', 'tutorial']
 > 💡 **CSSモジュール**: CSSをコンポーネント単位で管理できるようにする仕組みです。  
 > CSSクラス名が衝突しなくなり、自由にスタイルをつけられるようになります。
 
-## スタイリングの実装
+## CSSの変更
 
 まず、`src/app/page.module.css` ファイル開いて、以下の内容に置き換えます。  
 
@@ -98,18 +99,18 @@ tags: ['Next.js', 'tutorial']
 
 次に、`src/app/page.js`を以下のように更新します：
 
-```javascript
+```diff lang="jsx"
 // src/app/page.js
 
-// 1.CSSモジュールのインポート
-import style from './page.module.css';
++// 1.CSSモジュールのインポート
++import style from './page.module.css';
 
 export default function Home() {
   return (
-    // 2.スタイルの適用
-    <div className={style.container}>
-      <h1 className={style.heading}>はじめてのTodoアプリ</h1>
-      <p className={style.box}>やることリストを簡単に管理できます</p>
++    // 2.スタイルの適用
++    <div className={style.container}>
++      <h1 className={style.heading}>はじめてのTodoアプリ</h1>
++      <p className={style.box}>やることリストを簡単に管理できます</p>
       <button className={style.button}>始める</button>
     </div>
   );
@@ -124,59 +125,44 @@ export default function Home() {
    import style from './page.module.css';
    ```
 
-   - CSSモジュールをインポートして、`style`オブジェクトとして使用します
-   - クラス名は`style.クラス名`の形式で参照します
+   - cssの内容をコンポーネントが書かれているファイルの中で使えるようにします
 
 2. **スタイルの適用**
 
    ```javascript
-   <div className={style.container}>
+    <div className={style.container}>
+      <h1 className={style.heading}>はじめてのTodoアプリ</h1>
+      <p className={style.box}>やることリストを簡単に管理できます</p>
    ```
 
-   - `className`プロパティを使ってスタイルを適用します
-   - 波括弧`{}`で囲むことで、JavaScriptの式として評価されます
+   - `className` に `style.{適用するCSSクラスの名前}` を書くとスタイルが適用されます
 
 ## 🚀 動作確認
 
-1. ファイルを保存すると、ブラウザが自動的に更新されます（ホットリロード機能）
-2. `http://localhost:3000/todos` にアクセスして、変更が反映されているか確認してください
+1. `http://localhost:3000/todos` にアクセスして変更が反映されているか確認しましょう
 
 ![Next.jsの初期画面](../../../assets/step3-styled-top-page.png)
+
+- タイトルに装飾的な枠線が表示されている
+- ボタンに矢印アイコンが表示されている
+- 要素が縦方向に整列している
 
 ## よくある問題と解決方法
 
 **スタイルが適用されない**
 
-- CSSモジュールのインポートが正しいか確認
-- クラス名の指定が正しいか確認
-- ファイル名が`.module.css`で終わっているか確認
+- CSSモジュールのインポートが正しいか確認する
+- CSSクラスの名前の指定が正しいか確認する
+- ファイル名の末尾が `.module.css` になっているか確認する
 
 **レイアウトが崩れる**
 
-- ブラウザの開発者ツールでスタイルが正しく適用されているか確認
-- 要素のサイズや余白が適切か確認
-
-## 🔍 確認
-
-実装した機能が正しく動作しているか確認しましょう：
-
-import ChecklistItem from '../../../components/ChecklistItem.jsx';
-
-<div>
-  <ChecklistItem client:load id="step3-point1">
-    タイトルに装飾的な枠線が表示されている
-  </ChecklistItem>
-  <ChecklistItem client:load id="step3-point2">
-    ボタンに矢印アイコンが表示されている
-  </ChecklistItem>
-  <ChecklistItem client:load id="step3-point3">
-    要素が縦方向に整列している
-  </ChecklistItem>
-</div>
+- ブラウザの開発者ツールでスタイルが正しく適用されているか確認する
+- 要素のサイズや余白が適切か確認する
 
 ## 🎯 理解度チェック
 
-以下の質問に答えて、学習内容を確認しましょう！
+以下の質問に答えて学習内容を確認しましょう！
 
 1. **CSSモジュールを使用する利点は？**
 
