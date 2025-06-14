@@ -14,19 +14,11 @@ tags: ['Next.js', 'tutorial']
 前回はTodoの完了状態を更新する機能を作成しました。  
 今回はTodoを削除する機能を作っていきましょう。
 
-1. **配列の要素の削除**
-2. **確認ダイアログの表示**
-3. **イベントハンドリング**
-
-> 💡 **ヒント**:  
-> Webアプリケーションでは、データの削除は慎重に行う必要があります。  
-> このステップでは、削除前に確認を取る方法を学びます。
-
 ## Todo削除機能の作成
 
 `src/app/todos/page.js` を以下の内容に更新します。
 
-```javascript
+```diff lang=jsx
 'use client';
 import { useState } from 'react';
 import style from './page.module.css';
@@ -63,17 +55,17 @@ export default function Todos() {
     ));
   };
 
-  // Todoを削除する処理
-  const handleDelete = (todoId) => {
-    if (window.confirm('このTodoを削除しますか？')) {
-      setTodos(todos.filter(todo => todo.id !== todoId));
-    }
-  };
++  // 1. Todoを削除する処理
++  const handleDelete = (todoId) => {
++    if (window.confirm('このTodoを削除しますか？')) {
++      setTodos(todos.filter(todo => todo.id !== todoId));
++    }
++  };
 
   return (
     <section className={style.container}>
       <h1>Todoリスト</h1>
-      
+
       {/* Todo追加フォーム */}
       <form onSubmit={handleSubmit} className={style.form}>
         <input
@@ -89,7 +81,7 @@ export default function Todos() {
       {/* Todo一覧 */}
       <div className={style.checkbox}>
         {todos.map(todo => (
-          <div key={todo.id} className={style.todoItem}>
++          <div key={todo.id} className={style.todoItem}>
             <label className={todo.completed ? style.completed : ''}>
               <input
                 type="checkbox"
@@ -98,12 +90,9 @@ export default function Todos() {
               />
               {todo.title}
             </label>
-            <button
-              onClick={() => handleDelete(todo.id)}
-              className={style.deleteButton}
-            >
-              削除
-            </button>
++            <button onClick={() => handleDelete(todo.id)}>
++              削除
++            </button>
           </div>
         ))}
       </div>
@@ -114,12 +103,7 @@ export default function Todos() {
 
 ### コードの説明
 
-1. **状態管理の基本**
-   - `useState` フックを使って、データを保存する場所（状態）を作ります
-   - `todos`: Todo一覧を保存する配列
-   - `newTodo`: 入力フォームの文字を保存する変数
-
-2. **Todoを削除する仕組み**
+1. **Todoを削除する処理**
    ```javascript
    const handleDelete = (todoId) => {
      if (window.confirm('このTodoを削除しますか？')) {
@@ -128,74 +112,52 @@ export default function Todos() {
    };
    ```
    - `window.confirm()`: 削除する前に確認ダイアログを表示します
-   - `filter()`: 配列から条件に合う要素だけを選び出します
-   - `todo.id !== todoId`: 削除するTodo以外を選び出します
+   - `todos.filter(todo => todo.id !== todoId)`: 元の配列から削除するTodoを除いた配列を作ります
    - `setTodos()`: 更新されたTodo一覧を保存します
-
-3. **削除ボタンの基本**
-   - `onClick`: ボタンがクリックされたときの処理を指定します
-   - `className`: ボタンの見た目を指定します
 
 ## スタイルの更新
 
 `src/app/todos/page.module.css` に以下のスタイルを追加します。
 
-```css
-.todoItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+```diff lang=css
+/* src/app/todos/page.module.css */
+
+/* 省略 */
+
+.completed {
+  text-decoration: line-through;
+  color: #888;
 }
 
-.deleteButton {
-  padding: 0.3em 0.8em;
-  border: none;
-  border-radius: 3px;
-  background-color: #dc3545;
-  color: white;
-  cursor: pointer;
-}
-
-.deleteButton:hover {
-  background-color: #c82333;
-}
++.todoItem {
++  display: flex;
++  gap: 5px;
++  justify-content: space-between;
++  align-items: center;
++  margin-top: 5px;
++  width: 100%;
++}
 ```
 
 ## 🚀 動作確認
 
-正しく動作しているか確認しましょう：
+正しく動作しているか確認しましょう。
 
-import ChecklistItem from '../../../components/ChecklistItem.jsx';
-
-<div>
-  <ChecklistItem client:load id="step8-point1">
-    削除ボタンをクリックすると確認ダイアログが表示される
-  </ChecklistItem>
-  <ChecklistItem client:load id="step8-point2">
-    確認後にTodoが削除される
-  </ChecklistItem>
-  <ChecklistItem client:load id="step8-point3">
-    キャンセルした場合はTodoが削除されない
-  </ChecklistItem>
-</div>
+- 削除ボタンをクリックすると確認ダイアログが表示される
+- 確認後にTodoが削除される
+- キャンセルした場合はTodoが削除されない
 
 ## よくある問題と解決方法
 
-**削除が機能しない**
-- `handleDelete` 関数が正しく呼び出されているか確認
-- 確認ダイアログの表示が正しく機能しているか確認
-- `filter` メソッドの条件が正しいか確認
-
-**スタイルが適用されない**
-- CSSクラス名が正しく設定されているか確認
-- スタイルの優先順位が正しいか確認
+**Todoを削除できない**
+- `handleDelete` 関数が呼び出されているか確認する
+- `filter` メソッドの条件が間違っていないか確認する
 
 ## 🎯 理解度チェック
 
 以下の質問に答えて、学習内容を確認しましょう！
 
-1. **配列から特定の要素を削除するために使用するメソッドは？**
+1. **配列から条件に一致する要素だけを取り出したいときに使う関数は？**
 
    - A: `forEach()`
    - B: `map()`
@@ -207,7 +169,7 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
    **答え: C: `filter()`**
    - `filter()` は条件に合う要素だけを抽出して新しい配列を作成します
-   - このステップでは、特定のID以外のTodoを抽出するために使用しています
+   - このステップでは、特定のID以外のTodoを抽出するために使いました
 </details>
 
 2. **確認ダイアログを表示するために使用するメソッドは？**
@@ -222,7 +184,7 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
    **答え: C: `window.confirm()`**
    - `window.confirm()` はユーザーに確認を求めるダイアログを表示します
-   - このステップでは、Todoの削除前に確認を取るために使用しています
+   - このステップでは、Todoの削除前に確認を取るために使いました
 </details>
 
 ## 📝 まとめ
@@ -233,12 +195,3 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
   - 配列からの要素の削除
   - `filter` メソッドの使用
   - 確認ダイアログの表示
-
-- **イベントハンドリング**
-  - 削除ボタンのクリックイベント
-  - 確認ダイアログの処理
-
-- **UI/UX**
-  - 削除前の確認
-  - 視覚的なフィードバック
-  - エラー防止
