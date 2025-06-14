@@ -263,7 +263,7 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
     `npm run dev` で開発サーバーを起動できる
   </ChecklistItem>
   <ChecklistItem client:load id="point4">
-    初期画面を表示できる
+    初期画面(`http://localhost:3000/`)を表示できる
   </ChecklistItem>
 </div>
 
@@ -273,9 +273,9 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 
 1. **Next.js プロジェクトを作成するコマンドは？**
 
-   - A: `npm create-next-app`
-   - B: `npx create-next-app`
-   - C: `next create-app`
+   - A: `npm create-next-app@latest todo-manager`
+   - B: `npx create-next-app@latest todo-manager`
+   - C: `next create-app@latest todo-manager`
 
    <details>
    <summary>答えを見る</summary>
@@ -283,7 +283,8 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
    **答え: B: `npx create-next-app`**
    - `npx` は Node.js のパッケージを実行するためのコマンドです
    - `create-next-app` は Next.js のプロジェクトを作成するためのツールです
-   - このコマンドを実行することで、新しい Next.js プロジェクトを簡単に作成できます
+   - `@latest` は `create-next-app` の最新のバージョンを使うという意味です
+   - `todo-manager` はプロジェクトの名前です. `create-next-app` はこの名前で新しいフォルダを作成します
    </details>
 
 ## 📝 まとめ
@@ -305,10 +306,10 @@ import ChecklistItem from '../../../components/ChecklistItem.jsx';
 - **開発の基本**
   - `npm run dev`で開発サーバー起動
   - ホットリロード機能（ファイル保存で自動更新）
-  - ローカルサーバー（http://localhost:3000）で確認
+  - ローカルサーバー（`http://localhost:3000`）で確認
 
 - **トラブルシューティング**
-  - ポート競合の解決方法
+  - ポートが競合したときの対応方法
   - 権限エラーの対処法
   - 日本語パス名の注意点
   - 開発サーバーの停止方法（Ctrl+C / Cmd+C）
