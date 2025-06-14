@@ -79,11 +79,11 @@ export default function Todos() {
 -          </label>
 -        </div>
 +        { /* 3. map() によるTodoの表示 */}
-+        {todos.map((task) => (
-+          <div key={task.id}>
++        {todos.map((todo) => (
++          <div key={todo.id}>
 +            <label>
-+              <input type="checkbox" checked={task.completed} onChange={(e) => { console.log(e.target.checked)}} />
-+              {task.title}
++              <input type="checkbox" checked={todo.completed} onChange={(e) => { console.log(e.target.checked)}} />
++              {todo.title}
 +            </label>
 +          </div>
 +        ))}
@@ -118,17 +118,17 @@ export default function Todos() {
 
 3. **map() によるTodoの表示**
    ```javascript
-   {todos.map((task) => (
+   {todos.map((todo) => (
      <div>
-       <label key={task.id}>
-         <input type="checkbox" checked={task.completed} onChange={(e) => { console.log(e.target.checked)}} />
-         {task.title}
+       <label key={todo.id}>
+         <input type="checkbox" checked={todo.completed} onChange={(e) => { console.log(e.target.checked)}} />
+         {todo.title}
        </label>
      </div>
    ))}
    ```
    - `todos.map()` で各Todoを処理
-   - `key={task.id}` で各要素に一意の識別子を付与
+   - `key={todo.id}` で各要素に一意の識別子を付与
    - `checked` に true を設定するとチェックボックスにチェックマークが表示されます
    - `onChange` はチェックボックスがクリックされたときに実行する処理を書きます
        - ここではブラウザのコンソールにチェックボックスがチェックされているかどうかを表す値を表示しています

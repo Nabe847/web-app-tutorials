@@ -26,12 +26,12 @@ tags: ['Next.js', 'tutorial']
 
 ```diff lang="jsx"
 'use client';
-import { useState } from 'react';
++import { useState } from 'react';
 import style from './page.module.css';
 
 export default function Todos() {
   // Todoデータの定義
-  const [todos, setTasks] = useState([
+  const [todos, setTodos] = useState([
     { id: 1, title: '買い物に行く', completed: false },
     { id: 2, title: 'メールを確認する', completed: false },
     { id: 3, title: '資料を作成する', completed: false },
@@ -40,16 +40,16 @@ export default function Todos() {
   ]);
 
 +  // 1. 入力値の状態管理
-+  const [newTask, setNewTask] = useState('');
++  const [newTodo, setNewTodo] = useState('');
 
 +  // 2. Todoをリストに追加する
 +  const handleSubmit = (e) => {
 +    e.preventDefault();
-+    if (newTask.trim() === '') return;
++    if (newTodo.trim() === '') return;
 +
 +    const newId = todos.length > 0 ? Math.max(...todos.map(t => t.id)) + 1 : 1;
-+    setTasks([...todos, { id: newId, title: newTask, completed: false }]);
-+    setNewTask('');
++    setTodos([...todos, { id: newId, title: newTodo, completed: false }]);
++    setNewTodo('');
 +  };
 
   return (
@@ -60,8 +60,8 @@ export default function Todos() {
 +      <form className={style.form} onSubmit={handleSubmit}>
 +        <input
 +          type="text"
-+          value={newTask}
-+          onChange={(e) => setNewTask(e.target.value)}
++          value={newTodo}
++          onChange={(e) => setNewTodo(e.target.value)}
 +          placeholder="新しいTodoを入力"
 +          className={style.input}
 +        />
@@ -70,11 +70,11 @@ export default function Todos() {
 
       {/* Todo一覧 */}
       <div className={style.checkbox}>
-        {todos.map((task) => (
-          <div key={task.id}>
+        {todos.map((todo) => (
+          <div key={todo.id}>
             <label>
-              <input type="checkbox" checked={task.completed} onChange={(e) => {console.log(e.target.checked)}} />
-              {task.title}
+              <input type="checkbox" checked={todo.completed} onChange={(e) => {console.log(e.target.checked)}} />
+              {todo.title}
             </label>
           </div>
         ))}
@@ -89,33 +89,33 @@ export default function Todos() {
 1. **状態管理の基本**
    - `useState` フックを使って、データを保存する場所（状態）を作ります
    - `todos`: Todo一覧を保存する配列
-   - `newTask`: 入力フォームの文字を保存する変数
+   - `newTodo`: 入力フォームの文字を保存する変数
 
 2. **Todoをリストに追加する**
    ```javascript
    const handleSubmit = (e) => {
      e.preventDefault();
-     if (newTask.trim() === '') return;
+     if (newTodo.trim() === '') return;
 
      const newId = todos.length > 0 ? Math.max(...todos.map(t => t.id)) + 1 : 1;
-     setTasks([...todos, { id: newId, title: newTask, completed: false }]);
-     setNewTask('');
+     setTodos([...todos, { id: newId, title: newTodo, completed: false }]);
+     setNewTodo('');
    };
    ```
    - `e.preventDefault()`: フォームの送信ボタンを押したときの、ページの更新を防ぎます
-   - `newTask.trim()`: 入力された文字の前後の空白を削除します
-   - `if (newTask.trim() === '') return`: 空のTodoは追加しないようにします
+   - `newTodo.trim()`: 入力された文字の前後の空白を削除します
+   - `if (newTodo.trim() === '') return`: 空のTodoは追加しないようにします
    - `todos.length > 0 ? ... : 1`: Todoが1つもない場合は1から始めます
-   - `setTasks([...todos, { id: newId, title: newTask, completed: false }])`: 新しいTodoを配列に追加します
-   - `setNewTask('')`: 入力フォームを空にします
+   - `setTodos([...todos, { id: newId, title: newTodo, completed: false }])`: 新しいTodoを配列に追加します
+   - `setNewTodo('')`: 入力フォームを空にします
 
 3. **フォームの基本**
    ```jsx
       <form className={style.form} onSubmit={handleSubmit}>
         <input
           type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
+          value={newTodo}
+          onChange={(e) => setNewTodo(e.target.value)}
           placeholder="新しいTodoを入力"
           className={style.input}
         />
