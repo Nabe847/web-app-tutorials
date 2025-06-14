@@ -1,7 +1,7 @@
 ---
-title: '7: Todoの削除機能の実装'
-pubDate: 2024-03-20
-description: 'Todoの削除機能を実装します'
+title: '7: Todoの削除機能'
+pubDate: 2025-06-09
+description: 'FastAPI の初心者向けチュートリアルです'
 author: 'Nabe847'
 image:
   url: 'https://docs.astro.build/assets/full-logo-light.png'
@@ -9,12 +9,45 @@ image:
 tags: ['FastAPI', 'tutorial']
 ---
 
+## このステップで学ぶこと
+
+前のステップに続いて、今回はTodoの削除機能を実装します。APIを通じてデータベースからTodoを削除できるようにしましょう。
+
+1. **削除機能の実装**
+2. **エラーハンドリング**
+3. **APIの動作確認**
+
+> 💡 **DELETE**: リソースの削除に使用されるHTTPメソッドです。データベースからレコードを削除する際に使用します。
+
 ## Delete機能の実装
 
 `app/main.py` に以下のコードを追加して、Todoの削除機能を実装します：
 
 ```python
+# app/main.py
+
 # Todoの削除
+@app.delete("/todos/{todo_id}")
+def delete_todo(todo_id: int, db: Session = Depends(get_db)):
+    # 指定されたIDのTodoを取得
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+    
+    # Todoが存在しない場合は404エラーを返す
+    if db_todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    
+    # Todoを削除
+    db.delete(db_todo)
+    
+    # データベースに変更を保存
+    db.commit()
+    
+    return {"message": "Todo deleted successfully"}
+```
+
+## コードの解説
+
+```python
 @app.delete("/todos/{todo_id}")
 def delete_todo(todo_id: int, db: Session = Depends(get_db)):
     db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
@@ -25,16 +58,23 @@ def delete_todo(todo_id: int, db: Session = Depends(get_db)):
     return {"message": "Todo deleted successfully"}
 ```
 
-> 💡 **DELETE**: リソースの削除に使用されるHTTPメソッドです。
+- `@app.delete("/todos/{todo_id}")`: DELETEリクエストを処理するエンドポイントを定義
+- `todo_id: int`: パスパラメータを整数型として受け取る
+- `db.query(models.Todo)`: Todoテーブルに対するクエリを作成
+- `filter(models.Todo.id == todo_id)`: 指定されたIDのTodoを検索
+- `db.delete(db_todo)`: Todoを削除
+- `db.commit()`: 変更をデータベースに保存
+- `return {"message": "Todo deleted successfully"}`: 成功メッセージを返す
 
-## APIの動作確認
+## 🚀 動作確認
 
 1. サーバーが起動していることを確認します：
+
 ```bash
 uvicorn app.main:app --reload
 ```
 
-2. ブラウザで `http://127.0.0.1:8000/docs` を開きます。
+2. ブラウザで `http://localhost:8000/docs` を開きます。
 
 3. Todoの削除（DELETE `/todos/{todo_id}`）を試してみましょう。
 
@@ -47,6 +87,51 @@ uvicorn app.main:app --reload
   1. 指定したIDのTodoが存在するか確認
   2. 正しいIDを指定しているか確認
 
-## 次のステップ
+**データベースエラーが発生する場合**
 
-これでTodoの削除機能の実装が完了しました。次のステップでは、APIのテストについて学びます。 
+- エラーメッセージ例：`sqlalchemy.exc.OperationalError`
+- 解決方法：
+  1. データベースが正しく設定されているか確認
+  2. テーブルが存在するか確認
+
+## 🎯 理解度チェック
+
+以下の質問に答えて、学習内容を確認しましょう！
+
+1. **FastAPIでDELETEリクエストを処理するエンドポイントを定義する際の正しい書き方は？**
+
+   - A: `@app.delete("/todos/{todo_id}")`
+   - B: `@app.post("/todos/{todo_id}")`
+   - C: `@app.get("/todos/{todo_id}")`
+
+<details>
+<summary>答えを見る</summary>
+
+   **答え: A: `@app.delete("/todos/{todo_id}")`**
+
+   - DELETEはリソースの削除に使用されるHTTPメソッドです
+   - FastAPIでは`@app.delete()`デコレータを使用してDELETEリクエストを処理します
+   - 参考: [FastAPI公式ドキュメント](https://fastapi.tiangolo.com/tutorial/path-params/)
+</details>
+
+## 📝 まとめ
+
+このステップでは以下について学びました。
+
+- **Delete機能の実装**
+
+  - 削除機能の実装方法
+  - エラーハンドリングの方法
+  - レスポンスの形式
+
+- **HTTPメソッドの使い分け**
+
+  - DELETEメソッドの使い方
+  - パスパラメータの使い方
+  - レスポンスの形式
+
+- **トラブルシューティング**
+  - 404エラーの対処法
+  - データベースエラーの対処法
+
+--- 

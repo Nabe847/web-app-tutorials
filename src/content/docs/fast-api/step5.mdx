@@ -1,7 +1,7 @@
 ---
-title: '5: Todoの読み取り機能の実装'
-pubDate: 2024-03-20
-description: 'Todoの読み取り機能を実装します'
+title: '5: Todoの読み取り機能'
+pubDate: 2025-06-09
+description: 'FastAPI の初心者向けチュートリアルです'
 author: 'Nabe847'
 image:
   url: 'https://docs.astro.build/assets/full-logo-light.png'
@@ -9,37 +9,87 @@ image:
 tags: ['FastAPI', 'tutorial']
 ---
 
+## このステップで学ぶこと
+
+前のステップに続いて、今回はTodoの読み取り機能を実装します。APIを通じてデータベースからTodoを取得できるようにしましょう。
+
+1. **一覧取得機能の実装**
+2. **個別取得機能の実装**
+3. **APIの動作確認**
+
+> 💡 **クエリパラメータ**: URLの`?`以降に付与されるパラメータです。例えば、`/todos?skip=0&limit=10`の`skip`と`limit`がクエリパラメータです。
+
 ## Read機能の実装
 
 `app/main.py` に以下のコードを追加して、Todoの読み取り機能を実装します：
 
 ```python
-# Todoの一覧取得
+# app/main.py
+
+# 1. Todoの一覧取得
 @app.get("/todos/", response_model=list[schemas.Todo])
 def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    # データベースからTodoを取得
     todos = db.query(models.Todo).offset(skip).limit(limit).all()
     return todos
 
-# 特定のTodoの取得
+# 2. 特定のTodoの取得
 @app.get("/todos/{todo_id}", response_model=schemas.Todo)
 def read_todo(todo_id: int, db: Session = Depends(get_db)):
+    # 指定されたIDのTodoを取得
     db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+    
+    # Todoが存在しない場合は404エラーを返す
     if db_todo is None:
         raise HTTPException(status_code=404, detail="Todo not found")
+    
     return db_todo
 ```
 
-> 💡 **クエリパラメータ**: `skip`と`limit`は、ページネーションのために使用されるクエリパラメータです。
-> 💡 **パスパラメータ**: `todo_id`は、URLのパスに含まれるパラメータです。
+## コードの解説
 
-## APIの動作確認
+1. **Todoの一覧取得**
+
+   ```python
+   @app.get("/todos/", response_model=list[schemas.Todo])
+   def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+       todos = db.query(models.Todo).offset(skip).limit(limit).all()
+       return todos
+   ```
+
+   - `@app.get("/todos/")`: GETリクエストを処理するエンドポイントを定義
+   - `response_model=list[schemas.Todo]`: レスポンスの形式を指定
+   - `skip`と`limit`: ページネーション用のパラメータ
+   - `db.query(models.Todo)`: Todoテーブルに対するクエリを作成
+   - `offset(skip).limit(limit)`: 指定された範囲のTodoを取得
+   - `all()`: クエリを実行して結果を取得
+
+2. **特定のTodoの取得**
+
+   ```python
+   @app.get("/todos/{todo_id}", response_model=schemas.Todo)
+   def read_todo(todo_id: int, db: Session = Depends(get_db)):
+       db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+       if db_todo is None:
+           raise HTTPException(status_code=404, detail="Todo not found")
+       return db_todo
+   ```
+
+   - `@app.get("/todos/{todo_id}")`: パスパラメータを含むエンドポイントを定義
+   - `todo_id: int`: パスパラメータを整数型として受け取る
+   - `filter(models.Todo.id == todo_id)`: 指定されたIDのTodoを検索
+   - `first()`: 最初の結果を取得
+   - `HTTPException`: エラーレスポンスを返す
+
+## 🚀 動作確認
 
 1. サーバーが起動していることを確認します：
+
 ```bash
 uvicorn app.main:app --reload
 ```
 
-2. ブラウザで `http://127.0.0.1:8000/docs` を開きます。
+2. ブラウザで `http://localhost:8000/docs` を開きます。
 
 3. 以下の操作を試してみましょう：
 
@@ -55,6 +105,51 @@ uvicorn app.main:app --reload
   1. 指定したIDのTodoが存在するか確認
   2. 正しいIDを指定しているか確認
 
-## 次のステップ
+**データベースエラーが発生する場合**
 
-これでTodoの読み取り機能の実装が完了しました。次のステップでは、Todoの更新機能を実装します。 
+- エラーメッセージ例：`sqlalchemy.exc.OperationalError`
+- 解決方法：
+  1. データベースが正しく設定されているか確認
+  2. テーブルが存在するか確認
+
+## 🎯 理解度チェック
+
+以下の質問に答えて、学習内容を確認しましょう！
+
+1. **FastAPIでパスパラメータを定義する際の正しい書き方は？**
+
+   - A: `@app.get("/todos/{todo_id}")`
+   - B: `@app.get("/todos/:todo_id")`
+   - C: `@app.get("/todos/todo_id")`
+
+<details>
+<summary>答えを見る</summary>
+
+   **答え: A: `@app.get("/todos/{todo_id}")`**
+
+   - FastAPIでは、パスパラメータを`{パラメータ名}`の形式で定義します
+   - パラメータ名は関数の引数名と一致させる必要があります
+   - 参考: [FastAPI公式ドキュメント](https://fastapi.tiangolo.com/tutorial/path-params/)
+</details>
+
+## 📝 まとめ
+
+このステップでは以下について学びました。
+
+- **Read機能の実装**
+
+  - 一覧取得機能の実装方法
+  - 個別取得機能の実装方法
+  - エラーハンドリングの方法
+
+- **APIの設計**
+
+  - クエリパラメータの使い方
+  - パスパラメータの使い方
+  - レスポンスモデルの指定方法
+
+- **トラブルシューティング**
+  - 404エラーの対処法
+  - データベースエラーの対処法
+
+--- 
