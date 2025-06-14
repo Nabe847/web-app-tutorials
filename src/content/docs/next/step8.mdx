@@ -122,6 +122,20 @@ export default function Todos() {
 ```diff lang=css
 /* src/app/todos/page.module.css */
 
+.checkbox label {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0 0.6em;
+  position: relative;
+-  margin-bottom: 0.6em;
+  padding: 0.5em 0.7em;
+  border: 1px solid #2589d0;
+  border-radius: 3px;
+  background-color: #2589d026;
+  cursor: pointer;
+}
+
 /* 省略 */
 
 .completed {
@@ -142,6 +156,8 @@ export default function Todos() {
 ## 🚀 動作確認
 
 正しく動作しているか確認しましょう。
+
+![](../../../assets/step8-styled-main-page.png)
 
 - 削除ボタンをクリックすると確認ダイアログが表示される
 - 確認後にTodoが削除される
