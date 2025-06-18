@@ -11,17 +11,18 @@ tags: ['FastAPI', 'tutorial']
 
 ## このステップで学ぶこと
 
-前のステップに続いて、今回はTodoの読み取り機能を実装します。APIを通じてデータベースからTodoを取得できるようにしましょう。
+前のステップに続いて、今回はTodoの読み取り（取得）機能を作成します。  
+APIを通じてデータベースからTodoを取得できるようにしましょう。
 
 1. **一覧取得機能の実装**
 2. **個別取得機能の実装**
 3. **APIの動作確認**
 
-> 💡 **クエリパラメータ**: URLの`?`以降に付与されるパラメータです。例えば、`/todos?skip=0&limit=10`の`skip`と`limit`がクエリパラメータです。
+> 💡 **クエリパラメータ**: URLの`?`以降に付与されるパラメータです。例えば、`/todos?skip=0&limit=10` の `skip` と `limit` がクエリパラメータです。
 
-## Read機能の実装
+## Todo取得機能の実装
 
-`app/main.py` に以下のコードを追加して、Todoの読み取り機能を実装します：
+`app/main.py` に以下のコードを追加して、Todoの読み取り機能を実装します:
 
 ```python
 # app/main.py
@@ -57,12 +58,12 @@ def read_todo(todo_id: int, db: Session = Depends(get_db)):
        return todos
    ```
 
-   - `@app.get("/todos/")`: GETリクエストを処理するエンドポイントを定義
-   - `response_model=list[schemas.Todo]`: レスポンスの形式を指定
-   - `skip`と`limit`: ページネーション用のパラメータ
-   - `db.query(models.Todo)`: Todoテーブルに対するクエリを作成
-   - `offset(skip).limit(limit)`: 指定された範囲のTodoを取得
-   - `all()`: クエリを実行して結果を取得
+   - `@app.get("/todos/")`: GETリクエストを処理するエンドポイントを定義します
+   - `response_model=list[schemas.Todo]`: レスポンスの形式を指定します
+   - `skip`と`limit`: ページネーション用のパラメータです
+   - `db.query(models.Todo)`: Todoテーブルに対するクエリを作成します
+   - `offset(skip).limit(limit)`: 指定された範囲のTodoを取得します
+   - `all()`: クエリを実行して結果を取得します
 
 2. **特定のTodoの取得**
 
@@ -75,15 +76,15 @@ def read_todo(todo_id: int, db: Session = Depends(get_db)):
        return db_todo
    ```
 
-   - `@app.get("/todos/{todo_id}")`: パスパラメータを含むエンドポイントを定義
-   - `todo_id: int`: パスパラメータを整数型として受け取る
-   - `filter(models.Todo.id == todo_id)`: 指定されたIDのTodoを検索
-   - `first()`: 最初の結果を取得
-   - `HTTPException`: エラーレスポンスを返す
+   - `@app.get("/todos/{todo_id}")`: パスパラメータを含むエンドポイントを定義します
+   - `todo_id: int`: パスパラメータを整数型として受け取ります
+   - `filter(models.Todo.id == todo_id)`: 指定されたIDのTodoを検索します
+   - `first()`: 最初の結果を取得します
+   - `HTTPException`: エラーレスポンスを返します
 
 ## 🚀 動作確認
 
-1. サーバーが起動していることを確認します：
+1. サーバーが起動していることを確認します:
 
 ```bash
 uvicorn app.main:app --reload
@@ -91,7 +92,7 @@ uvicorn app.main:app --reload
 
 2. ブラウザで `http://localhost:8000/docs` を開きます。
 
-3. 以下の操作を試してみましょう：
+3. 以下の操作を試してみましょう:
 
 - Todoの一覧取得（GET /todos/）
 - 特定のTodoの取得（GET `/todos/{todo_id}`）
@@ -100,15 +101,15 @@ uvicorn app.main:app --reload
 
 **404エラーが発生する場合**
 
-- エラーメッセージ例：`{"detail": "Todo not found"}`
-- 解決方法：
+- エラーメッセージ例: `{"detail": "Todo not found"}`
+- 解決方法:
   1. 指定したIDのTodoが存在するか確認
   2. 正しいIDを指定しているか確認
 
 **データベースエラーが発生する場合**
 
-- エラーメッセージ例：`sqlalchemy.exc.OperationalError`
-- 解決方法：
+- エラーメッセージ例: `sqlalchemy.exc.OperationalError`
+- 解決方法:
   1. データベースが正しく設定されているか確認
   2. テーブルが存在するか確認
 
@@ -137,17 +138,13 @@ uvicorn app.main:app --reload
 このステップでは以下について学びました。
 
 - **Read機能の実装**
-
   - 一覧取得機能の実装方法
   - 個別取得機能の実装方法
   - エラーハンドリングの方法
-
 - **APIの設計**
-
   - クエリパラメータの使い方
   - パスパラメータの使い方
   - レスポンスモデルの指定方法
-
 - **トラブルシューティング**
   - 404エラーの対処法
   - データベースエラーの対処法

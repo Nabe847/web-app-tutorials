@@ -11,19 +11,20 @@ tags: ['FastAPI', 'tutorial']
 
 ## このステップで学ぶこと
 
-前のステップに続いて、今回はTodoの更新機能を実装します。APIを通じてデータベースのTodoを更新できるようにしましょう。
+前のステップに続いて、今回はTodoの更新機能を作成します。  
+APIを通じてデータベースのTodoを編集できるようにしましょう。
 
 1. **完全更新機能の実装**
 2. **部分更新機能の実装**
 3. **APIの動作確認**
 
-> 💡 **HTTPメソッド**: 
-> - `PUT`: リソースの完全な更新に使用
-> - `PATCH`: リソースの部分的な更新に使用
+> 💡 **HTTPメソッド**:  
+> - `PUT`: リソースの完全な更新に使用します  
+> - `PATCH`: リソースの部分的な更新に使用します
 
-## Update機能の実装
+## Todo更新機能の実装
 
-`app/main.py` に以下のコードを追加して、Todoの更新機能を実装します：
+`app/main.py` に以下のコードを追加して、Todoの更新機能を実装します:
 
 ```python
 # app/main.py
@@ -83,11 +84,11 @@ def complete_todo(todo_id: int, db: Session = Depends(get_db)):
        return db_todo
    ```
 
-   - `@app.put("/todos/{todo_id}")`: PUTリクエストを処理するエンドポイントを定義
-   - `todo: schemas.TodoCreate`: リクエストボディの形式を指定
-   - `db_todo.title = todo.title`: Todoのタイトルを更新
-   - `db.commit()`: 変更をデータベースに保存
-   - `db.refresh(db_todo)`: 更新後のデータを再取得
+   - `@app.put("/todos/{todo_id}")`: PUTリクエストを処理するエンドポイントを定義します
+   - `todo: schemas.TodoCreate`: リクエストボディの形式を指定します
+   - `db_todo.title = todo.title`: Todoのタイトルを更新します
+   - `db.commit()`: 変更をデータベースに保存します
+   - `db.refresh(db_todo)`: 更新後のデータを再取得します
 
 2. **Todoの完了状態の更新**
 
@@ -103,14 +104,14 @@ def complete_todo(todo_id: int, db: Session = Depends(get_db)):
        return db_todo
    ```
 
-   - `@app.patch("/todos/{todo_id}/complete")`: PATCHリクエストを処理するエンドポイントを定義
-   - `db_todo.completed = True`: Todoの完了状態を更新
-   - `db.commit()`: 変更をデータベースに保存
-   - `db.refresh(db_todo)`: 更新後のデータを再取得
+   - `@app.patch("/todos/{todo_id}/complete")`: PATCHリクエストを処理するエンドポイントを定義します
+   - `db_todo.completed = True`: Todoの完了状態を更新します
+   - `db.commit()`: 変更をデータベースに保存します
+   - `db.refresh(db_todo)`: 更新後のデータを再取得します
 
 ## 🚀 動作確認
 
-1. サーバーが起動していることを確認します：
+1. サーバーが起動していることを確認します:
 
 ```bash
 uvicorn app.main:app --reload
@@ -118,30 +119,29 @@ uvicorn app.main:app --reload
 
 2. ブラウザで `http://localhost:8000/docs` を開きます。
 
-3. 以下の操作を試してみましょう：
+3. 以下の操作を試してみましょう:
 
 - Todoの更新（PUT `/todos/{todo_id}`）
 ```json
 {
-  "title": "スーパーで買い物に行く"
+  "title": "スーパーで買い物をする"
 }
 ```
-
 - Todoの完了（PATCH `/todos/{todo_id}/complete`）
 
 ## よくある問題と解決方法
 
 **404エラーが発生する場合**
 
-- エラーメッセージ例：`{"detail": "Todo not found"}`
-- 解決方法：
+- エラーメッセージ例: `{"detail": "Todo not found"}`
+- 解決方法:
   1. 指定したIDのTodoが存在するか確認
   2. 正しいIDを指定しているか確認
 
 **バリデーションエラーが発生する場合**
 
-- エラーメッセージ例：`{"detail": [{"loc": ["body", "title"], "msg": "field required"}]}`
-- 解決方法：
+- エラーメッセージ例: `{"detail": [{"loc": ["body", "title"], "msg": "field required"}]}`
+- 解決方法:
   1. リクエストボディの形式が正しいか確認
   2. 必須フィールドが含まれているか確認
 
@@ -160,8 +160,8 @@ uvicorn app.main:app --reload
 
    **答え: A: `@app.put("/todos/{todo_id}")`**
 
-   - PUTはリソースの完全な更新に使用されるHTTPメソッドです
-   - FastAPIでは`@app.put()`デコレータを使用してPUTリクエストを処理します
+   - PUTはリソースの完全な更新に使われるHTTPメソッドです
+   - FastAPIでは`@app.put()`デコレータを使ってPUTリクエストを処理します
    - 参考: [FastAPI公式ドキュメント](https://fastapi.tiangolo.com/tutorial/body-updates/)
 </details>
 
@@ -170,17 +170,13 @@ uvicorn app.main:app --reload
 このステップでは以下について学びました。
 
 - **Update機能の実装**
-
   - 完全更新機能の実装方法
   - 部分更新機能の実装方法
   - エラーハンドリングの方法
-
 - **HTTPメソッドの使い分け**
-
   - PUTメソッドの使い方
   - PATCHメソッドの使い方
   - レスポンスモデルの指定方法
-
 - **トラブルシューティング**
   - 404エラーの対処法
   - バリデーションエラーの対処法

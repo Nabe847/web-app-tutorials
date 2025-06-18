@@ -11,17 +11,18 @@ tags: ['FastAPI', 'tutorial']
 
 ## このステップで学ぶこと
 
-前のステップに続いて、今回はTodoの削除機能を実装します。APIを通じてデータベースからTodoを削除できるようにしましょう。
+前のステップに続いて、今回はTodoの削除機能を作成します。  
+APIを通じてデータベースからTodoを削除できるようにしましょう。
 
 1. **削除機能の実装**
 2. **エラーハンドリング**
 3. **APIの動作確認**
 
-> 💡 **DELETE**: リソースの削除に使用されるHTTPメソッドです。データベースからレコードを削除する際に使用します。
+> 💡 **DELETE**: リソースの削除に使われるHTTPメソッドです。データベースからレコードを削除する際に使用します。
 
-## Delete機能の実装
+## Todo削除機能の実装
 
-`app/main.py` に以下のコードを追加して、Todoの削除機能を実装します：
+`app/main.py` に以下のコードを追加して、Todoの削除機能を実装します:
 
 ```python
 # app/main.py
@@ -58,17 +59,17 @@ def delete_todo(todo_id: int, db: Session = Depends(get_db)):
     return {"message": "Todo deleted successfully"}
 ```
 
-- `@app.delete("/todos/{todo_id}")`: DELETEリクエストを処理するエンドポイントを定義
-- `todo_id: int`: パスパラメータを整数型として受け取る
-- `db.query(models.Todo)`: Todoテーブルに対するクエリを作成
-- `filter(models.Todo.id == todo_id)`: 指定されたIDのTodoを検索
-- `db.delete(db_todo)`: Todoを削除
-- `db.commit()`: 変更をデータベースに保存
-- `return {"message": "Todo deleted successfully"}`: 成功メッセージを返す
+- `@app.delete("/todos/{todo_id}")`: DELETEリクエストを処理するエンドポイントを定義します
+- `todo_id: int`: パスパラメータを整数型として受け取ります
+- `db.query(models.Todo)`: Todoテーブルに対するクエリを作成します
+- `filter(models.Todo.id == todo_id)`: 指定されたIDのTodoを検索します
+- `db.delete(db_todo)`: Todoを削除します
+- `db.commit()`: 変更をデータベースに保存します
+- `return {"message": "Todo deleted successfully"}`: 成功メッセージを返します
 
 ## 🚀 動作確認
 
-1. サーバーが起動していることを確認します：
+1. サーバーが起動していることを確認します:
 
 ```bash
 uvicorn app.main:app --reload
@@ -82,15 +83,15 @@ uvicorn app.main:app --reload
 
 **404エラーが発生する場合**
 
-- エラーメッセージ例：`{"detail": "Todo not found"}`
-- 解決方法：
+- エラーメッセージ例: `{"detail": "Todo not found"}`
+- 解決方法:
   1. 指定したIDのTodoが存在するか確認
   2. 正しいIDを指定しているか確認
 
 **データベースエラーが発生する場合**
 
-- エラーメッセージ例：`sqlalchemy.exc.OperationalError`
-- 解決方法：
+- エラーメッセージ例: `sqlalchemy.exc.OperationalError`
+- 解決方法:
   1. データベースが正しく設定されているか確認
   2. テーブルが存在するか確認
 
@@ -109,8 +110,8 @@ uvicorn app.main:app --reload
 
    **答え: A: `@app.delete("/todos/{todo_id}")`**
 
-   - DELETEはリソースの削除に使用されるHTTPメソッドです
-   - FastAPIでは`@app.delete()`デコレータを使用してDELETEリクエストを処理します
+   - DELETEはリソースの削除に使われるHTTPメソッドです
+   - FastAPIでは`@app.delete()`デコレータを使ってDELETEリクエストを処理します
    - 参考: [FastAPI公式ドキュメント](https://fastapi.tiangolo.com/tutorial/path-params/)
 </details>
 
@@ -119,17 +120,13 @@ uvicorn app.main:app --reload
 このステップでは以下について学びました。
 
 - **Delete機能の実装**
-
   - 削除機能の実装方法
   - エラーハンドリングの方法
   - レスポンスの形式
-
 - **HTTPメソッドの使い分け**
-
   - DELETEメソッドの使い方
   - パスパラメータの使い方
   - レスポンスの形式
-
 - **トラブルシューティング**
   - 404エラーの対処法
   - データベースエラーの対処法

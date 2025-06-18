@@ -11,7 +11,8 @@ tags: ['FastAPI', 'tutorial']
 
 ## このステップで学ぶこと
 
-前のステップに続いて、今回はAPIのエラー処理を改善します。より分かりやすいエラーメッセージを提供し、APIの使いやすさを向上させましょう。
+前のステップに続いて、今回はAPIのエラー処理を改善します。  
+より分かりやすいエラーメッセージを提供し、APIの使いやすさを向上させましょう。
 
 1. **カスタム例外クラスの作成**
 2. **エラー処理の実装**
@@ -21,7 +22,7 @@ tags: ['FastAPI', 'tutorial']
 
 ## エラー処理の改善
 
-より良いエラーメッセージを提供するために、カスタム例外クラスを作成します。`app/exceptions.py` を作成して以下のように編集します：
+より良いエラーメッセージを提供するために、カスタム例外クラスを作成します。`app/exceptions.py` を作成し、以下のように編集します:
 
 ```python
 # app/exceptions.py
@@ -43,7 +44,7 @@ class InvalidTodoDataError(HTTPException):
         )
 ```
 
-`app/main.py` を更新して、新しい例外クラスを使用します：
+`app/main.py` を更新し、新しい例外クラスを使います:
 
 ```python
 # app/main.py
@@ -145,9 +146,9 @@ def delete_todo(todo_id: int, db: Session = Depends(get_db)):
            )
    ```
 
-   - `HTTPException`を継承してカスタム例外クラスを作成
-   - `status_code`: HTTPステータスコードを指定
-   - `detail`: エラーメッセージを指定
+   - `HTTPException`を継承してカスタム例外クラスを作成します
+   - `status_code`: HTTPステータスコードを指定します
+   - `detail`: エラーメッセージを指定します
 
 2. **エラー処理の実装**
 
@@ -157,28 +158,28 @@ def delete_todo(todo_id: int, db: Session = Depends(get_db)):
    ```
 
    - バリデーションエラーの処理
-   - カスタム例外クラスを使用してエラーを発生させる
+   - カスタム例外クラスを使ってエラーを発生させます
 
 ## 🚀 動作確認
 
-APIをテストして、エラー処理が正しく動作するか確認しましょう：
+APIをテストして、エラー処理が正しく動作するか確認しましょう:
 
-1. 存在しないTodoを取得しようとする：
+1. 存在しないTodoを取得しようとする:
 ```bash
 curl http://localhost:8000/todos/999
 ```
-期待されるレスポンス：
+期待されるレスポンス:
 ```json
 {
   "detail": "指定されたTodoが見つかりません"
 }
 ```
 
-2. 空のタイトルでTodoを作成しようとする：
+2. 空のタイトルでTodoを作成しようとする:
 ```bash
 curl -X POST http://localhost:8000/todos/ -H "Content-Type: application/json" -d '{"title": ""}'
 ```
-期待されるレスポンス：
+期待されるレスポンス:
 ```json
 {
   "detail": "タイトルは空にできません"
@@ -189,16 +190,16 @@ curl -X POST http://localhost:8000/todos/ -H "Content-Type: application/json" -d
 
 **エラーメッセージが表示されない場合**
 
-- エラーメッセージ例：`Internal Server Error`
-- 解決方法：
+- エラーメッセージ例: `Internal Server Error`
+- 解決方法:
   1. ログを確認
   2. 例外処理が正しく実装されているか確認
   3. デバッグモードを有効にする
 
 **カスタム例外が機能しない場合**
 
-- エラーメッセージ例：`NameError: name 'exceptions' is not defined`
-- 解決方法：
+- エラーメッセージ例: `NameError: name 'exceptions' is not defined`
+- 解決方法:
   1. インポート文が正しいか確認
   2. 例外クラスが正しく定義されているか確認
 
@@ -227,17 +228,13 @@ curl -X POST http://localhost:8000/todos/ -H "Content-Type: application/json" -d
 このステップでは以下について学びました。
 
 - **エラー処理の改善**
-
   - カスタム例外クラスの作成方法
   - エラーメッセージのカスタマイズ方法
   - エラー処理の実装方法
-
 - **APIの使いやすさ向上**
-
   - 分かりやすいエラーメッセージの提供
   - 適切なHTTPステータスコードの使用
   - バリデーションエラーの処理
-
 - **トラブルシューティング**
   - エラーメッセージが表示されない場合の対処法
   - カスタム例外が機能しない場合の対処法
