@@ -24,6 +24,8 @@ tags: ['FastAPI', 'tutorial']
 まず、SQLiteデータベースの設定を行います。`app/database.py` を以下のように編集します：
 
 ```python
+# app/database.py
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -110,6 +112,8 @@ def get_db():
 次に、Todoのデータモデルを作成します。`app/models.py` を以下のように編集します：
 
 ```python
+# app/models.py
+
 from sqlalchemy import Column, Integer, String, Boolean
 from .database import Base
 
@@ -147,19 +151,23 @@ class Todo(Base):
 
 データベースとテーブルを作成するために、`app/main.py` を以下のように更新します：
 
-```python
+```diff lang=python
+# app/main.py
 from fastapi import FastAPI
-from . import models
-from .database import engine
++from . import models
++from .database import engine
 
-# データベースのテーブルを作成
-models.Base.metadata.create_all(bind=engine)
++# データベースのテーブルを作成
++models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message": "Hello World"}
+@app.get("/todos")
+def read_todos():
+    return [
+        {"id": 1, "title": "買い物に行く", "completed": False},
+        {"id": 2, "title": "宿題をする", "completed": True}
+    ]
 ```
 
 ## 🚀 動作確認
@@ -175,23 +183,6 @@ uvicorn app.main:app --reload
 ```bash
 ls todo.db
 ```
-
-## よくある問題と解決方法
-
-**データベースファイルが作成されない場合**
-
-- エラーメッセージ例：`sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unable to open database file`
-- 解決方法：
-  1. アプリケーションの実行権限を確認
-  2. フォルダの書き込み権限を確認
-  3. 絶対パスを使用してデータベースURLを指定
-
-**テーブルが作成されない場合**
-
-- エラーメッセージ例：`sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) table todos already exists`
-- 解決方法：
-  1. データベースファイルを削除して再作成
-  2. マイグレーションツールを使用して管理
 
 ## 🎯 理解度チェック
 
@@ -227,10 +218,5 @@ ls todo.db
 
   - テーブル名の設定方法
   - カラムの定義方法
-  - インデックスの設定方法
-
-- **トラブルシューティング**
-  - データベースファイルの作成エラー
-  - テーブルの作成エラー
 
 --- 
