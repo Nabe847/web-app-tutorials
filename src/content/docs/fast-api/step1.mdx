@@ -118,6 +118,7 @@ touch app/__init__.py
 touch app/main.py
 touch app/database.py
 touch app/models.py
+touch app/schemas.py
 ```
 
 これで以下のような構造が作成されます:
@@ -129,7 +130,8 @@ todo-api/
 │   ├── __init__.py    # Python パッケージとして認識するためのファイル
 │   ├── main.py        # メインのアプリケーションコード
 │   ├── database.py    # データベースの設定
-│   └── models.py      # データベースのモデル定義
+│   ├── models.py      # データベースのモデル定義
+│   └── schemas.py     # APIのスキーマ定義
 └── requirements.txt   # 必要なパッケージの一覧
 ```
 
@@ -166,7 +168,12 @@ todo-api/
    - データベースのモデル(テーブル)を定義するファイルです
    - データの構造を定義します
 
-7. **requirements.txt**
+7. **schemas.py**
+
+   - APIのリクエストとレスポンスのデータ形式を定義するファイルです
+   - データの検証と変換を行います
+
+8. **requirements.txt**
 
    - プロジェクトで使用するパッケージの一覧が書かれているファイルです
    - 他の環境でも同じパッケージをインストールするために使います

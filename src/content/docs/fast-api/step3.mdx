@@ -21,7 +21,7 @@ tags: ['FastAPI', 'tutorial']
 
 ## データベースの設定
 
-まず、SQLiteデータベースの設定を行います。`app/database.py` を以下のように編集します：
+まず、SQLiteデータベースの設定を行います。`app/database.py` を以下のように編集します:
 
 ```python
 # app/database.py
@@ -109,7 +109,7 @@ def get_db():
 
 ## Todoモデルの作成
 
-次に、Todoのデータモデルを作成します。`app/models.py` を以下のように編集します：
+次に、Todoのデータモデルを作成します。`app/models.py` を以下のように編集します:
 
 ```python
 # app/models.py
@@ -149,7 +149,7 @@ class Todo(Base):
 
 ## データベースの初期化
 
-データベースとテーブルを作成するために、`app/main.py` を以下のように更新します：
+データベースとテーブルを作成するために、`app/main.py` を以下のように更新します:
 
 ```diff lang=python
 # app/main.py
@@ -172,13 +172,13 @@ def read_todos():
 
 ## 🚀 動作確認
 
-1. サーバーを再起動します：
+1. サーバーを再起動します:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-2. データベースファイルが作成されたことを確認します：
+2. データベースファイルが作成されたことを確認します:
 
 ```bash
 ls todo.db

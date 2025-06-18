@@ -1,5 +1,5 @@
 ---
-title: '8: エラーハンドリング'
+title: '8: エラー処理'
 pubDate: 2025-06-09
 description: 'FastAPI の初心者向けチュートリアルです'
 author: 'Nabe847'
@@ -11,15 +11,15 @@ tags: ['FastAPI', 'tutorial']
 
 ## このステップで学ぶこと
 
-前のステップに続いて、今回はAPIのエラーハンドリングを改善します。より分かりやすいエラーメッセージを提供し、APIの使いやすさを向上させましょう。
+前のステップに続いて、今回はAPIのエラー処理を改善します。より分かりやすいエラーメッセージを提供し、APIの使いやすさを向上させましょう。
 
 1. **カスタム例外クラスの作成**
-2. **エラーハンドリングの実装**
+2. **エラー処理の実装**
 3. **動作確認**
 
-> 💡 **エラーハンドリング**: APIで発生する可能性のあるエラーを適切に処理し、ユーザーに分かりやすいメッセージを返すことです。
+> 💡 **エラー処理**: APIで発生する可能性のあるエラーを適切に処理し、ユーザーに分かりやすいメッセージを返すことです。
 
-## エラーハンドリングの改善
+## エラー処理の改善
 
 より良いエラーメッセージを提供するために、カスタム例外クラスを作成します。`app/exceptions.py` を作成して以下のように編集します：
 
@@ -149,7 +149,7 @@ def delete_todo(todo_id: int, db: Session = Depends(get_db)):
    - `status_code`: HTTPステータスコードを指定
    - `detail`: エラーメッセージを指定
 
-2. **エラーハンドリングの実装**
+2. **エラー処理の実装**
 
    ```python
    if not todo.title.strip():
@@ -161,7 +161,7 @@ def delete_todo(todo_id: int, db: Session = Depends(get_db)):
 
 ## 🚀 動作確認
 
-APIをテストして、エラーハンドリングが正しく動作するか確認しましょう：
+APIをテストして、エラー処理が正しく動作するか確認しましょう：
 
 1. 存在しないTodoを取得しようとする：
 ```bash
@@ -218,7 +218,7 @@ curl -X POST http://localhost:8000/todos/ -H "Content-Type: application/json" -d
    **答え: A: `class CustomError(HTTPException):`**
 
    - FastAPIでは`HTTPException`を継承してカスタム例外クラスを作成します
-   - `HTTPException`を継承することで、FastAPIのエラーハンドリング機能を利用できます
+   - `HTTPException`を継承することで、FastAPIのエラー処理機能を利用できます
    - 参考: [FastAPI公式ドキュメント](https://fastapi.tiangolo.com/tutorial/handling-errors/)
 </details>
 
@@ -226,11 +226,11 @@ curl -X POST http://localhost:8000/todos/ -H "Content-Type: application/json" -d
 
 このステップでは以下について学びました。
 
-- **エラーハンドリングの改善**
+- **エラー処理の改善**
 
   - カスタム例外クラスの作成方法
   - エラーメッセージのカスタマイズ方法
-  - エラーハンドリングの実装方法
+  - エラー処理の実装方法
 
 - **APIの使いやすさ向上**
 

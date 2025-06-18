@@ -1,5 +1,5 @@
 ---
-title: '4: Todoの作成機能'
+title: '4: Todoの登録'
 pubDate: 2025-06-09
 description: 'FastAPI の初心者向けチュートリアルです'
 author: 'Nabe847'
@@ -11,7 +11,8 @@ tags: ['FastAPI', 'tutorial']
 
 ## このステップで学ぶこと
 
-前のステップに続いて、今回はTodoの作成機能を実装します。APIを通じてデータベースに新しいTodoを追加できるようにしましょう。
+前のステップに続いて、今回はTodoの登録機能を作成します。  
+APIを通じてデータベースに新しいTodoを追加できるようにしましょう。
 
 1. **スキーマの作成**
 2. **Create機能の実装**
@@ -21,7 +22,7 @@ tags: ['FastAPI', 'tutorial']
 
 ## スキーマの作成
 
-まず、APIのリクエストとレスポンスの形式を定義します。`app/schemas.py` を作成して以下のように編集します：
+まず、APIのリクエストとレスポンスの形式を定義します。`app/schemas.py` を以下のように編集します:
 
 ```python
 # app/schemas.py
@@ -82,11 +83,11 @@ class Todo(TodoBase):
    - `id`と`completed`フィールドを追加しています
    - `from_attributes = True`は、ORMモデルから自動的に変換できるようにします
 
-## Create機能の実装
+## Todoの登録機能の作成
 
-`app/main.py` を以下のように更新して、Todoの作成機能を実装します：
+`app/main.py` を以下のように更新してTodoの登録機能を作成します:
 
-```python
+```diff lang=python
 # app/main.py
 
 from fastapi import FastAPI, Depends, HTTPException
@@ -99,23 +100,32 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Todoの作成
-@app.post("/todos/", response_model=schemas.Todo)
-def create_todo(todo: schemas.TodoCreate, db: Session = Depends(get_db)):
-    # 1. 新しいTodoインスタンスの作成
-    db_todo = models.Todo(title=todo.title)
-    
-    # 2. データベースに追加
-    db.add(db_todo)
-    
-    # 3. 変更を保存
-    db.commit()
-    
-    # 4. データベースから最新のデータを取得
-    db.refresh(db_todo)
-    
-    # 5. 作成したTodoを返す
-    return db_todo
+# Todo一覧の取得
+@app.get("/todos")
+def read_todos():
+    return [
+        {"id": 1, "title": "買い物に行く", "completed": False},
+        {"id": 2, "title": "宿題をする", "completed": True}
+    ]
+
++# Todoの作成
++@app.post("/todos/", response_model=schemas.Todo)
++def create_todo(todo: schemas.TodoCreate, db: Session = Depends(get_db)):
++    # 1. 新しいTodoインスタンスの作成
++    db_todo = models.Todo(title=todo.title)
++    
++    # 2. データベースに追加
++    db.add(db_todo)
++    
++    # 3. 変更を保存
++    db.commit()
++    
++    # 4. データベースから最新のデータを取得
++    db.refresh(db_todo)
++    
++    # 5. 作成したTodoを返す
++    return db_todo
+
 ```
 
 ## コードの解説
@@ -162,7 +172,7 @@ def create_todo(todo: schemas.TodoCreate, db: Session = Depends(get_db)):
 
 ## 🚀 動作確認
 
-1. サーバーを再起動します：
+1. サーバーを再起動します:
 
 ```bash
 uvicorn app.main:app --reload
@@ -170,28 +180,21 @@ uvicorn app.main:app --reload
 
 2. ブラウザで `http://localhost:8000/docs` を開きます。
 
-3. 以下の操作を試してみましょう：
+3. 以下の操作を試してみましょう:
 
 - Todoの作成（POST /todos/）
 ```json
 {
-  "title": "スーパーで買い物に行く"
+  "title": "スーパーに買い物に行く"
 }
 ```
 
 ## よくある問題と解決方法
 
-**データベースエラーが発生する場合**
-
-- エラーメッセージ例：`sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed`
-- 解決方法：
-  1. 必須フィールドが正しく設定されているか確認
-  2. データベースのスキーマを確認
-
 **バリデーションエラーが発生する場合**
 
-- エラーメッセージ例：`pydantic.error_wrappers.ValidationError`
-- 解決方法：
+- エラーメッセージ例:`pydantic.error_wrappers.ValidationError`
+- 解決方法:
   1. リクエストのJSON形式が正しいか確認
   2. 必須フィールドが含まれているか確認
 
@@ -222,17 +225,12 @@ uvicorn app.main:app --reload
 - **スキーマの定義**
 
   - リクエストとレスポンスの形式
-  - データの検証と変換
-  - Pydanticの基本的な使い方
+  - データのバリデーションと変換
 
-- **Create機能の実装**
-
-  - エンドポイントの定義方法
+- **Todoの登録機能の作成**
   - データベースへの保存方法
-  - レスポンスの返し方
 
 - **トラブルシューティング**
-  - データベースエラーの対処法
   - バリデーションエラーの対処法
 
 --- 
