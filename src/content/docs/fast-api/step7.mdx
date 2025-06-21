@@ -11,39 +11,115 @@ tags: ['FastAPI', 'tutorial']
 
 ## このステップで学ぶこと
 
-前のステップに続いて、今回はTodoの削除機能を作成します。  
+今回はTodoの削除機能を作成します。  
 APIを通じてデータベースからTodoを削除できるようにしましょう。
-
-1. **削除機能の作成**
-2. **エラーハンドリング**
-3. **APIの動作確認**
-
-> 💡 **DELETE**: リソースの削除に使われるHTTPメソッドです。データベースからレコードを削除する際に使用します。
 
 ## Todo削除機能の作成
 
-`app/main.py` に以下のコードを追加して、Todoの削除機能を作成します:
+`app/main.py` を以下のように変更して、Todoの削除機能を作成します:
 
-```python
-# app/main.py
+```diff lang=python
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+from . import models, schemas
+from .database import engine, get_db
 
-# Todoの削除
-@app.delete("/todos/{todo_id}")
-def delete_todo(todo_id: int, db: Session = Depends(get_db)):
-    # 指定されたIDのTodoを取得
+# データベースのテーブルを作成
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+# 1. Todoの一覧取得
+@app.get("/todos/", response_model=list[schemas.Todo])
+def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    todos = db.query(models.Todo).offset(skip).limit(limit).all()
+    return todos
+
+# 2. 特定のTodoの取得
+@app.get("/todos/{todo_id}", response_model=schemas.Todo)
+def read_todo(todo_id: int, db: Session = Depends(get_db)):
     db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
-    
+
     # Todoが存在しない場合は404エラーを返す
     if db_todo is None:
         raise HTTPException(status_code=404, detail="Todo not found")
-    
-    # Todoを削除
-    db.delete(db_todo)
-    
+
+    return db_todo
+
+# Todoの作成
+@app.post("/todos/", response_model=schemas.Todo)
+def create_todo(todo: schemas.TodoCreate, db: Session = Depends(get_db)):
+    # 1. 新しいTodoインスタンスの作成
+    db_todo = models.Todo(title=todo.title)
+
+    # 2. データベースに追加
+    db.add(db_todo)
+
+    # 3. 変更を保存
+    db.commit()
+
+    # 4. データベースから最新のデータを取得
+    db.refresh(db_todo)
+
+    # 5. 作成したTodoを返す
+    return db_todo
+
+# 1. Todoの更新
+@app.put("/todos/{todo_id}", response_model=schemas.Todo)
+def update_todo(todo_id: int, todo: schemas.TodoCreate, db: Session = Depends(get_db)):
+    # 指定されたIDのTodoを取得
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+
+    # Todoが存在しない場合は404エラーを返す
+    if db_todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+
+    # Todoのタイトルを更新
+    db_todo.title = todo.title
+
     # データベースに変更を保存
     db.commit()
-    
-    return {"message": "Todo deleted successfully"}
+    db.refresh(db_todo)
+
+    return db_todo+
+
+# 2. Todoの完了状態の更新
+@app.patch("/todos/{todo_id}/complete", response_model=schemas.Todo)
+def complete_todo(todo_id: int, db: Session = Depends(get_db)):
+    # 指定されたIDのTodoを取得
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+
+    # Todoが存在しない場合は404エラーを返す
+    if db_todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+
+    # Todoの完了状態を更新
+    db_todo.completed = True
+
+    # データベースに変更を保存
+    db.commit()
+    db.refresh(db_todo)
+
+    return db_todo
+
++# Todoの削除
++@app.delete("/todos/{todo_id}")
++def delete_todo(todo_id: int, db: Session = Depends(get_db)):
++    # 指定されたIDのTodoを取得
++    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
++    
++    # Todoが存在しない場合は404エラーを返す
++    if db_todo is None:
++        raise HTTPException(status_code=404, detail="Todo not found")
++    
++    # Todoを削除
++    db.delete(db_todo)
++    
++    # データベースに変更を保存
++    db.commit()
++    
++    return {"message": "Todo deleted successfully"}
+
 ```
 
 ## コードの解説
@@ -88,13 +164,6 @@ uvicorn app.main:app --reload
   1. 指定したIDのTodoが存在するか確認
   2. 正しいIDを指定しているか確認
 
-**データベースエラーが発生する場合**
-
-- エラーメッセージ例: `sqlalchemy.exc.OperationalError`
-- 解決方法:
-  1. データベースが正しく設定されているか確認
-  2. テーブルが存在するか確認
-
 ## 🎯 理解度チェック
 
 以下の質問に答えて、学習内容を確認しましょう！
@@ -119,16 +188,6 @@ uvicorn app.main:app --reload
 
 このステップでは以下について学びました。
 
-- **Delete機能の作成**
-  - 削除機能の作成方法
-  - エラーハンドリングの方法
-  - レスポンスの形式
-- **HTTPメソッドの使い分け**
-  - DELETEメソッドの使い方
-  - パスパラメータの使い方
-  - レスポンスの形式
-- **トラブルシューティング**
-  - 404エラーの対処法
-  - データベースエラーの対処法
+- **削除機能の作成**
 
 --- 
