@@ -1,5 +1,5 @@
 ---
-title: '1: フロントエンドとバックエンドの連携'
+title: '1: 画面とAPIの連携'
 description: 'Next.jsとFastAPIを連携させてフルスタックアプリケーションを完成させます'
 ---
 
@@ -173,7 +173,7 @@ export default function Todos() {
     <section className={style.container}>
       <h1>Todoリスト</h1>
 
-      <form onSubmit={handleSubmit} className={style.form}>
++      <form onSubmit={handleSubmit} className={style.form}>
         <input
           type="text"
           value={newTodo}
@@ -193,11 +193,11 @@ export default function Todos() {
               <input
                 type="checkbox"
                 checked={todo.completed}
-                onChange={() => handleToggleComplete(todo.id)}
++                onChange={() => handleToggleComplete(todo.id)}
               />
               {todo.title}
             </label>
-            <button onClick={() => handleDelete(todo.id)}>削除</button>
++            <button onClick={() => handleDelete(todo.id)}>削除</button>
           </div>
         ))}
       </div>
@@ -235,28 +235,27 @@ export default function Todos() {
    - 新しいTodoがリストに表示されることを確認
    - テキストボックスが空になることを確認
 
-2. **Todoの完了状態の切り替え**
+2. **Todoの完了状態の確認**
    - 作成したTodoのチェックボックスをクリック
    - Todoのテキストに取り消し線が表示されることを確認
-   - 再度チェックボックスをクリック
-   - 取り消し線が消えることを確認
+   - もう一度チェックボックスをクリックしても、取り消し線は消えないことを確認（＝一度完了にしたら未完了には戻せない）
 
 3. **Todoの削除**
    - Todoの「削除」ボタンをクリック
+   - 確認ダイアログで「OK」をクリック
    - Todoがリストから消えることを確認
 
 ### エラー処理の確認
 
 1. **バックエンドサーバーを停止**
    - ターミナルで `Ctrl+C` を押してサーバーを停止
-   - フロントエンドでTodoの操作を試みる
-   - エラーメッセージが表示されることを確認
-   - エラーメッセージの内容を確認
+   - フロントエンドでTodoの追加・完了・削除を試みる
+   - エラーメッセージがコンソールに表示されることを確認
 
 2. **バックエンドサーバーを再起動**
    - サーバーを再起動
    - フロントエンドの操作が正常に動作することを確認
-   - データが正しく表示されることを確認
+   - Todoリストが正しく表示されることを確認
 
 ## よくある問題と解決方法
 

@@ -81,7 +81,7 @@ def update_todo(todo_id: int, todo: schemas.TodoCreate, db: Session = Depends(ge
     db.commit()
     db.refresh(db_todo)
 
-    return db_todo+
+    return db_todo
 
 # 2. Todoの完了状態の更新
 @app.patch("/todos/{todo_id}/complete", response_model=schemas.Todo)
