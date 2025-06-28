@@ -12,19 +12,19 @@ tags: ['FastAPI', 'tutorial']
 ## このステップで学ぶこと
 
 今回はデータベースの設定を行います。  
-サーバプログラムを止めてもデータが無くならないようにしましょう。
+サーバーを停止してもサーバ上にデータが残るようにしましょう。
 
 > 💡 **データベース**:   
-> プログラムを停止したあとでもデータが無くならないようにすることを「永続化」といいます。  
-> データベースはデータの永続化に使います。  
-> このチュートリアルでは、SQLiteという軽量なデータベースを使います。  
+> プログラムを停止してもデータが無くならないようにすることを「永続化」といいます。  
+> 永続化されたデータの集まりのことをデータベースと呼びます。  
+> このチュートリアルでは SQLite というライブラリを使ってデータベースの作成や更新をしていきます。  
 
 ## データベースの設定
 
-まず、SQLiteデータベースの設定を行います。`app/database.py` を以下のように編集します:
+まず、データベースの設定を行います。`todo-api/app/database.py` を以下のように編集します:
 
 ```python
-# app/database.py
+# todo-api/app/database.py
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -61,8 +61,8 @@ def get_db():
    SQLALCHEMY_DATABASE_URL = "sqlite:///./todo.db"
    ```
 
-   - SQLiteデータベースのファイルパスを指定します
-   - `./todo.db` は現在のディレクトリに `todo.db` というファイルを作成します
+   - SQLite データベースのファイルパスを指定します
+   - `./todo.db` はサーバを起動したディレクトリに `todo.db` というファイルを作成します
 
 2. **データベースエンジンの作成**
 
@@ -110,10 +110,10 @@ def get_db():
 
 ## Todoモデルの作成
 
-次に、Todoのデータモデルを作成します。`app/models.py` を以下のように編集します:
+次に、Todoのデータモデルを作成します。`todo-api/app/models.py` を以下のように編集します:
 
 ```python
-# app/models.py
+# todo-api/app/models.py
 
 from sqlalchemy import Column, Integer, String, Boolean
 from .database import Base
@@ -150,10 +150,10 @@ class Todo(Base):
 
 ## データベースの初期化
 
-データベースとテーブルを作成するために、`app/main.py` を以下のように更新します:
+データベースとテーブルを作成するために、`todo-api/app/main.py` を以下のように更新します:
 
 ```diff lang=python
-# app/main.py
+# todo-api/app/main.py
 from fastapi import FastAPI
 +from . import models
 +from .database import engine
@@ -175,15 +175,11 @@ def read_todos():
 
 1. サーバーを再起動します:
 
-```bash
-uvicorn app.main:app --reload
-```
+    ```bash
+    uvicorn app.main:app --reload
+    ```
 
-2. データベースファイルが作成されたことを確認します:
-
-```bash
-ls todo.db
-```
+2. データベースファイル(`todo-api/todo.db`)が作成されたことを確認します:
 
 ## 🎯 理解度チェック
 
@@ -202,7 +198,7 @@ ls todo.db
 
    - SQLAlchemyでは、`Base`クラスを継承してモデルを定義します
    - `Base`は`declarative_base()`で作成した基底クラスです
-   - 参考: [SQLAlchemy公式ドキュメント](https://docs.sqlalchemy.org/en/14/orm/declarative_tables.html)
+   - 参考: [SQLAlchemy公式ドキュメント](https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.declarative_base)
 </details>
 
 ## 📝 まとめ
@@ -211,13 +207,13 @@ ls todo.db
 
 - **データベースの基本**
 
-  - SQLiteデータベースの設定方法
-  - データベースエンジンの作成方法
-  - セッションの管理方法
+  - データベースURLの設定
+  - データベースエンジンの作成
+  - セッションの管理
 
 - **モデルの定義**
 
-  - テーブル名の設定方法
-  - カラムの定義方法
+  - テーブルの定義
+  - カラムの定義
 
 --- 

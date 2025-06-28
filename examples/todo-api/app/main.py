@@ -1,9 +1,12 @@
 from fastapi import FastAPI
+from . import models
+from .database import engine
 
-# 1. FastAPIアプリケーションの作成
+# データベースのテーブルを作成
+models.Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
 
-# 2. Todo一覧を取得するAPIの定義
 @app.get("/todos")
 def read_todos():
     return [
