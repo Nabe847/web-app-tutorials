@@ -42,7 +42,7 @@ def create_todo(todo: schemas.TodoCreate, db: Session = Depends(get_db)):
     # 5. 作成したTodoを返す
     return db_todo
 
-# 1. Todoの更新
+# Todoの更新
 @app.put("/todos/{todo_id}", response_model=schemas.Todo)
 def update_todo(todo_id: int, todo: schemas.TodoCreate, db: Session = Depends(get_db)):
     # 指定されたIDのTodoを取得
@@ -61,7 +61,7 @@ def update_todo(todo_id: int, todo: schemas.TodoCreate, db: Session = Depends(ge
 
     return db_todo
 
-# 2. Todoの完了状態の更新
+# Todoの完了状態の更新
 @app.patch("/todos/{todo_id}/complete", response_model=schemas.Todo)
 def complete_todo(todo_id: int, db: Session = Depends(get_db)):
     # 指定されたIDのTodoを取得
@@ -79,3 +79,21 @@ def complete_todo(todo_id: int, db: Session = Depends(get_db)):
     db.refresh(db_todo)
 
     return db_todo
+
+# 1. Todoの削除
+@app.delete("/todos/{todo_id}")
+def delete_todo(todo_id: int, db: Session = Depends(get_db)):
+    # 指定されたIDのTodoを取得
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+
+    # Todoが存在しない場合は404エラーを返す
+    if db_todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+
+    # Todoを削除
+    db.delete(db_todo)
+
+    # データベースに変更を保存
+    db.commit()
+
+    return {"message": "Todo deleted successfully"}
