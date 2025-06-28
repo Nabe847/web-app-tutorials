@@ -7,13 +7,22 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Todo一覧の取得
-@app.get("/todos")
-def read_todos():
-    return [
-        {"id": 1, "title": "買い物に行く", "completed": False},
-        {"id": 2, "title": "宿題をする", "completed": True}
-    ]
+# 1. Todoの一覧取得
+@app.get("/todos/", response_model=list[schemas.Todo])
+def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    todos = db.query(models.Todo).offset(skip).limit(limit).all()
+    return todos
+
+# 2. 特定のTodoの取得
+@app.get("/todos/{todo_id}", response_model=schemas.Todo)
+def read_todo(todo_id: int, db: Session = Depends(get_db)):
+    db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
+
+    # Todoが存在しない場合は404エラーを返す
+    if db_todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+
+    return db_todo
 
 # Todoの作成
 @app.post("/todos/", response_model=schemas.Todo)

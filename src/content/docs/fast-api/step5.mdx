@@ -16,19 +16,26 @@ APIを通じてデータベースからTodoを取得できるようにしまし�
 
 ## Todo取得機能の作成
 
-`app/main.py` を以下のように変更して、Todoの読み取り機能を作成します:
+`todo-api/app/main.py` を以下のように変更して、Todoの読み取り機能を作成します:
 
 ```diff lang=python
+# todo-api/app/main.py
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from . import models, schemas
 from .database import engine, get_db
 
-# データベースのテーブルを作成
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+-# Todoの一覧取得
+-@app.get("/todos")
+-def read_todos():
+-    return [
+-        {"id": 1, "title": "買い物に行く", "completed": False},
+-        {"id": 2, "title": "宿題をする", "completed": True}
+-    ]
 +# 1. Todoの一覧取得
 +@app.get("/todos/", response_model=list[schemas.Todo])
 +def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -104,9 +111,9 @@ def create_todo(todo: schemas.TodoCreate, db: Session = Depends(get_db)):
 
 1. サーバーが起動していることを確認します:
 
-```bash
-uvicorn app.main:app --reload
-```
+    ```bash
+    uvicorn app.main:app --reload
+    ```
 
 2. ブラウザで `http://localhost:8000/docs` を開きます。
 
@@ -114,22 +121,6 @@ uvicorn app.main:app --reload
 
 - Todoの一覧取得（GET /todos/）
 - 特定のTodoの取得（GET `/todos/{todo_id}`）
-
-## よくある問題と解決方法
-
-**404エラーが発生する場合**
-
-- エラーメッセージ例: `{"detail": "Todo not found"}`
-- 解決方法:
-  1. 指定したIDのTodoが存在するか確認
-  2. 正しいIDを指定しているか確認
-
-**データベースエラーが発生する場合**
-
-- エラーメッセージ例: `sqlalchemy.exc.OperationalError`
-- 解決方法:
-  1. データベースが正しく設定されているか確認
-  2. テーブルが存在するか確認
 
 ## 🎯 理解度チェック
 
@@ -156,10 +147,8 @@ uvicorn app.main:app --reload
 このステップでは以下について学びました。
 
 - **読み取り機能の作成**
-  - 一覧取得機能の作成方法
-  - 個別取得機能の作成方法
-- **APIの設計**
-  - クエリパラメータの使い方
+  - 一覧取得機能
+  - 個別取得機能
   - パスパラメータの使い方
   - レスポンスモデルの指定方法
 
