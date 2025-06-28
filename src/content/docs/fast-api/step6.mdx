@@ -16,26 +16,26 @@ APIを通じてTodoを編集できるようにしましょう。
 
 ## Todo更新機能の作成
 
-`app/main.py` を以下のように変更してTodoの更新機能を作成します:
+`todo-api/app/main.py` を以下のように変更してTodoの更新機能を作成します:
 
 ```diff lang=python
+# todo-api/app/main.py
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from . import models, schemas
 from .database import engine, get_db
 
-# データベースのテーブルを作成
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# 1. Todoの一覧取得
+# Todoの一覧取得
 @app.get("/todos/", response_model=list[schemas.Todo])
 def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     todos = db.query(models.Todo).offset(skip).limit(limit).all()
     return todos
 
-# 2. 特定のTodoの取得
+# 特定のTodoの取得
 @app.get("/todos/{todo_id}", response_model=schemas.Todo)
 def read_todo(todo_id: int, db: Session = Depends(get_db)):
     db_todo = db.query(models.Todo).filter(models.Todo.id == todo_id).first()
@@ -81,7 +81,7 @@ def create_todo(todo: schemas.TodoCreate, db: Session = Depends(get_db)):
 +    db.commit()
 +    db.refresh(db_todo)
 +    
-+    return db_todo+
++    return db_todo
 
 +# 2. Todoの完了状態の更新
 +@app.patch("/todos/{todo_id}/complete", response_model=schemas.Todo)
@@ -148,37 +148,21 @@ def create_todo(todo: schemas.TodoCreate, db: Session = Depends(get_db)):
 
 1. サーバーが起動していることを確認します:
 
-```bash
-uvicorn app.main:app --reload
-```
+    ```bash
+    uvicorn app.main:app --reload
+    ```
 
 2. ブラウザで `http://localhost:8000/docs` を開きます。
 
 3. 以下の操作を試してみましょう:
 
-- Todoの更新（PUT `/todos/{todo_id}`）
-```json
-{
-  "title": "スーパーで買い物をする"
-}
-```
-- Todoの完了（PATCH `/todos/{todo_id}/complete`）
-
-## よくある問題と解決方法
-
-**404エラーが発生する場合**
-
-- エラーメッセージ例: `{"detail": "Todo not found"}`
-- 解決方法:
-  1. 指定したIDのTodoが存在するか確認
-  2. 正しいIDを指定しているか確認
-
-**バリデーションエラーが発生する場合**
-
-- エラーメッセージ例: `{"detail": [{"loc": ["body", "title"], "msg": "field required"}]}`
-- 解決方法:
-  1. リクエストボディの形式が正しいか確認
-  2. 必須フィールドが含まれているか確認
+    - Todoの更新（PUT `/todos/{todo_id}`）
+        ```json
+        {
+          "title": "削除機能を作る"
+        }
+        ```
+    - Todoの完了（PATCH `/todos/{todo_id}/complete`）
 
 ## 🎯 理解度チェック
 
@@ -205,7 +189,7 @@ uvicorn app.main:app --reload
 このステップでは以下について学びました。
 
 - **更新機能の作成**
-  - 更新機能の作成方法
-  - 部分更新機能の作成方法
+  - 更新機能
+  - 部分更新機能
 
 --- 
