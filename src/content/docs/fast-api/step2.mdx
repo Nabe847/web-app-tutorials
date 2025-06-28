@@ -29,24 +29,23 @@ tags: ['FastAPI', 'tutorial']
 
 ## Todoの一覧を取得する WebAPI
 
-`app/main.py` を開いてファイルの中に書かれているものをすべて削除してください。  
-次に以下の内容を貼り付けてください。
+`todo-api/app/main.py` を以下の内容に変更して下さい。
 
-```python
-# app/main.py
+```diff lang=python
+# todo-api/app/main.py
 
 from fastapi import FastAPI
 
 # 1. FastAPIアプリケーションの作成
 app = FastAPI()
 
-# 2. Todo一覧を取得するAPIの定義
-@app.get("/todos")
-def read_todos():
-    return [
-        {"id": 1, "title": "買い物に行く", "completed": False},
-        {"id": 2, "title": "宿題をする", "completed": True}
-    ]
++# 2. Todo一覧を取得するAPIの定義
++@app.get("/todos")
++def read_todos():
++    return [
++        {"id": 1, "title": "買い物に行く", "completed": False},
++        {"id": 2, "title": "宿題をする", "completed": True}
++    ]
 ```
 
 ## コードの解説
@@ -57,7 +56,8 @@ def read_todos():
    app = FastAPI()
    ```
 
-   - FastAPIのインスタンスを作成します
+   - FastAPI はAPIのすべての機能を提供するPythonクラスです
+   - FastAPI クラスのインスタンスを作成します
    - このインスタンスを使ってAPIを定義します
 
 2. **Todo一覧を取得するAPIの定義**
@@ -71,30 +71,36 @@ def read_todos():
        ]
    ```
 
-   - `@app.get("/todos")` は、`/todos` パスへのGETリクエストを処理するAPIを定義します
+   - `@app.get("/todos")` は `/todos` パスへのGETリクエストを処理するAPIを定義します
+   - return で指定したデータがAPIのレスポンスとしてブラウザに返されます
    - 今はデータをプログラムの中に直接書いていますが後でデータベースから取得するように変更します
 
 ## 🚀 動作確認
 
 1. 開発サーバーを起動します：
 
-```bash
-uvicorn app.main:app --reload
-```
+    ```bash
+    uvicorn app.main:app --reload
+    ```
 
-2. ブラウザで `http://localhost:8000/docs` を開きます。
+2. ブラウザで [http://localhost:8000/todos](http://localhost:8000/todos) を開きます。
 
-3. 以下の操作を試してみましょう：
+    以下のように表示されればOKです。
 
-- Todoリストの取得（GET /todos/）
-
-## よくある問題と解決方法
-
-**サーバーが起動しない**
-
-- 仮想環境が有効になっているか確認する
-- 必要なパッケージがインストールされているか確認する
-- ポートが使用中でないか確認する
+    ```json
+    [
+      {
+        "id": 1,
+        "title": "買い物に行く",
+        "completed": false
+      },
+      {
+        "id": 2,
+        "title": "宿題をする",
+        "completed": true
+      }
+    ]
+    ```
 
 ## 🎯 理解度チェック
 
@@ -123,7 +129,7 @@ uvicorn app.main:app --reload
 - **FastAPIの基本**
 
   - アプリケーションの作成方法
-  - APIの定義方法
+  - APIを追加する方法
   - レスポンスの返し方
 
 - **開発の基本**
