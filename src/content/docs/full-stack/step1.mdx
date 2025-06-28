@@ -15,10 +15,10 @@ description: 'Next.jsとFastAPIを連携させてフルスタックアプリケ�
 
 ### CORSの設定
 
-`app/main.py`を編集して、CORSの設定を追加します:
+`todo-api/app/main.py`を編集して CORS の設定を追加します:
 
 ```diff lang=python
-# app/main.py
+# todo-api/app/main.py
 
 from fastapi import FastAPI
 +from fastapi.middleware.cors import CORSMiddleware
